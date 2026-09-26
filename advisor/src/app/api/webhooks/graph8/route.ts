@@ -10,7 +10,11 @@ export async function POST(req: Request): Promise<Response> {
   const v = verifyDelivery(raw, req.headers, secret);
   if (!v.ok) return new Response(v.reason, { status: 401 });
   after(async () => {
-    console.log("graph8 webhook", JSON.stringify({ id: v.event.id, event: v.event.event, data: v.event.data }));
+    const { g8Caller } = await import("@/lib/g8/client");
+    const { RecordStore } = await import("@/lib/store/records");
+    const { handleEvent } = await import("@/lib/sync/handle-event");
+    const result = await handleEvent(v.event, { c: g8Caller, outcomes: new RecordStore(g8Caller, "roi_outcome"), runs: new RecordStore(g8Caller, "roi_run") });
+    console.log("graph8 webhook", v.event.event, result);
   });
   return new Response("ok");
 }
