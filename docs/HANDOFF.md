@@ -184,3 +184,22 @@ Live shapes confirmed: `getListContacts` rows already carry `work_email`; `listL
 ## 14. Recap live check
 
 Task 17 posted the first weekly recap from the built app (`node next start -p 3200`) via `GET /api/cron/recap` with the `CRON_SECRET` bearer token on 2026-09-26, approved by the user (expected 0 credits). Response: `{"posted":3,"postedAt":"2026-09-26T20:57:37.831Z"}` (HTTP 200). The message is in `#roi-advisor` (`roi-advisor`, id `7705335b-6dba-51d8-baf9-207a0d19fe4f`), message id `63582eba50cf55fffecec1e525bdf3adc1672ab43c4a82434b84c4e9e316c515`, posted at 20:57:37 UTC: headline "Last week: 1,260 credits → 0 meetings [sim]" plus 3 numbered findings (labels are real/sim per the findings). Ledger check: `GET /usage/transactions` first page (100 rows) still shows exactly the same 2 `studio_copilot` rows as before the post (`48300463…` and `4ede3332…`, both 15:40 UTC) — **0 new charges**. No live-shape adaptation was needed: the app's `document` shape (`{version:1, blocks:[{type:"paragraph",content:[{type:"text",text,marks?}]}]}`) matched the existing `[sim] quiet-channel probe` message already in the channel, and `channel: "roi-advisor"` (the channel name) was accepted.
+
+## 15. Sim demo data
+
+Task 19 seeded deterministic simulated demo data and replayed it as signed webhooks. **0 credits, no emails to anyone.** Every record carries `simulated: true` / `[sim]` names, event envelope ids start `sim-`, and `data.simulated === true`; none of it is real.
+
+- **Redeploy first:** the production deployment predated the webhook `handleEvent` wiring, so it was redeployed (`npx vercel deploy --prod --scope momin11`; plain `--prod` returned "Not authorized"). `/login` → 200 after deploy. The live receiver now stores event outcomes.
+- **Seed** (`scripts/seed-sim.ts`): lists **15** `[sim] Sales VPs` (20 contacts) and **16** `[sim] Founders` (20 contacts), **210** sim charges in `roi_charge` (target totals: 2,108 / 2,598 / 4,800 credits for lists 15 / 16 / 2), **27** `[sim]` deals (one per seeded meeting; New → Discovery then Won/Lost/Proposal), **81** events in `advisor/.sim-plan.json` (gitignored).
+- **Replay** (`scripts/sim-events.ts`): 81/81 delivered, 0 failed. Stored: 81 `roi_outcome` records with `sim-` ext ids and `source: "sim"` (plus 109 polled deal outcomes; `roi_outcome` total 190). Charges verified: 336 total = 126 real + 210 sim.
+- **Sync** (`npm run script -- scripts/sync-once.ts`): `newLedgerRows: 2`, `charges: 126`, coverage exact 216 / window 1033 / none 11 / total 1260, `findings: 7`.
+- **Stats, 30d list dimension** (target cpm is the full 8-week seed target; the stats window is the last 30 days, so only part of each list's meetings fall inside it — full-window targets are asserted in `tests/sim/plan.test.ts`):
+
+  | List | Credits | Meetings | Cost/meeting | Seeded target |
+  |---|---|---|---|---|
+  | 15 `[sim] Sales VPs` | 1,089.03 | 14 | 77.79 | 124 |
+  | 16 `[sim] Founders` | 1,472.20 | 5 | 294.44 | 433 |
+  | 2 Starter list | 2,477.52 | 2 | 1,238.76 | 1,200 |
+
+- **Cleanup dry run** (`scripts/cleanup-sim.ts`, no `--apply`): **30** `[sim]` deals (27 new + 3 earlier `[sim]` probe deals), **444** sim records across `roi_charge`/`roi_outcome`/`roi_stat`/`roi_finding`/`roi_run`, and 4 `[sim]` lists flagged for review (15/16 plus pre-existing 13/14). Nothing was deleted; lists are never deleted by the script.
+- **Live shapes validated (no script adaptation needed):** `listLists`/`listDeals`/`getListContacts`/`listDealPipelines` all return unwrapped arrays; deal stage UUIDs in the script match the Sales Pipeline live; `getListContacts` rows carry `id`, `job_title`, `seniority_level` (68 VPs, 188 founder-titled on list 2); `createList` accepts `type: "contacts"`; `addContactsToList` accepts `conflict_resolution: "add_all"` upfront; `allow_duplicate: true` works. ⚠ Two notes that correct §5.3/§5: a backdated `close_date` **is** accepted by `PATCH /deals/{id}` (stored as `…T00:00:00Z`), and `closed_lost_reason` is accepted but silently dropped by the API (lost deals keep the stage, not the reason).

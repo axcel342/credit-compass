@@ -10,3 +10,5 @@ __pycache__/
 *.pyc
 # brainstorm companion runtime state (mockups are copied to docs/design/mockups)
 .superpowers/
+# simulated demo seed plan (generated; contains live list ids)
+advisor/.sim-plan.json
