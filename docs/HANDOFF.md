@@ -148,3 +148,12 @@ Delivery results (`GET /webhooks/{id}/deliveries`): all three deliveries recorde
 **Fallback in force until then (spec §6.4):** graph8 cannot call the MCP server. The MCP server serves outside agents over streamable HTTP; inside graph8, answers live in the `#roi-advisor` channel and the `roi_*` custom objects.
 
 **To resume:** once `REDIS_URL`/`KV_URL` exists in the Vercel project (names only; then `npx vercel deploy --prod`), registration can proceed by running the already-created `scripts/register-mcp.ts`, then the graph8 `[sim] ROI Advisor MCP test` probe workflow (brief Steps 8–10).
+
+## 12. First live sync
+
+Ran `npm run script -- scripts/import-design-runs.ts` (23 runs, 1 post) then `npm run script -- scripts/sync-once.ts` against the live org on 2026-09-26. Printed summary:
+
+- newLedgerRows: 0 (on the final re-run; first run ingested 144)
+- charges: 126
+- coverage: exact 216, window 1033, none 11, total 1260
+- findings: 5

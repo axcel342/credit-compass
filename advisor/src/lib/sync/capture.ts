@@ -10,7 +10,8 @@ export async function fetchExecutionRun(c: G8Caller, executionId: string, action
   catch (e) { if (isNotFound(e)) return null; throw e; }
 }
 
-interface PipelineItem { id: string; name: string; last_run?: { run_id: string } | null }
+interface PipelineLastRun { run_id: string; status?: string; started_at?: string | null }
+interface PipelineItem { id: string; name: string; last_run?: PipelineLastRun | null }
 interface PipelineRun { run_id: string; list_id: number; status: string; started_at?: string | null; pipeline_name?: string;
   step_progress?: { total_records?: number; processed_records?: number; successful?: number; failed?: number; skipped_by_reason?: Record<string, number> }[] }
 
@@ -23,7 +24,7 @@ export async function pollPipelineRuns(c: G8Caller, listIds: number[]): Promise<
       const r = await c.call<PipelineRun>(OPS.getPipelineRun, { path: { run_id: p.last_run.run_id } });
       const prog = r.step_progress ?? [];
       const skipped = prog.reduce((s, x) => s + Object.values(x.skipped_by_reason ?? {}).reduce((a, b) => a + b, 0), 0);
-      const started = r.started_at ?? null;
+      const started = r.started_at ?? p.last_run?.started_at ?? null;
       runs.push({ extId: r.run_id, kind: "pipeline_run", service: "waterfall_enrichment", actionName: `List pipeline · ${p.name}`, startedAt: started,
         completedAt: r.status === "completed" && started ? toIso(toMs(started) + 180_000) : null, status: r.status, source: "poll", listId: r.list_id,
         recordsOk: prog.reduce((s, x) => s + (x.successful ?? 0), 0), recordsFailed: prog.reduce((s, x) => s + (x.failed ?? 0), 0), recordsSkipped: skipped });
