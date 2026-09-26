@@ -1,6 +1,9 @@
-# graph8 ROI Advisor
+# Credit Compass
 
-A proof of concept on graph8: shows which credits turned into meetings and pipeline, finds wasted spend, and enforces "spend here, not there" through graph8's own list pipelines.
+See exactly which graph8 credits turned into meetings and pipeline, and which ones were wasted on failed jobs, broken data or runs nobody could trace.
+Credit Compass then steers the next spend, skipping low-fit contacts through graph8's own pipelines, posting a weekly recap in graph8, and answering ROI questions for any AI agent.
+
+*Hackathon proof of concept on graph8. Its working name in the design docs and code is "ROI Advisor" (the app folder is `advisor/`).*
 
 **Start here:** [`docs/HANDOFF.md`](docs/HANDOFF.md)
 

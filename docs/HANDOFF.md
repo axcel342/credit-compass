@@ -1,4 +1,4 @@
-# Handoff: ROI Advisor POC on graph8
+# Handoff: Credit Compass (ROI Advisor) POC on graph8
 
 Read this first if you are picking up the build. It carries the context of the design conversation (2026-09-26) that isn't obvious from the spec, the plan or the code.
 
