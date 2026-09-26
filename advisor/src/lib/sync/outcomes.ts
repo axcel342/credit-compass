@@ -27,7 +27,9 @@ export async function pollDealOutcomes(c: G8Caller, contacts: Map<number, Contac
       out.push({ ...base, extId: `deal:${d.id}:${h.id}`, type: "deal_stage_changed", occurredAt: h.changed_at, amount: d.amount });
       const t = stageType.get(h.to_value);
       if (t === "won" || t === "lost") {
-        const when = d.close_date ? `${d.close_date}T12:00:00Z` : h.changed_at;
+        const when = d.close_date
+          ? (d.close_date.includes("T") ? d.close_date : `${d.close_date}T12:00:00Z`)
+          : h.changed_at;
         out.push({ ...base, extId: `deal:${d.id}:${t}`, type: t === "won" ? "deal_won" : "deal_lost", occurredAt: when, amount: d.amount });
       }
     }

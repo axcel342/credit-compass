@@ -32,3 +32,21 @@ describe("outcomeFromEvent", () => {
   it("ignores events that aren't outcomes", () =>
     expect(outcomeFromEvent({ id: "e", event: "task.created", timestamp: "2026-09-26T10:00:00Z", org_id: "o", data: {} })).toBeNull());
 });
+
+describe("pollDealOutcomes close_date handling", () => {
+  function fakeFor(deal: Record<string, unknown>) {
+    const c = new FakeG8();
+    c.handlers.set(OPS.listDealPipelines, () => stages);
+    c.handlers.set(OPS.listDeals, (i) => (Number(i.query?.page) === 1 ? [deal] : []));
+    c.handlers.set(OPS.listDealHistory, () => wonHist);
+    return c;
+  }
+  it("uses noon UTC when close_date is date-only", async () => {
+    const out = await pollDealOutcomes(fakeFor({ ...won, close_date: "2026-09-25" }), new Map());
+    expect(out.find((o) => o.type === "deal_won")!.occurredAt).toBe("2026-09-25T12:00:00Z");
+  });
+  it("keeps a full ISO close_date unchanged", async () => {
+    const out = await pollDealOutcomes(fakeFor({ ...won, close_date: "2026-09-26T00:00:00Z" }), new Map());
+    expect(out.find((o) => o.type === "deal_won")!.occurredAt).toBe("2026-09-26T00:00:00Z");
+  });
+});
