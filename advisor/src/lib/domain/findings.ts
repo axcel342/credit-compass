@@ -104,6 +104,7 @@ export function mergeFindings(fresh: Finding[], existing: Finding[]): Finding[] 
   return fresh.map((f) => {
     const p = prev.get(f.extId);
     if (!p) return f;
+    if (p.status === "applied") return f;
     const merged = { ...f, status: p.status, snoozedUntil: p.snoozedUntil, dismissCount: p.dismissCount, firstSeen: p.firstSeen, lastNotifiedStake: p.lastNotifiedStake, inRecap: p.inRecap };
     return signature(merged) === signature(p) ? { ...merged, lastSeen: p.lastSeen } : merged;
   });

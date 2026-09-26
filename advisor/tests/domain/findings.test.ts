@@ -40,6 +40,13 @@ describe("mergeFindings", () => {
     const [m] = mergeFindings([findings[0]], [prev]);
     expect(m).toMatchObject({ status: "dismissed", dismissCount: 1, firstSeen: "2026-09-27T00:00:00Z", lastSeen: findings[0].lastSeen });
   });
+  it("reopens a regenerated applied finding but still preserves a dismissed one", () => {
+    const applied = { ...findings[0], status: "applied" as const, firstSeen: "2026-09-27T00:00:00Z" };
+    const reopened = mergeFindings([findings[0]], [applied])[0];
+    expect(reopened).toMatchObject({ status: "open", firstSeen: findings[0].firstSeen });
+    const dismissed = { ...findings[0], status: "dismissed" as const, firstSeen: "2026-09-27T00:00:00Z" };
+    expect(mergeFindings([findings[0]], [dismissed])[0]).toMatchObject({ status: "dismissed", firstSeen: "2026-09-27T00:00:00Z" });
+  });
   it("refreshes lastSeen when the finding changed", () => {
     const prev = { ...findings[0], creditsAtStake: 10, lastSeen: "2026-09-27T00:00:00Z", firstSeen: "2026-09-27T00:00:00Z" };
     const fresh = { ...findings[0], creditsAtStake: 20 };

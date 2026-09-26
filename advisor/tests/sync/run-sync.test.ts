@@ -49,4 +49,18 @@ describe("runSync", () => {
     const stored = (await findings.list()).find((r) => r.values.ext_id === "cut|list:999|30d");
     expect(stored?.values.status).toBe("applied");
   });
+
+  it("keeps a dismissed stale finding dismissed instead of applying it", async () => {
+    const c = await designDayClient();
+    const findings = new RecordStore(c, "roi_finding");
+    await findings.upsert(findingToValues({
+      extId: "cut|list:998|30d", kind: "cut", title: "Dismissed finding", body: "No longer generated", evidence: {}, creditsAtStake: 10,
+      confidence: "high", status: "dismissed", snoozedUntil: "2026-12-01T00:00:00Z", dismissCount: 1, action: null, actionPayload: null,
+      firstSeen: "2026-09-01T00:00:00Z", lastSeen: "2026-09-01T00:00:00Z", lastNotifiedStake: null, inRecap: false, simulated: false,
+    }));
+    await runSync({ c, now: "2026-10-04T00:00:00Z", contacts: new Map() });
+    const stored = (await findings.list()).find((r) => r.values.ext_id === "cut|list:998|30d");
+    expect(stored?.values.status).toBe("dismissed");
+    expect(stored?.values.snoozed_until).toBe("2026-12-01T00:00:00Z");
+  });
 });
