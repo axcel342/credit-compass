@@ -14,6 +14,48 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 
 ---
 
+## Build status (end of Task 20, 2026-09-26)
+
+**Thin slice complete.** Tasks 1–20 of `docs/superpowers/plans/2026-09-26-roi-advisor.md` are done and deployed. Final production build: `tsc --noEmit` clean, 102 tests across 29 files pass, `next build` succeeds.
+
+### Live
+
+- Dashboard (password-gated): https://graph8-roi-advisor.vercel.app — the password lives only in the Vercel `DASHBOARD_PASSWORD` env var and locally in `advisor/.env.local`, never in the repo.
+- MCP endpoint (bearer `MCP_TOKEN`): https://graph8-roi-advisor.vercel.app/api/mcp
+- Webhook receiver: https://graph8-roi-advisor.vercel.app/api/webhooks/graph8
+- Crons (`advisor/vercel.json`): `/api/cron/poll` **daily 06:00 UTC** and `/api/cron/recap` **Mondays 09:00 UTC**. The team is on the **Hobby** plan (`npx vercel teams ls`), and Hobby allows only daily schedules, so the plan's `*/10 * * * *` poll became `0 6 * * *`; freshness during a demo comes from **Sync now** and the webhooks.
+- `CRON_SECRET` was rotated for Task 20 (new random value in `advisor/.env.local` and Vercel production only; `.env.example` lists the name).
+
+### Risk tasks
+
+| Risk | Result |
+|---|---|
+| Webhook receiver (Task 3) | **PASS.** Real `deal.created`, `deal.stage_changed` and `workflow.execution_completed` deliveries verified with signatures and stored. `deal.updated` never fires (see §10). |
+| MCP from graph8 (Task 4) | **Deferred pending Redis.** Steps 1–6 passed (auth, `tools/list`, SSE reports "redisUrl is required"); registration is blocked at the Upstash add. Spec §6.4 fallback is in force: outside agents use streamable HTTP; inside graph8, answers live in `#roi-advisor` and the `roi_*` custom objects. |
+
+### Live numbers
+
+- First live sync: **126 charges, 1,260 credits**, coverage exact **216** / window **1,033** / service-only **11**; findings **5** at first sync → **7** after the sim data.
+- Guardrail live run (list 13): row **66 low**, rows **81 + 249 unknown**; run `f9cf7ef4…` skipped **1**, spent **0 credits**.
+- Recap posted to `#roi-advisor`: **3 items, 0 charges**.
+- Production cron re-check (Task 20): `{"newLedgerRows":2,"charges":126,"coverage":{"exact":216,"window":1033,"none":11,"total":1260},"findings":7}`.
+- Demo script: `docs/DEMO.md`. Sim cleanup is still a dry run only (`--apply` needs user approval; lists are never deleted by the script).
+
+### Known gaps
+
+- SSE / graph8-registered MCP pending Redis (fallback in force; registration is deliberately out of the thin slice).
+- The sim seed spans 8 weeks but stats use the last 30 days, so dashboard cost-per-meeting is a partial sample of the seeded targets.
+- Dashboard deep links show contact/deal IDs rather than `app.graph8.com` URLs.
+- The refund send path is built and confirm-gated but has not been exercised (0 support requests sent).
+- No Slack/email recap (the org has no mailbox or Slack) and no App Page (graph8's LLM features were down).
+- Sim artifacts are still in the org; the cleanup dry run lists 30 deals, 444 records and lists 13–16 for review.
+
+### Depth backlog (spec §10 order)
+
+One-click actions (lookalike list, pause, refund send) → cohort attribution → Slack/email recaps → App Page → weekly `roi_stat` snapshots → per-user spend → multi-list guardrails → anomaly detection → multi-org. The task-20 brief carries the fuller 12-item version (adds the settings screen, the free-failed-attempts display and engagement summaries).
+
+---
+
 ## 1. What we're building and why
 
 **ROI Advisor** answers the question graph8 leaves open: *which of my credits turned into meetings and pipeline, which bought nothing, and where should I spend next?*

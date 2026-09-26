@@ -13,7 +13,27 @@ Credit Compass then steers the next spend, skipping low-fit contacts through gra
 | `docs/superpowers/specs/2026-09-26-roi-advisor-design.md` | Approved design with live validation evidence |
 | `docs/superpowers/plans/2026-09-26-roi-advisor.md` | Implementation plan |
 | `docs/design/roi-advisor-ui.html` | Approved UI (open it in a browser) |
+| `docs/DEMO.md` | The 5-minute live demo script, URLs, pre-demo checklist and cleanup plan |
 | `research/` | Real-org fixtures, graph8 reference data, probe scripts |
 | `g8-product-overview.md`, `g8-reference.md` | graph8 product overview and full CLI/MCP/API reference |
 
-Secrets live in `.env` (gitignored). See `.env.example`.
+## How to run locally
+
+```bash
+cd advisor
+npm install
+npm run dev
+```
+
+Open http://localhost:3000 and log in with `DASHBOARD_PASSWORD` from `advisor/.env.local`.
+
+## How to test
+
+```bash
+cd advisor
+npm test
+```
+
+`npm run typecheck` and `npm run build` complete the full check. For the live walkthrough, see [`docs/DEMO.md`](docs/DEMO.md).
+
+Secrets live in `advisor/.env.local` and `.env` (both gitignored). See `.env.example`.
