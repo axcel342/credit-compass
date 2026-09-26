@@ -20,6 +20,10 @@ describe("recapSelection", () => {
   it("leaves out kinds dismissed three times", () => {
     expect(recapSelection([f("a", 100, "high", { dismissCount: 3 })], { lastRecapAt: null, spendThisWeek: 1, spendLastWeek: 0 })).toEqual([]);
   });
+  it("leaves out a kind whose dismissals add up across findings", () => {
+    expect(recapSelection([f("a", 100, "high", { dismissCount: 2 }), f("b", 100, "high", { dismissCount: 1 })],
+      { lastRecapAt: null, spendThisWeek: 1, spendLastWeek: 0 })).toEqual([]);
+  });
 });
 
 describe("other gate rules", () => {

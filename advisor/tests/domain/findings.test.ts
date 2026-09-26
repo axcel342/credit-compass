@@ -40,4 +40,13 @@ describe("mergeFindings", () => {
     const [m] = mergeFindings([findings[0]], [prev]);
     expect(m).toMatchObject({ status: "dismissed", dismissCount: 1, firstSeen: "2026-09-27T00:00:00Z", lastSeen: findings[0].lastSeen });
   });
+  it("refreshes lastSeen when the finding changed", () => {
+    const prev = { ...findings[0], creditsAtStake: 10, lastSeen: "2026-09-27T00:00:00Z", firstSeen: "2026-09-27T00:00:00Z" };
+    const fresh = { ...findings[0], creditsAtStake: 20 };
+    expect(mergeFindings([fresh], [prev])[0]).toMatchObject({ creditsAtStake: 20, lastSeen: fresh.lastSeen });
+  });
+  it("keeps lastSeen while the finding is unchanged", () => {
+    const prev = { ...findings[0], lastSeen: "2026-09-27T00:00:00Z", firstSeen: "2026-09-27T00:00:00Z" };
+    expect(mergeFindings([findings[0]], [prev])[0].lastSeen).toBe("2026-09-27T00:00:00Z");
+  });
 });

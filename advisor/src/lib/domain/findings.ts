@@ -95,10 +95,16 @@ export function generateFindings(ctx: FindingContext): Finding[] {
   return out;
 }
 
+function signature(f: Finding): string {
+  return JSON.stringify([f.title, f.body, JSON.stringify(f.evidence), f.creditsAtStake, f.confidence, f.action, f.actionPayload, f.status]);
+}
+
 export function mergeFindings(fresh: Finding[], existing: Finding[]): Finding[] {
   const prev = new Map(existing.map((f) => [f.extId, f]));
   return fresh.map((f) => {
     const p = prev.get(f.extId);
-    return p ? { ...f, status: p.status, snoozedUntil: p.snoozedUntil, dismissCount: p.dismissCount, firstSeen: p.firstSeen, lastNotifiedStake: p.lastNotifiedStake, inRecap: p.inRecap } : f;
+    if (!p) return f;
+    const merged = { ...f, status: p.status, snoozedUntil: p.snoozedUntil, dismissCount: p.dismissCount, firstSeen: p.firstSeen, lastNotifiedStake: p.lastNotifiedStake, inRecap: p.inRecap };
+    return signature(merged) === signature(p) ? { ...merged, lastSeen: p.lastSeen } : merged;
   });
 }

@@ -12,7 +12,9 @@ function visible(f: Finding, now: number): boolean {
 
 export function recapSelection(findings: Finding[], o: { lastRecapAt: string | null; spendThisWeek: number; spendLastWeek: number }): Finding[] {
   const now = Date.now();
-  const eligible = findings.filter((f) => visible(f, now) && f.confidence !== "low" && f.dismissCount < 3);
+  const dismissalsByKind = new Map<string, number>();
+  for (const f of findings) dismissalsByKind.set(f.kind, (dismissalsByKind.get(f.kind) ?? 0) + f.dismissCount);
+  const eligible = findings.filter((f) => visible(f, now) && f.confidence !== "low" && (dismissalsByKind.get(f.kind) ?? 0) < 3);
   const since = o.lastRecapAt ? toMs(o.lastRecapAt) : -Infinity;
   const changed = eligible.some((f) => toMs(f.firstSeen) > since || toMs(f.lastSeen) > since);
   const spendMove = Math.abs(o.spendThisWeek - o.spendLastWeek) / Math.max(o.spendLastWeek, 1);
