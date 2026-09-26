@@ -41,14 +41,14 @@ graph8's credit ledger records only service, amount and time. Its analytics show
 - **Explain in plain language.** The user likes visual mockups for UI decisions.
 - **Don't delete things you didn't create.** Ask about the ten "Revenue-…" lists (ids 3–12); they appeared after read-only calls and we didn't create them.
 - **Confirm before outward-facing actions:**
-  - Deploying under the Vercel account the CLI is logged into (`axcel342`); **not yet confirmed as the user's**
+  - Deploying to Vercel (account `axcel342` is confirmed as the user's; still ask before the first deploy and before creating the project)
   - Adding Upstash Redis
   - Posting in graph8 Work channels other than `#roi-advisor`
   - Registering MCP servers in graph8
 
 ## 4. Environment and access
 
-- **Machine:** Linux arm64, Node 22.23, npm 10.9, git 2.52, Vercel CLI 60.1.3 (logged in as `axcel342`, account unconfirmed).
+- **Machine:** Linux arm64, Node 22.23, npm 10.9, git 2.52, Vercel CLI 60.1.3 (logged in as `axcel342`, confirmed as the user's account). GitHub CLI `gh` is logged in as the same account.
 - **Python helpers:** the CLI `g8` lives at `/home/opc/.local/bin/g8` (package `g8-mcp-server` 0.79.0). Its Python environment has the `mcp` client: `/home/opc/.local/share/uv/tools/g8-mcp-server/bin/python`.
 - **Secrets:** `/home/opc/graph8/.env` (gitignored): `G8_API_KEY`, `G8_ORG_ID`, `G8_PROBE_WEBHOOK_SECRET`. Never commit or print them. `.env.example` lists every variable the app needs.
 - **API base:** `https://be.graph8.com/api/v1`. Python's `urllib` is blocked by Cloudflare (error 1010); use Node, curl or the SDK.
@@ -90,7 +90,7 @@ Recomputed from the committed fixtures (`research/fixtures/ledger/ledger-2026-09
 
 ## 7. Pending decisions for the user
 
-1. Is the Vercel account `axcel342` theirs? This must be answered before the first deploy.
+1. ~~Is the Vercel account `axcel342` theirs?~~ **Answered 2026-09-26: yes.** The code lives in the private GitHub repo `axcel342/credit-compass`. Still ask before creating the Vercel project and deploying.
 2. May we add Upstash Redis (free tier) for MCP SSE? If not, graph8 can't call our MCP server; outside agents still can.
 3. Credit budget for the build (not set; design validation had a 500 cap).
 4. What to do with the ten "Revenue-…" lists we didn't create.

@@ -452,7 +452,7 @@ Created during design (tagged `[sim]` or `[audit-probe]` unless noted):
 |---|---|---|
 | 1 | Engagement webhook `data` fields (contact, sequence, step, channel?) | Build task 2 captures real payloads; the simulator mirrors them |
 | 2 | Can graph8 call an external MCP tool? | Build task 3; fallback defined (§6.4) |
-| 3 | Vercel account `axcel342`: is it the user's? | Confirm before the first deploy |
+| 3 | Vercel account `axcel342`: is it the user's? | **Answered: yes** (also owns the private GitHub repo `axcel342/credit-compass`) |
 | 4 | Upstash Redis for SSE | User approval; without it, no in-graph8 MCP |
 | 5 | Time-window matching for onboarding research | Label it `time_window` with medium confidence; improve if graph8 exposes per-document charges |
 | 6 | graph8 AI outage (skills, agent chat, App Page generation) | The core doesn't depend on it; App Page stays a stretch goal |

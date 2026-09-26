@@ -543,7 +543,7 @@ export async function POST(req: Request): Promise<Response> {
 }
 ```
 
-- [ ] **Step 6: Ask the user before deploying.** Ask: "The Vercel CLI here is logged in as `axcel342`. Is that your account, and may I create a Vercel project named `graph8-roi-advisor` under it?" Continue only after they say yes. If they say no, ask them to run `! npx vercel login` with their own account.
+- [ ] **Step 6: Ask the user before deploying.** The user confirmed `axcel342` is their account. Still ask: "May I create the Vercel project `graph8-roi-advisor` under axcel342 and deploy it?" Continue only after they say yes.
 
 - [ ] **Step 7: Deploy a preview and set env vars**
 
