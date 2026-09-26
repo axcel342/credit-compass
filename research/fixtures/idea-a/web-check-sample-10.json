@@ -1,0 +1,306 @@
+{
+ "flagged": [
+  {
+   "id": 2904639,
+   "name": "Jupiter Lovejoy",
+   "first": "Jupiter",
+   "last": "Lovejoy",
+   "title": "co-founder",
+   "email": "jlovejoy@markitecture.com",
+   "linkedin": "linkedin.com/in/jupiterlovejoy",
+   "crm_company": "markitecture",
+   "crm_domain": "",
+   "index_company": "",
+   "index_domain": "jupiterlovejoy.com",
+   "verify": {
+    "status": "invalid_mx",
+    "sub_status": "invalid_mx_records",
+    "is_valid": false,
+    "mx_domain": "markitecture.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "jupiterlovejoy.com",
+    "work_email": "",
+    "title": "",
+    "job_start": "2001-09-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-08-21"
+   },
+   "crm_row_id": 189
+  },
+  {
+   "id": 3419316,
+   "name": "Laura Mills",
+   "first": "Laura",
+   "last": "Mills",
+   "title": "president founder",
+   "email": "laura.mills@marriott.com",
+   "linkedin": "linkedin.com/in/laura-m-b244b345",
+   "crm_company": "mila",
+   "crm_domain": "milasw.com",
+   "index_company": "MiLa Corporation",
+   "index_domain": "mila.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "marriott.com"
+   },
+   "lookup": {
+    "company": "MiLa Corporation",
+    "domain": "mila.com",
+    "work_email": "laura.mills@marriott.com",
+    "title": "President / Founder",
+    "job_start": "2011-04-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-06"
+   },
+   "crm_row_id": 231
+  },
+  {
+   "id": 2015039,
+   "name": "Ji Bowlus",
+   "first": "Ji",
+   "last": "Bowlus",
+   "title": "founder chief executive officer",
+   "email": "jbowlus@g-omedia.com",
+   "linkedin": "linkedin.com/in/jibowlus",
+   "crm_company": "hello hapi",
+   "crm_domain": "hellohapi.com",
+   "index_company": "",
+   "index_domain": "gamesbeat.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "g-omedia.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "gamesbeat.com",
+    "work_email": "jbowlus@g-omedia.com",
+    "title": "",
+    "job_start": "2019-04-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-03"
+   },
+   "crm_row_id": 132
+  },
+  {
+   "id": 2817663,
+   "name": "Akmal Ali",
+   "first": "Akmal",
+   "last": "Ali",
+   "title": "founder chief executive officer",
+   "email": "akmal.ali@alumarisk.com",
+   "linkedin": "linkedin.com/in/akmal-ali-87578211",
+   "crm_company": "inorbit.ai",
+   "crm_domain": "inorbit.ai",
+   "index_company": "inOrbit",
+   "index_domain": "securityinorbit.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "alumarisk.com"
+   },
+   "lookup": {
+    "company": "inOrbit",
+    "domain": "securityinorbit.com",
+    "work_email": "akmal@securityinorbit.com",
+    "title": "Founder & Chief Executive Officer",
+    "job_start": "2022-04-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2026-08-09"
+   },
+   "crm_row_id": 184
+  },
+  {
+   "id": 1088906,
+   "name": "Scott Zeller",
+   "first": "Scott",
+   "last": "Zeller",
+   "title": "co-founder general counsel vice president business development",
+   "email": "scott.zeller@rallyme.com",
+   "linkedin": "linkedin.com/in/scott-zeller-39b6294",
+   "crm_company": "startup ready",
+   "crm_domain": "startupready.com",
+   "index_company": "Great Coach, Inc.",
+   "index_domain": "greatcoach.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "rallyme.com"
+   },
+   "lookup": {
+    "company": "Great Coach, Inc.",
+    "domain": "greatcoach.com",
+    "work_email": "scott.zeller@greatcoach.com",
+    "title": "Co-founder, General Counsel, Vp Of Business Development",
+    "job_start": "2018-02-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-05-07"
+   },
+   "crm_row_id": 66
+  }
+ ],
+ "consistent": [
+  {
+   "id": 3060033,
+   "name": "Rafael Babilonia",
+   "first": "Rafael",
+   "last": "Babilonia",
+   "title": "founder chief executive officer",
+   "email": "rafael@rbvaluesource.com",
+   "linkedin": "linkedin.com/in/rafael-babilonia",
+   "crm_company": "rb valuesource",
+   "crm_domain": "rbvaluesource.com",
+   "index_company": "",
+   "index_domain": "rbvaluesource.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "rbvaluesource.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "rbvaluesource.com",
+    "work_email": "",
+    "title": "",
+    "job_start": "2024-04-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-06-27"
+   },
+   "crm_row_id": 198
+  },
+  {
+   "id": 1152615,
+   "name": "Yann Phung",
+   "first": "Yann",
+   "last": "Phung",
+   "title": "co-founder vice president operations",
+   "email": "yphung@paylease.com",
+   "linkedin": "linkedin.com/in/yann-phung-0874808",
+   "crm_company": "paylease",
+   "crm_domain": "paylease.com",
+   "index_company": "PayLease",
+   "index_domain": "paylease.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "paylease.com"
+   },
+   "lookup": {
+    "company": "PayLease",
+    "domain": "paylease.com",
+    "work_email": "pyann@paylease.com",
+    "title": "",
+    "job_start": "2003-05-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-08-08"
+   },
+   "crm_row_id": 77
+  },
+  {
+   "id": 385846,
+   "name": "James Mayer",
+   "first": "James",
+   "last": "Mayer",
+   "title": "founder",
+   "email": "jamesmayer@mayerbranding.com",
+   "linkedin": "linkedin.com/in/james-mayer-b4740023",
+   "crm_company": "mayer branding",
+   "crm_domain": "mayerbranding.com",
+   "index_company": "Mayer Branding",
+   "index_domain": "mayerbranding.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "mayerbranding.com"
+   },
+   "lookup": {
+    "company": "Mayer Branding",
+    "domain": "mayerbranding.com",
+    "work_email": "",
+    "title": "Founder",
+    "job_start": "2015-06-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-07-17"
+   },
+   "crm_row_id": 21
+  },
+  {
+   "id": 2514933,
+   "name": "Mike Goff",
+   "first": "Mike",
+   "last": "Goff",
+   "title": "founder + principal",
+   "email": "mgoff@goffmarketing.com",
+   "linkedin": "linkedin.com/in/rmgoff",
+   "crm_company": "goff + marketing",
+   "crm_domain": "goffmarketing.com",
+   "index_company": "",
+   "index_domain": "goffmarketing.com",
+   "verify": {
+    "status": "antispam_system",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "goffmarketing.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "goffmarketing.com",
+    "work_email": "mgoff@goffmarketing.com",
+    "title": "",
+    "job_start": "2016-12-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-07-11"
+   },
+   "crm_row_id": 164
+  },
+  {
+   "id": 2570525,
+   "name": "Ramasubbu Venkatesh",
+   "first": "Ramasubbu",
+   "last": "Venkatesh",
+   "title": "co-founder chief executive officer",
+   "email": "venky@anvai.ai",
+   "linkedin": "linkedin.com/in/ramasubbu-venkatesh",
+   "crm_company": "anvai",
+   "crm_domain": "anvai.ai",
+   "index_company": "",
+   "index_domain": "anvai.ai",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "anvai.ai"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "anvai.ai",
+    "work_email": "ramasubbu.venkatesh@anvai.ai",
+    "title": "",
+    "job_start": "2021-01-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-18"
+   },
+   "crm_row_id": 169
+  }
+ ]
+}

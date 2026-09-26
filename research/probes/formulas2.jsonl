@@ -1,0 +1,4 @@
+{"formula": "return {{udo_roi_fit_11e946f0}} === 'high';"}
+{"formula": "const f = ({{udo_roi_fit_11e946f0}} || ''); return f !== 'low';"}
+{"formula": "({{udo_roi_fit_11e946f0}} || '') !== 'low'"}
+{"formula": "const f = ({{udo_roi_fit_11e946f0}} || '').toLowerCase(); return f.includes('high');"}

@@ -1,0 +1,13 @@
+import { g8 } from '@graph8/sdk';
+import { createHmac } from 'crypto';
+g8.init({ apiKey: process.env.G8_API_KEY });
+const secret = process.env.WH_SECRET;
+const body = JSON.stringify({ id: 'evt_sim_1', event: 'engagement.email_replied', timestamp: new Date().toISOString(), org_id: 'org_5e2170609156', data: { contact_id: 81, sequence_id: 'seq_sim', step: 2, simulated: true } });
+const ts = Math.floor(Date.now() / 1000);
+const sig = 'sha256=' + createHmac('sha256', secret).update(`${ts}.${body}`).digest('hex');
+const t = (name, fn) => { try { const e = fn(); console.log('PASS', name, '->', e.event); } catch (e) { console.log('REJECT', name, '->', e.name, e.message); } };
+t('valid signature', () => g8.webhooks.constructEvent(body, sig, ts, secret, { toleranceSeconds: 300 }));
+t('tampered body', () => g8.webhooks.constructEvent(body.replace('"step":2', '"step":3'), sig, ts, secret, { toleranceSeconds: 300 }));
+t('stale timestamp', () => g8.webhooks.constructEvent(body, 'sha256=' + createHmac('sha256', secret).update(`${ts - 900}.${body}`).digest('hex'), ts - 900, secret, { toleranceSeconds: 300 }));
+t('wrong secret', () => g8.webhooks.constructEvent(body, sig, ts, 'not-the-secret', { toleranceSeconds: 300 }));
+console.log('known event types in SDK:', g8.webhooks.knownEvents.length, '| includes engagement.email_replied:', g8.webhooks.knownEvents.includes('engagement.email_replied'));

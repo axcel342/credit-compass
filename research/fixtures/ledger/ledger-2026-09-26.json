@@ -1,0 +1,1442 @@
+[
+ {
+  "id": "53462eb0-f575-4e28-a042-e91e71474342",
+  "type": "one_time",
+  "amount": 2500.0,
+  "service": null,
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Welcome credits: 2500",
+  "created_at": "2026-09-26 08:57:01.257715+00:00"
+ },
+ {
+  "id": "f9b18d7f-fb48-4b51-a230-660a5f7a8f3a",
+  "type": "usage",
+  "amount": -12.0,
+  "service": "brand_snapshot_classify",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:7116, out:666)",
+  "created_at": "2026-09-26 09:03:39.508005+00:00"
+ },
+ {
+  "id": "6d31ff97-47fc-417f-a0bb-d67fcc3bc370",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:31627, out:4956)",
+  "created_at": "2026-09-26 09:11:51.120375+00:00"
+ },
+ {
+  "id": "8856b054-086e-4814-83e6-1007e0dc54ce",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:34533, out:4847)",
+  "created_at": "2026-09-26 09:23:06.985798+00:00"
+ },
+ {
+  "id": "13d0a44e-168f-4146-8d05-9dde515916e4",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:2650, out:822)",
+  "created_at": "2026-09-26 09:23:24.247768+00:00"
+ },
+ {
+  "id": "9c2ca1ec-4815-4a39-9d0e-1416bee8f58c",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35846, out:8000)",
+  "created_at": "2026-09-26 09:24:08.356066+00:00"
+ },
+ {
+  "id": "2cfce55b-860e-45ac-86a1-b7b11db878a1",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35604, out:8000)",
+  "created_at": "2026-09-26 09:24:30.951971+00:00"
+ },
+ {
+  "id": "c3afafe9-8d96-4b53-a434-d18f1bef892d",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3250, out:4000)",
+  "created_at": "2026-09-26 09:25:21.619407+00:00"
+ },
+ {
+  "id": "1eda05b9-646d-4537-be02-1711a0e2c646",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35003, out:7833)",
+  "created_at": "2026-09-26 09:25:40.333721+00:00"
+ },
+ {
+  "id": "5be9a03f-c847-407b-8c5d-d23a6426a1ca",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35604, out:8000)",
+  "created_at": "2026-09-26 09:26:19.650142+00:00"
+ },
+ {
+  "id": "d072173d-1452-45ff-b4b1-5fc388b86bd2",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:36532, out:8000)",
+  "created_at": "2026-09-26 09:26:34.114521+00:00"
+ },
+ {
+  "id": "95b27566-3327-4758-a333-2dcb5774b694",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35924, out:8000)",
+  "created_at": "2026-09-26 09:26:37.995108+00:00"
+ },
+ {
+  "id": "f724ce98-fb47-403e-81ac-5bbfcc680875",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35666, out:8000)",
+  "created_at": "2026-09-26 09:26:39.354734+00:00"
+ },
+ {
+  "id": "52fbf798-70be-492b-af8d-4aa67b6bf5cd",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3165, out:3138)",
+  "created_at": "2026-09-26 09:27:31.633383+00:00"
+ },
+ {
+  "id": "3174c720-20ea-44f0-86cf-508d66d57ff2",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35846, out:8000)",
+  "created_at": "2026-09-26 09:28:01.849705+00:00"
+ },
+ {
+  "id": "d93c5243-2f1f-43ac-a756-e4a8a19e4e41",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3250, out:4000)",
+  "created_at": "2026-09-26 09:29:12.590509+00:00"
+ },
+ {
+  "id": "d0edfa04-ebdd-4f57-a49d-ec58c8b11950",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "image_generation",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: image_generation",
+  "created_at": "2026-09-26 09:31:18.895197+00:00"
+ },
+ {
+  "id": "6982e8ce-fdea-48d7-aba8-6688281654e5",
+  "type": "usage",
+  "amount": -12.0,
+  "service": "brand_snapshot_classify",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:65312, out:6282)",
+  "created_at": "2026-09-26 09:31:26.510080+00:00"
+ },
+ {
+  "id": "f8c55dba-76d0-43c5-a173-82d8bdf1b4c9",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "image_generation",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: image_generation",
+  "created_at": "2026-09-26 09:31:40.018952+00:00"
+ },
+ {
+  "id": "fb7785a2-5cac-4dab-ae6e-74187a48fad4",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35846, out:8000)",
+  "created_at": "2026-09-26 09:31:43.521723+00:00"
+ },
+ {
+  "id": "bbe836f0-f5d7-426a-ac33-7104ce021a59",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "image_generation",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: image_generation",
+  "created_at": "2026-09-26 09:32:07.669824+00:00"
+ },
+ {
+  "id": "a5af492d-096e-47cd-83eb-577bc9381717",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "image_generation",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: image_generation",
+  "created_at": "2026-09-26 09:32:42.510580+00:00"
+ },
+ {
+  "id": "2a1e6c64-a0e2-4a40-b4cd-a54c107bca89",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "image_generation",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: image_generation",
+  "created_at": "2026-09-26 09:33:11.947296+00:00"
+ },
+ {
+  "id": "7a5e0813-f619-4dca-9d96-a33278e4637d",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35354, out:8000)",
+  "created_at": "2026-09-26 09:34:35.574006+00:00"
+ },
+ {
+  "id": "6eddefc2-18be-41cd-ae40-f70a6ef4f537",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:35385, out:4458)",
+  "created_at": "2026-09-26 09:45:34.394935+00:00"
+ },
+ {
+  "id": "3998dd25-a306-4b82-84ed-bb2111db9184",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:42481, out:8000)",
+  "created_at": "2026-09-26 09:46:36.416212+00:00"
+ },
+ {
+  "id": "0e4cdce8-768e-41e8-993a-ba59507671ca",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:10660, out:8000)",
+  "created_at": "2026-09-26 09:46:45.711017+00:00"
+ },
+ {
+  "id": "14af4935-c8da-4d0e-979d-947990ec95de",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:42313, out:8000)",
+  "created_at": "2026-09-26 09:46:47.813350+00:00"
+ },
+ {
+  "id": "0ff5febe-c73b-4055-9626-7dac5e9bf019",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:42638, out:8000)",
+  "created_at": "2026-09-26 09:46:58.512526+00:00"
+ },
+ {
+  "id": "2a788749-35a5-4946-b6b4-b1c9dad90267",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:39179, out:8000)",
+  "created_at": "2026-09-26 09:47:00.373164+00:00"
+ },
+ {
+  "id": "1e1f6d11-63ce-45af-b9da-f99066d50caf",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:42524, out:8000)",
+  "created_at": "2026-09-26 09:47:04.164007+00:00"
+ },
+ {
+  "id": "823278ef-eec0-46a2-bfad-95f2e969acb4",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3544, out:1421)",
+  "created_at": "2026-09-26 09:47:19.680749+00:00"
+ },
+ {
+  "id": "70696d05-dd64-480d-8fe1-f858130c8bc4",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3354, out:1414)",
+  "created_at": "2026-09-26 09:47:35.841210+00:00"
+ },
+ {
+  "id": "68cb1080-4b1d-4a85-b883-bde211fe8004",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:5932, out:3798)",
+  "created_at": "2026-09-26 09:48:04.735971+00:00"
+ },
+ {
+  "id": "f83abf36-404b-49eb-9ebc-d2818ec26523",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:10660, out:7011)",
+  "created_at": "2026-09-26 09:50:42.831065+00:00"
+ },
+ {
+  "id": "14e8e3d9-afb0-4393-a5b6-f42dd29001bf",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:69718, out:7330)",
+  "created_at": "2026-09-26 09:54:45.765963+00:00"
+ },
+ {
+  "id": "fc1f99f6-b3c5-4558-b52b-a7ce634df59b",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:38770, out:8000)",
+  "created_at": "2026-09-26 09:55:16.908915+00:00"
+ },
+ {
+  "id": "3b2d7985-6d81-4687-883b-3a145f7d8382",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:38745, out:8000)",
+  "created_at": "2026-09-26 09:55:19.708053+00:00"
+ },
+ {
+  "id": "13fb7e01-c698-4fc8-9108-f3751286a4d4",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:38505, out:8000)",
+  "created_at": "2026-09-26 09:55:28.787498+00:00"
+ },
+ {
+  "id": "caa27f78-c8db-42ac-bb99-acfaa88b42c2",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:25337, out:8000)",
+  "created_at": "2026-09-26 09:55:33.086721+00:00"
+ },
+ {
+  "id": "3793aa10-695c-4ced-b103-ecf85d359993",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:38867, out:8000)",
+  "created_at": "2026-09-26 09:55:41.648881+00:00"
+ },
+ {
+  "id": "fd1ebe32-bf4c-42f2-ae0b-eb9c98d4e7ac",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3082, out:1730)",
+  "created_at": "2026-09-26 09:55:49.264598+00:00"
+ },
+ {
+  "id": "4308c084-0094-494b-a674-c8792d9b1c53",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:3261, out:1165)",
+  "created_at": "2026-09-26 09:56:07.507101+00:00"
+ },
+ {
+  "id": "517399ba-c249-4b80-ad4f-bbed12cf9d5c",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:33303, out:8000)",
+  "created_at": "2026-09-26 10:02:03.741204+00:00"
+ },
+ {
+  "id": "254943ec-c400-4434-abdc-db259188598b",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:33303, out:8000)",
+  "created_at": "2026-09-26 10:02:39.398136+00:00"
+ },
+ {
+  "id": "f3020807-5794-45da-a9c6-309d21c41bf3",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:781, out:3548)",
+  "created_at": "2026-09-26 10:04:51.106415+00:00"
+ },
+ {
+  "id": "a0d30e86-cbe7-402f-bdad-831dd63278b8",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:43515, out:8000)",
+  "created_at": "2026-09-26 10:06:24.760328+00:00"
+ },
+ {
+  "id": "6d02315c-be29-4e0b-ad93-1426ed9583a9",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:19874, out:8000)",
+  "created_at": "2026-09-26 10:06:48.864691+00:00"
+ },
+ {
+  "id": "a72ba90d-8afb-4803-b917-e6c9931d7e49",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:44313, out:8000)",
+  "created_at": "2026-09-26 10:06:52.740404+00:00"
+ },
+ {
+  "id": "deb903a4-a5c0-482f-8fc3-6865e869ef6c",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:22023, out:8000)",
+  "created_at": "2026-09-26 10:06:56.735442+00:00"
+ },
+ {
+  "id": "f3f5bf9c-7527-4d4b-9d97-3f13312c0f94",
+  "type": "usage",
+  "amount": -100.0,
+  "service": "landing_page_template",
+  "quantity": null,
+  "llm_tier": "g8_t3",
+  "description": "LLM charge: g8_t3 (in:92094, out:12713)",
+  "created_at": "2026-09-26 10:20:06.514845+00:00"
+ },
+ {
+  "id": "50bcd214-efbe-433b-aa32-efb344674a91",
+  "type": "usage",
+  "amount": -20.0,
+  "service": "studio_global",
+  "quantity": null,
+  "llm_tier": "g8_t2",
+  "description": "LLM charge: g8_t2 (in:781, out:2037)",
+  "created_at": "2026-09-26 10:56:39.883351+00:00"
+ },
+ {
+  "id": "77ab72ea-d1a7-4d7e-b2d1-0b3822f900af",
+  "type": "refund",
+  "amount": 7500.0,
+  "service": null,
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Manual adjustment: hackathon-2026-09-26: increase total org grant to 10000 credits; user requested",
+  "created_at": "2026-09-26 11:27:59.127612+00:00"
+ },
+ {
+  "id": "da97ff9b-9d5f-4067-b5b9-0d5727107bab",
+  "type": "usage",
+  "amount": -7.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:190, out:589)",
+  "created_at": "2026-09-26 12:50:55.621872+00:00"
+ },
+ {
+  "id": "501bb775-e401-4542-8bae-7e851c0d0a3a",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:381)",
+  "created_at": "2026-09-26 12:51:34.570944+00:00"
+ },
+ {
+  "id": "0af03241-bc1c-4da6-99a7-d774d93c060d",
+  "type": "usage",
+  "amount": -7.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:191, out:583)",
+  "created_at": "2026-09-26 12:51:35.563330+00:00"
+ },
+ {
+  "id": "4ba836a4-f9b7-4d63-8b2c-88a9d263a008",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:503)",
+  "created_at": "2026-09-26 12:51:35.904862+00:00"
+ },
+ {
+  "id": "56b8e049-1b09-4a5e-869a-52cd9be632ad",
+  "type": "usage",
+  "amount": -8.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:721)",
+  "created_at": "2026-09-26 12:51:37.247021+00:00"
+ },
+ {
+  "id": "e20c279d-0349-42f3-b9dd-124a20885c4f",
+  "type": "usage",
+  "amount": -8.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:191, out:691)",
+  "created_at": "2026-09-26 12:51:37.428682+00:00"
+ },
+ {
+  "id": "14eb9288-cad7-4017-9ec9-b5b6c84f4423",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:186, out:433)",
+  "created_at": "2026-09-26 12:51:45.692412+00:00"
+ },
+ {
+  "id": "10b40f18-0399-4a07-b167-57b61e994281",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:188, out:473)",
+  "created_at": "2026-09-26 12:51:46.401469+00:00"
+ },
+ {
+  "id": "385e8fe5-6bab-4b6c-a2a0-a7c92fa7daea",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:217, out:558)",
+  "created_at": "2026-09-26 12:51:46.746659+00:00"
+ },
+ {
+  "id": "88595fe3-9764-45d1-880e-2b00fb0e5243",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:215, out:567)",
+  "created_at": "2026-09-26 12:51:47.113379+00:00"
+ },
+ {
+  "id": "a89bc65c-ac3d-481e-87c3-a70363f7ea19",
+  "type": "usage",
+  "amount": -7.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:214, out:594)",
+  "created_at": "2026-09-26 12:51:48.331409+00:00"
+ },
+ {
+  "id": "00aeb67f-8091-455e-ba8c-982c0712534b",
+  "type": "usage",
+  "amount": -5.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:443)",
+  "created_at": "2026-09-26 13:05:56.722590+00:00"
+ },
+ {
+  "id": "64a8faac-6d7b-4c9a-87d3-5efe5756a975",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:531)",
+  "created_at": "2026-09-26 13:06:13.968531+00:00"
+ },
+ {
+  "id": "fe413a71-8771-466b-8735-7e3e53f90529",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:230, out:508)",
+  "created_at": "2026-09-26 13:07:46.963942+00:00"
+ },
+ {
+  "id": "eca32823-2965-4215-b565-69d8061aecdb",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:38:57.236906+00:00"
+ },
+ {
+  "id": "5b57be08-f8c9-45e9-9399-13387ba9616b",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:24.163084+00:00"
+ },
+ {
+  "id": "7fb8a8f6-b8c0-4583-80f7-5c3231bd802e",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:29.878062+00:00"
+ },
+ {
+  "id": "62c3e960-92d5-45ce-a564-705eaab334cf",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:31.429326+00:00"
+ },
+ {
+  "id": "2833f973-79e0-457c-b1c5-9459b31d731b",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:33.401146+00:00"
+ },
+ {
+  "id": "6aa05395-ef1a-4edc-a562-df3c626d163f",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:34.814339+00:00"
+ },
+ {
+  "id": "bc8fba5c-a194-456f-8ca4-38ebb4aa92e8",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:38.277356+00:00"
+ },
+ {
+  "id": "6447eb85-1aa9-4145-94f3-8f9e4c296d7c",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:40.185064+00:00"
+ },
+ {
+  "id": "3190b48c-26ab-4b2e-958e-06b4d8a8daa4",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:41.386091+00:00"
+ },
+ {
+  "id": "9c5e95d8-c7b8-4df2-a04c-920261ccb202",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:48.053765+00:00"
+ },
+ {
+  "id": "4f5ba088-24e7-4e68-81b9-6119aec89d2a",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:49.483301+00:00"
+ },
+ {
+  "id": "88914769-9412-4f2b-941d-bade127f728f",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:50.173732+00:00"
+ },
+ {
+  "id": "0cbc41d7-7d09-4666-b1e5-9f142c21ba01",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:52.001087+00:00"
+ },
+ {
+  "id": "34386208-55c0-4e42-8503-3fc5c7743450",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:39:55.108119+00:00"
+ },
+ {
+  "id": "50c10cb0-4dc2-434c-bd15-699b8d348106",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:00.800282+00:00"
+ },
+ {
+  "id": "5193b5be-b6e3-4424-bd22-09442ab7f87f",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:02.724037+00:00"
+ },
+ {
+  "id": "ef599ef2-2f0c-4699-98ec-011fe41de31e",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:05.457850+00:00"
+ },
+ {
+  "id": "5fa53995-82a2-46f1-945f-c0c368af4783",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:08.539073+00:00"
+ },
+ {
+  "id": "c6da3604-a770-4754-ba3f-37ba88ee1aef",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:10.728817+00:00"
+ },
+ {
+  "id": "f5fd1457-7fb7-4c9c-b86e-e13a3f427dae",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:12.720872+00:00"
+ },
+ {
+  "id": "ebc1a004-7e44-499f-acd1-a8a4c2c9b861",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:15.017877+00:00"
+ },
+ {
+  "id": "b9aff0a3-dd09-430c-8f68-0bff690a9130",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:16.693057+00:00"
+ },
+ {
+  "id": "efe1892d-42fc-4df9-8f2c-38002f2ea178",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:18.688906+00:00"
+ },
+ {
+  "id": "a4fa0362-9e27-4bb1-a791-c7df98dfc0ab",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:21.308991+00:00"
+ },
+ {
+  "id": "ef30f237-9ad2-43f1-84a4-b11b65fe4b57",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:27.332161+00:00"
+ },
+ {
+  "id": "70ef0809-f8a9-4245-b8a1-2ba85f92d84e",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:29.243776+00:00"
+ },
+ {
+  "id": "dc4cb6d3-a7a9-460d-862f-3974a14d0176",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:31.021525+00:00"
+ },
+ {
+  "id": "676be1f2-e82f-4e49-bbdd-b938e85fb387",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:32.775951+00:00"
+ },
+ {
+  "id": "4db9bffc-892b-46d2-8821-7a7f3f68f8f0",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:35.099098+00:00"
+ },
+ {
+  "id": "92cdad3b-9128-41da-9dc9-2432c2e15129",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:39.707387+00:00"
+ },
+ {
+  "id": "2182eb4d-d9bd-4e80-9cf4-49af5624e5a2",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:42.043211+00:00"
+ },
+ {
+  "id": "bce1cabc-625a-47d0-beb3-905ebdeb30db",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:43.512192+00:00"
+ },
+ {
+  "id": "f3236fab-be40-4367-bc6a-e960140dacd2",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:45.610105+00:00"
+ },
+ {
+  "id": "a1d24b65-4a6c-40e0-9fa0-35cb0918598a",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:51.105112+00:00"
+ },
+ {
+  "id": "6505c119-e172-40ef-b2eb-3e9ced798a5b",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:53.670180+00:00"
+ },
+ {
+  "id": "851c6202-265b-4dfa-b6ab-4089e9ae0bbe",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:57.166897+00:00"
+ },
+ {
+  "id": "b1818f2b-090d-48fd-99f7-62f101cee639",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:58.384199+00:00"
+ },
+ {
+  "id": "bcc197d7-9758-44d8-b8cd-bfe9557025b0",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:40:59.201601+00:00"
+ },
+ {
+  "id": "c4c9493f-9e98-4049-a92c-550968bae1e2",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:41:01.363049+00:00"
+ },
+ {
+  "id": "eae5a085-efc7-419f-ae09-9933f207ae3e",
+  "type": "usage",
+  "amount": -1.0,
+  "service": "email_verification",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: email_verification",
+  "created_at": "2026-09-26 13:41:06.919164+00:00"
+ },
+ {
+  "id": "8eb87971-0d4d-445c-be5f-285d618d82cc",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:07:18.659961+00:00"
+ },
+ {
+  "id": "c5befa7b-0e54-416f-ae4c-591ba3d1f127",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:07:33.909889+00:00"
+ },
+ {
+  "id": "4e7a5523-b407-4183-8b95-5281c750e55a",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:08:59.825589+00:00"
+ },
+ {
+  "id": "a00df612-d93a-4d43-8048-05112e60c2ce",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:09:11.214646+00:00"
+ },
+ {
+  "id": "ed30e1d8-b787-4393-a65a-1f61a711ac66",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:09:18.267502+00:00"
+ },
+ {
+  "id": "1bb179ce-7aab-4ca8-821d-cea8e0a7e816",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:09:19.534071+00:00"
+ },
+ {
+  "id": "e410a6c1-abcd-41ad-8aef-83501e3c0745",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:09:22.842318+00:00"
+ },
+ {
+  "id": "dc6e2e71-99be-4f20-ba3c-1d80d7ba9f1b",
+  "type": "usage",
+  "amount": -7.0,
+  "service": "waterfall_enrichment",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: waterfall_enrichment",
+  "created_at": "2026-09-26 14:09:22.911676+00:00"
+ },
+ {
+  "id": "54c0d588-4a62-4faa-95e1-63922eae5b7d",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:09:24.163800+00:00"
+ },
+ {
+  "id": "1ed3ed64-7270-4235-b9c1-35391078dc79",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:09:26.393163+00:00"
+ },
+ {
+  "id": "8681a469-81da-4f88-a7f2-45ef3c5ae163",
+  "type": "hold",
+  "amount": -7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 14:09:28.151974+00:00"
+ },
+ {
+  "id": "bd3b0417-1c36-4e0e-afa6-04410fbb64b1",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:09:30.811427+00:00"
+ },
+ {
+  "id": "3b9a4edd-45c8-487a-afeb-b6951c235aa7",
+  "type": "hold_release",
+  "amount": 7.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 14:09:31.290908+00:00"
+ },
+ {
+  "id": "d9ed784c-87ba-4842-8191-cf527747b1ac",
+  "type": "usage",
+  "amount": -7.0,
+  "service": "waterfall_enrichment",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: waterfall_enrichment",
+  "created_at": "2026-09-26 14:09:31.358066+00:00"
+ },
+ {
+  "id": "7cdb7a1e-1d88-4653-a5c0-4e40028cef32",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.050034+00:00"
+ },
+ {
+  "id": "52b185c4-e952-4cf1-a5d9-be159b1f35ec",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.053572+00:00"
+ },
+ {
+  "id": "4443d20f-89b3-4376-afe2-126b9d9e2648",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.300029+00:00"
+ },
+ {
+  "id": "1f43cd39-d530-4ca2-8574-47cf199ec9c7",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.365066+00:00"
+ },
+ {
+  "id": "b1a49f07-dab3-4984-83fc-ec354dbe211a",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.365977+00:00"
+ },
+ {
+  "id": "ef949ee4-874d-466b-9894-4accf05ef2a3",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.418961+00:00"
+ },
+ {
+  "id": "18d67424-cbc1-497f-a605-46d8a9eb90fe",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.427544+00:00"
+ },
+ {
+  "id": "3bb65512-2dce-45b6-baec-5752c8557b12",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.465730+00:00"
+ },
+ {
+  "id": "fda579fb-f3a6-4fc8-9ee0-fa9b7c49bd9a",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:21.571513+00:00"
+ },
+ {
+  "id": "b7e7927e-1b76-45e2-8244-fe6f8abb612b",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:22.317539+00:00"
+ },
+ {
+  "id": "bd2fb257-efe8-4d48-a2df-46638ddae567",
+  "type": "usage",
+  "amount": -30.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:22.443125+00:00"
+ },
+ {
+  "id": "32b77b9a-43cb-4278-8f6d-a243241d3b1f",
+  "type": "usage",
+  "amount": -2.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:52.176505+00:00"
+ },
+ {
+  "id": "da1577ea-0ab1-44c3-9d34-b9c8aa0a587b",
+  "type": "usage",
+  "amount": -3.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:34:52.264857+00:00"
+ },
+ {
+  "id": "407a4d33-fc42-4082-a9fe-45e6b1cc32e1",
+  "type": "usage",
+  "amount": -19.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:36:03.512359+00:00"
+ },
+ {
+  "id": "4cc9d8a8-5f4d-4499-b1da-29656f6af402",
+  "type": "usage",
+  "amount": -3.0,
+  "service": "ai_enrichment",
+  "quantity": null,
+  "llm_tier": null,
+  "description": "Credit charge: ai_enrichment",
+  "created_at": "2026-09-26 14:36:03.635295+00:00"
+ },
+ {
+  "id": "c1c7a356-5dc7-47b1-9065-da23a4935bfc",
+  "type": "usage",
+  "amount": -6.0,
+  "service": "voice_llm",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:216, out:558)",
+  "created_at": "2026-09-26 15:27:26.555624+00:00"
+ },
+ {
+  "id": "b639b800-d9ea-4b5c-a22d-c5da18214b8b",
+  "type": "hold",
+  "amount": -2.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 15:28:08.718918+00:00"
+ },
+ {
+  "id": "2820b40f-f1c7-4333-a8d4-05247f1e8379",
+  "type": "hold_release",
+  "amount": 2.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 15:28:19.637906+00:00"
+ },
+ {
+  "id": "f9514354-b752-46a1-82c2-3b93baf9f491",
+  "type": "hold",
+  "amount": -9.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Direct credit hold",
+  "created_at": "2026-09-26 15:35:41.699813+00:00"
+ },
+ {
+  "id": "76349a47-dbbb-4eea-974c-6bb2e02b84dc",
+  "type": "hold_release",
+  "amount": 9.0,
+  "service": null,
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Hold Release",
+  "created_at": "2026-09-26 15:36:56.027568+00:00"
+ },
+ {
+  "id": "6f40ad65-7fe9-416f-829a-d836fc99c658",
+  "type": "usage",
+  "amount": -3.0,
+  "service": "waterfall_enrichment",
+  "quantity": 1,
+  "llm_tier": null,
+  "description": "Credit charge: waterfall_enrichment",
+  "created_at": "2026-09-26 15:36:56.121247+00:00"
+ },
+ {
+  "id": "4ede3332-b83f-485d-86d6-00ab4744b69e",
+  "type": "usage",
+  "amount": -12.0,
+  "service": "studio_copilot",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:96626, out:78)",
+  "created_at": "2026-09-26 15:40:42.749984+00:00"
+ },
+ {
+  "id": "48300463-a65a-4a8e-a2cd-3dae95a5b865",
+  "type": "usage",
+  "amount": -12.0,
+  "service": "studio_copilot",
+  "quantity": null,
+  "llm_tier": "g8_t1",
+  "description": "LLM charge: g8_t1 (in:96861, out:389)",
+  "created_at": "2026-09-26 15:40:53.009415+00:00"
+ }
+]

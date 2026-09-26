@@ -1,0 +1,5 @@
+{"formula": "{{udo_roi_fit_11e946f0}} == \"high\""}
+{"formula": "udo_roi_fit_11e946f0 == 'high'"}
+{"formula": "{udo_roi_fit_11e946f0} == \"high\""}
+{"formula": "{{udo_roi_fit_11e946f0}} != \"low\""}
+{"formula": "{{CONTACT_SENIORITY_LEVEL}} == \"Vice President\""}

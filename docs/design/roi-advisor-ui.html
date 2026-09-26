@@ -1,0 +1,669 @@
+<title>graph8 ROI Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --panel:#FFFFFF; --panel-2:#EDF1F5; --ink:#131B23; --ink-2:#435060; --muted:#667382;
+  --line:#D6DDE5; --line-2:#E6EBF0;
+  --accent:#2350C8; --accent-ink:#FFFFFF; --accent-soft:#E2E9FB;
+  --series:#2a78d6; --series-soft:rgba(42,120,214,.13); --series-strong:#184f95; --series-weak:#86b6ef;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#E4F3E4; --warn-bg:#FDF3DA; --crit-bg:#FAE8E8;
+  --hatch:rgba(102,115,130,.20);
+  --shadow:0 1px 2px rgba(19,27,35,.06),0 4px 16px rgba(19,27,35,.05);
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D1318; --panel:#141C24; --panel-2:#1A242E; --ink:#E5EBF1; --ink-2:#B3BFCA; --muted:#8894A1;
+    --line:#29343F; --line-2:#212B35;
+    --accent:#86A4F4; --accent-ink:#0D1318; --accent-soft:#1D2944;
+    --series:#3987e5; --series-soft:rgba(57,135,229,.20); --series-strong:#86b6ef; --series-weak:#1c5cab;
+    --good-bg:#132C17; --warn-bg:#342A10; --crit-bg:#361B1B;
+    --hatch:rgba(136,148,161,.22);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1318; --panel:#141C24; --panel-2:#1A242E; --ink:#E5EBF1; --ink-2:#B3BFCA; --muted:#8894A1;
+  --line:#29343F; --line-2:#212B35;
+  --accent:#86A4F4; --accent-ink:#0D1318; --accent-soft:#1D2944;
+  --series:#3987e5; --series-soft:rgba(57,135,229,.20); --series-strong:#86b6ef; --series-weak:#1c5cab;
+  --good-bg:#132C17; --warn-bg:#342A10; --crit-bg:#361B1B;
+  --hatch:rgba(136,148,161,.22);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:28px 64px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(30px,4.2vw,44px);font-weight:700;line-height:1.05}
+h2{font-size:22px;font-weight:600}
+h3{font-size:15px;font-weight:600;letter-spacing:0}
+p{margin:0}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.lede{max-width:66ch;color:var(--ink-2);font-size:16px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* header */
+.intro{display:grid;gap:14px}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:13px;color:var(--ink-2)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;padding:1px 6px;border-radius:4px;line-height:1.6;white-space:nowrap;vertical-align:middle}
+.tag.real{border:1px solid var(--ink-2);color:var(--ink)}
+.tag.sim{border:1px dashed var(--muted);color:var(--ink-2);background:repeating-linear-gradient(135deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:calc(-1 * clamp(16px,3vw,32px));padding-inline:clamp(16px,3vw,32px)}
+.nav ul{list-style:none;margin:0;padding:10px 0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav a{display:block;padding:6px 12px;border-radius:999px;color:var(--ink-2);text-decoration:none;font-size:13.5px;font-weight:500;white-space:nowrap}
+.nav a:hover{background:var(--panel-2);color:var(--ink)}
+
+/* section + app frame */
+section{display:grid;gap:14px;scroll-margin-top:64px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.sec-head p{max-width:70ch;color:var(--ink-2)}
+.frame{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.chrome{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 16px;border-bottom:1px solid var(--line-2);background:var(--panel-2);font-size:13px}
+.crumb{font-weight:600}
+.crumb span{color:var(--muted);font-weight:400}
+.chrome .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 10px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.frame-body{padding:18px;display:grid;gap:18px}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px}
+.kpi{border:1px solid var(--line-2);border-radius:10px;padding:12px 14px;display:grid;gap:4px;align-content:start}
+.kpi .k-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.kpi .k-label{font-size:12.5px;color:var(--muted)}
+.kpi .k-value{font-family:var(--f-display);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .k-note{font-size:12.5px;color:var(--ink-2)}
+.kpi.alert{background:var(--crit-bg);border-color:transparent}
+.delta{font-family:var(--f-mono);font-size:12px;color:var(--good);font-weight:500}
+
+/* layout */
+.two{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.stack{display:grid;gap:18px}
+.chart-card{display:grid;gap:8px}
+.chart-title{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.chart-sub{font-size:12.5px;color:var(--muted)}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:360px}
+.chart text{font-family:var(--f-body);font-size:12px;fill:var(--ink-2)}
+.chart .val{font-family:var(--f-mono);fill:var(--ink)}
+.chart .axis{stroke:var(--line);stroke-width:1}
+.chart .grid{stroke:var(--line-2);stroke-width:1}
+
+/* findings */
+.advisor{border:1px solid var(--line-2);border-radius:10px;padding:14px;display:grid;gap:10px;background:var(--panel)}
+.advisor-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.finding{border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;display:grid;gap:6px;position:relative}
+.finding .f-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.finding p{font-size:13.5px}
+.finding .f-ev{font-size:12px;color:var(--muted)}
+.kind{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;letter-spacing:.03em;padding:1px 8px 1px 6px;border-radius:999px;color:var(--ink)}
+.kind::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.kind.scale{background:var(--good-bg)}.kind.scale::before{background:var(--good)}
+.kind.cut,.kind.waste{background:var(--crit-bg)}.kind.cut::before,.kind.waste::before{background:var(--crit)}
+.kind.fix,.kind.watch{background:var(--warn-bg)}.kind.fix::before,.kind.watch::before{background:var(--warn)}
+.kind.info{background:var(--panel-2)}.kind.info::before{background:var(--muted)}
+.conf{font-size:11.5px;color:var(--muted)}
+.btn{font:inherit;font-size:13px;font-weight:600;border-radius:7px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);justify-self:start}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.watching{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+
+/* coverage bar */
+.coverage{display:grid;gap:8px}
+.covbar{display:flex;gap:2px;height:22px}
+.covbar div{height:100%;min-width:4px}
+.covbar div:first-child{border-radius:5px 0 0 5px}
+.covbar div:last-child{border-radius:0 5px 5px 0}
+.covkey{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12.5px;color:var(--ink-2)}
+.covkey span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* table */
+.table-wrap{overflow-x:auto;border:1px solid var(--line-2);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+td{padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right}
+.what{font-weight:500}
+.what small{display:block;color:var(--muted);font-weight:400;font-size:12.5px}
+.method{font-family:var(--f-mono);font-size:11.5px;padding:1px 7px;border-radius:4px;white-space:nowrap}
+.method.exact{background:var(--series-soft);color:var(--ink)}
+.method.window{border:1px dashed var(--line);color:var(--ink-2)}
+.method.none{border:1px solid var(--line);color:var(--muted)}
+.result{font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+
+/* recovery */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.rcard{border:1px solid var(--line-2);border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start}
+.rcard .amt{font-family:var(--f-display);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.rcard p{font-size:13.5px;color:var(--ink-2)}
+.draft{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.draft-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--panel-2);border-bottom:1px solid var(--line-2);font-size:13px}
+.draft textarea{display:block;width:100%;min-height:190px;border:0;resize:vertical;padding:14px;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;background:var(--panel);color:var(--ink)}
+.draft-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line-2)}
+.toast{font-size:12.5px;color:var(--ink-2)}
+
+/* pre-spend dialog */
+.dialog{max-width:640px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+.dialog-head{padding:14px 18px;border-bottom:1px solid var(--line-2);display:grid;gap:2px}
+.dialog-body{padding:16px 18px;display:grid;gap:14px}
+.est{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.est{grid-template-columns:1fr}}
+.est div{border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
+.est .big{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.est .struck{text-decoration:line-through;text-decoration-thickness:1.5px;color:var(--muted)}
+.callout{border-radius:8px;padding:12px 14px;background:var(--warn-bg);display:grid;gap:6px;font-size:13.5px}
+.callout ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.fitbar{display:flex;gap:2px;height:14px}
+.fitbar div{height:100%}
+.fitbar div:first-child{border-radius:4px 0 0 4px}
+.fitbar div:last-child{border-radius:0 4px 4px 0}
+code,.code{font-family:var(--f-mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:6px;padding:1px 6px}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.6}
+.dialog-foot{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--line-2);background:var(--panel-2)}
+.side-note{display:grid;gap:10px;align-content:start}
+.side-note .rcard{background:var(--panel)}
+
+/* recap */
+.chat{max-width:680px;display:grid;gap:12px}
+.msg{display:grid;grid-template-columns:36px 1fr;gap:10px}
+.avatar{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:13px;background:var(--accent-soft);color:var(--accent)}
+.avatar.user{background:var(--panel-2);color:var(--ink-2)}
+.bubble{display:grid;gap:6px;font-size:14px}
+.bubble .who{font-size:12.5px;color:var(--muted)}
+.bubble ol{margin:0;padding-left:20px;display:grid;gap:4px}
+.toolcall{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);border-left:2px solid var(--series);padding:4px 10px;background:var(--panel-2);border-radius:0 6px 6px 0}
+
+/* build plan */
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.day{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px;display:grid;gap:8px;align-content:start}
+.day ol{margin:0;padding-left:20px;display:grid;gap:5px;font-size:13.5px}
+.day li small{color:var(--muted)}
+.risk{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--ink);background:var(--warn-bg);border-radius:4px;padding:0 5px;margin-left:4px}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 24px;font-size:13.5px;margin:0;padding:0;list-style:none}
+.checks li{display:grid;grid-template-columns:18px 1fr;gap:8px}
+.ok{color:var(--good);font-weight:700}
+.open{color:var(--warn);font-weight:700}
+
+/* tooltip */
+#tip{position:fixed;pointer-events:none;z-index:20;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:6px;box-shadow:var(--shadow);max-width:240px;line-height:1.4}
+#tip b{font-family:var(--f-mono);font-weight:500}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="page">
+
+  <header class="intro">
+    <div class="eyebrow">Design preview · proof of concept on graph8</div>
+    <h1>ROI Advisor</h1>
+    <p class="lede">Shows a graph8 team which credits turned into meetings and pipeline, catches the ones that bought nothing, and steps in before the next spend. It runs on graph8's own ledger, deals, lists and enrichment pipelines.</p>
+    <div class="legend-row">
+      <span><span class="tag real">REAL</span> Live data from the Hackathon Momin Qureshi org, Sep 26</span>
+      <span><span class="tag sim">SIM</span> Simulated outcomes; the product labels these the same way</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Screens">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#charges">Charges</a></li>
+      <li><a href="#recovery">Recovery</a></li>
+      <li><a href="#prespend">Before you spend</a></li>
+      <li><a href="#recap">Weekly recap</a></li>
+      <li><a href="#ask">Ask anywhere</a></li>
+      <li><a href="#build">Build plan</a></li>
+    </ul>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section id="overview" aria-labelledby="h-overview">
+    <div class="sec-head">
+      <h2 id="h-overview">Overview</h2>
+      <p>History first. Spend comes from the credit ledger; meetings and deals come from graph8 webhooks and deal history. Every number drills down to the charges behind it.</p>
+    </div>
+    <div class="frame">
+      <div class="chrome">
+        <span class="crumb">ROI Advisor <span>› Credit ROI</span></span>
+        <span class="spacer"></span>
+        <span class="pill">Since Sep 26</span>
+        <span class="pill">Breakdown: list</span>
+      </div>
+      <div class="frame-body">
+        <div class="kpis">
+          <div class="kpi"><div class="k-top"><span class="k-label">Credits spent</span><span class="tag real">REAL</span></div><div class="k-value">1,260</div><div class="k-note">126 charges across 9 services</div></div>
+          <div class="kpi alert"><div class="k-top"><span class="k-label">Wasted</span><span class="tag real">REAL</span></div><div class="k-value">115</div><div class="k-note">Failed jobs, unreadable results, agent side effect</div></div>
+          <div class="kpi"><div class="k-top"><span class="k-label">Traced exactly</span><span class="tag real">REAL</span></div><div class="k-value">17%</div><div class="k-note">216 credits tied to a contact, list or run</div></div>
+          <div class="kpi"><div class="k-top"><span class="k-label">Meetings</span><span class="tag sim">SIM</span></div><div class="k-value">38</div><div class="k-note">Last 30 days, from meeting events</div></div>
+          <div class="kpi"><div class="k-top"><span class="k-label">Credits per meeting</span><span class="tag sim">SIM</span></div><div class="k-value">326 <span class="delta">▼ 12%</span></div><div class="k-note">vs previous 30 days</div></div>
+        </div>
+
+        <div class="two">
+          <div class="stack">
+            <div class="chart-card">
+              <div class="chart-title"><h3>Where the credits went</h3><span class="tag real">REAL</span></div>
+              <div class="chart-sub">Credits by ledger service. 68% is onboarding research that ran before anyone used the org.</div>
+              <div class="chart" id="c-services" role="img" aria-label="Credits by service: onboarding research 860, landing page 100, skill runs 93, AI enrichment 77, email verification 40, images 25, agent replies 24, brand classifier 24, waterfall enrichment 17."></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title"><h3>Credits per meeting by list</h3><span class="tag sim">SIM</span></div>
+              <div class="chart-sub">Dashed line is the org average (326). Lower is better.</div>
+              <div class="chart" id="c-lists" role="img" aria-label="Credits per meeting: Fintech VPs 124, Website visitors 136, Healthcare Directors 433, Starter list 1,200. Average 326."></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title"><h3>Credits per meeting, week by week</h3><span class="tag sim">SIM</span></div>
+              <div class="chart" id="c-trend" role="img" aria-label="Weekly credits per meeting fell from 410 to 326 over eight weeks."></div>
+            </div>
+          </div>
+
+          <aside class="advisor" aria-labelledby="h-adv">
+            <div class="advisor-head"><h3 id="h-adv">Advisor</h3><span class="muted" style="font-size:12.5px">6 open</span></div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind waste">Waste</span><span class="tag real">REAL</span><span class="conf">High confidence</span></div>
+              <p>77 credits charged for AI enrichment that failed on all 11 records. graph8's job record says 0 credits were used.</p>
+              <div class="f-ev">3 jobs · 15 ledger lines · job fd26115a</div>
+              <button class="btn primary" type="button" data-go="recovery">Draft refund request</button>
+            </div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind fix">Fix</span><span class="tag real">REAL</span><span class="conf">High confidence</span></div>
+              <p>Automated posts in #work woke the chief-of-staff agent, costing 24 credits per post.</p>
+              <div class="f-ev">2 studio_copilot charges, 96k input tokens each</div>
+              <button class="btn" type="button" data-go="recap">Post recaps to #roi-advisor</button>
+            </div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind scale">Scale</span><span class="tag sim">SIM</span><span class="conf">High confidence</span></div>
+              <p>Fintech VPs cost 124 credits per meeting, 62% below your average.</p>
+              <div class="f-ev">17 meetings · 2,100 credits · 212 contacts reached</div>
+              <button class="btn" type="button" data-toast="Preview only: builds a list from graph8's free prospect search with the same filters (tested: 0 credits).">Build lookalike list</button>
+            </div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind cut">Cut</span><span class="tag sim">SIM</span><span class="conf">Medium confidence</span></div>
+              <p>Starter list costs 1,200 credits per meeting. <span class="tag real">REAL</span> 48% of its emails don't match the contact's company.</p>
+              <div class="f-ev">4 meetings · 4,800 credits · 115 of 238 records conflicting</div>
+              <button class="btn" type="button" data-go="prespend">Apply guardrail</button>
+            </div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind fix">Fix</span><span class="tag real">REAL</span><span class="conf">High confidence</span></div>
+              <p>graph8's credit estimates miss: quoted 37, charged 50 (+35%). Future estimates here are adjusted for that gap.</p>
+              <div class="f-ev">AI enrichment on 10 records</div>
+            </div>
+
+            <div class="finding">
+              <div class="f-top"><span class="kind info">Unused</span><span class="tag real">REAL</span><span class="conf">Medium confidence</span></div>
+              <p>23 onboarding documents have never been used. They came out of 860 credits of research.</p>
+              <div class="f-ev">usage_count 0 on all 23 · matched to spend by time window</div>
+            </div>
+
+            <div class="watching">Watching (low confidence, dashboard only): Healthcare Directors at 433 per meeting, 6 meetings so far.</div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARGES -->
+  <section id="charges" aria-labelledby="h-charges">
+    <div class="sec-head">
+      <h2 id="h-charges">Charges, explained</h2>
+      <p>Every ledger line in plain words, with how it was matched. Spend that can't be traced stays in its own bucket instead of being spread over lists.</p>
+    </div>
+    <div class="frame">
+      <div class="chrome"><span class="crumb">ROI Advisor <span>› Charges</span></span><span class="spacer"></span><span class="tag real">REAL</span></div>
+      <div class="frame-body">
+        <div class="coverage">
+          <h3>How the 1,260 credits were matched</h3>
+          <div class="covbar" id="covbar" aria-hidden="true"></div>
+          <div class="covkey">
+            <span><i class="sw" style="background:var(--series-strong)"></i>Exact: 216 (17%) · run, job or pipeline ID</span>
+            <span><i class="sw" style="background:var(--series)"></i>Time window: 1,033 (82%) · matched by timestamp</span>
+            <span><i class="sw" style="background:var(--series-weak)"></i>Service only: 11 (1%) · skill runs graph8 can't list</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time (UTC)</th><th>What it paid for</th><th class="num">Credits</th><th>Matched by</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">15:40</td><td class="what">Agent reply in #work<small>studio_copilot ×2 · the chief-of-staff agent answered an automated post</small></td><td class="num">24</td><td><span class="method window">time window</span></td><td><span class="result"><i class="dot" style="background:var(--warn)"></i>Side effect</span></td></tr>
+              <tr><td class="mono">15:36</td><td class="what">List pipeline "Email finder"<small>[sim] guardrail probe · pipeline run e2b2e81f</small></td><td class="num">3</td><td><span class="method exact">exact</span></td><td><span class="result"><i class="dot" style="background:var(--good)"></i>1 enriched, 2 skipped by guardrail</span></td></tr>
+              <tr><td class="mono">15:27</td><td class="what">Buying Signals Scan · Listrak<small>skill run, billed as "voice_llm" · tokens 216 / 558</small></td><td class="num">6</td><td><span class="method exact">exact</span></td><td><span class="result"><i class="dot" style="background:var(--good)"></i>Completed</span></td></tr>
+              <tr><td class="mono">14:34–14:36</td><td class="what">AI enrichment "Current employer check"<small>3 jobs · 11 records</small></td><td class="num">77</td><td><span class="method window">job window</span></td><td><span class="result"><i class="dot" style="background:var(--crit)"></i>Failed on 11 of 11 · waste</span></td></tr>
+              <tr><td class="mono">14:09</td><td class="what">LeadMagic job-change check · Scott Zeller<small>waterfall enrichment, 2 successful calls</small></td><td class="num">14</td><td><span class="method window">job window</span></td><td><span class="result"><i class="dot" style="background:var(--crit)"></i>Result not readable · waste</span></td></tr>
+              <tr><td class="mono">13:38–13:41</td><td class="what">Email verification ×40<small>run by ROI Advisor</small></td><td class="num">40</td><td><span class="method exact">exact</span></td><td><span class="result"><i class="dot" style="background:var(--good)"></i>8 deliverable · 13 will bounce · 19 risky</span></td></tr>
+              <tr><td class="mono">12:51</td><td class="what">Meeting Prep Brief · Jamie Elden, Listrak<small>skill run · tokens 214 / 594</small></td><td class="num">7</td><td><span class="method exact">exact</span></td><td><span class="result"><i class="dot" style="background:var(--good)"></i>Completed</span></td></tr>
+              <tr><td class="mono">13:05</td><td class="what">Skill run, details unavailable<small>voice_llm · run ID not captured</small></td><td class="num">5</td><td><span class="method none">service only</span></td><td><span class="result"><i class="dot" style="background:var(--muted)"></i>Unknown</span></td></tr>
+              <tr><td class="mono">09:11–10:56</td><td class="what">Onboarding research<small>studio_global ×43 · 23 documents and 6 reports</small></td><td class="num">860</td><td><span class="method window">time window</span></td><td><span class="result"><i class="dot" style="background:var(--warn)"></i>Never used</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOVERY -->
+  <section id="recovery" aria-labelledby="h-recovery">
+    <div class="sec-head">
+      <h2 id="h-recovery">Recovery</h2>
+      <p>Credits that bought nothing, with the evidence already attached. Refund requests go to graph8 support only after you read and confirm them.</p>
+    </div>
+    <div class="frame">
+      <div class="chrome"><span class="crumb">ROI Advisor <span>› Recovery</span></span><span class="spacer"></span><span class="tag real">REAL</span></div>
+      <div class="frame-body">
+        <div class="cards">
+          <div class="rcard"><span class="kind waste">Failed job</span><div class="amt">77</div><p>AI enrichment failed on every record and was still charged. The job reports 0 credits used.</p></div>
+          <div class="rcard"><span class="kind waste">No usable result</span><div class="amt">14</div><p>LeadMagic returned data into a column graph8's API can't read back.</p></div>
+          <div class="rcard"><span class="kind fix">Side effect</span><div class="amt">24</div><p>An automated post woke graph8's agent. Moving recaps to an agent-free channel stops this.</p></div>
+          <div class="rcard"><span class="kind info">Unused</span><div class="amt">23 docs</div><p>Paid onboarding research with zero uses. Link them to a campaign or skip regenerating them.</p></div>
+        </div>
+        <div class="draft">
+          <div class="draft-head"><strong>Refund request draft</strong><span class="muted">Sends through graph8's support contact route</span></div>
+          <label for="refund-text" class="eyebrow" style="padding:10px 14px 0;display:block">Message</label>
+          <textarea id="refund-text" readonly>Hello graph8 support,
+
+We were charged 77 credits for AI enrichment on Sep 26 (14:34–14:36 UTC) that failed on all 11 records:
+• Job fd26115a (10 records): 50 credits, 0 successful, job reports total_credits_used = 0
+• Two single-record jobs: 5 and 22 credits, 0 successful
+• 15 ledger lines, service "ai_enrichment"
+
+Please refund the 77 credits. Org: org_5e2170609156.</textarea>
+          <div class="draft-foot">
+            <button class="btn" type="button" id="copy-refund">Copy text</button>
+            <button class="btn primary" type="button" data-toast="Preview only: in the product this sends after you confirm. Nothing was sent.">Send to graph8 support</button>
+            <span class="toast" id="copy-note" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRE-SPEND -->
+  <section id="prespend" aria-labelledby="h-prespend">
+    <div class="sec-head">
+      <h2 id="h-prespend">Before you spend</h2>
+      <p>The Advisor only speaks up when it changes the decision: a saving of at least 15% and 100 credits, backed by enough history. Then graph8 enforces it through the list pipeline's own run condition.</p>
+    </div>
+    <div class="two">
+      <div class="dialog" role="group" aria-labelledby="h-dialog">
+        <div class="dialog-head">
+          <span class="eyebrow">Enrich list</span>
+          <h3 id="h-dialog" style="font-size:18px">Starter list (proactive setup) · 250 contacts</h3>
+        </div>
+        <div class="dialog-body">
+          <div class="est">
+            <div><span class="muted" style="font-size:12.5px">graph8 quote <span class="tag real">REAL</span></span><span class="big struck">498</span><span style="font-size:12.5px">credits for 249 contacts</span></div>
+            <div><span class="muted" style="font-size:12.5px">Advisor estimate <span class="tag real">REAL</span></span><span class="big">~39</span><span style="font-size:12.5px">only 13 contacts lack an email · 3 per contact</span></div>
+          </div>
+          <div class="callout">
+            <strong>You could skip the contacts least likely to book</strong>
+            <ul>
+              <li><span class="tag real">REAL</span> 115 of 238 records have an email that doesn't match their company</li>
+              <li><span class="tag sim">SIM</span> Similar lists cost you 433 credits per meeting, against a 326 average</li>
+            </ul>
+          </div>
+          <div style="display:grid;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px"><span>Fit on this list <span class="tag sim">SIM</span></span><span class="muted">high 41 · medium 96 · low 113</span></div>
+            <div class="fitbar" aria-hidden="true"><div style="flex:41;background:var(--series-strong)"></div><div style="flex:96;background:var(--series)"></div><div style="flex:113;background:var(--series-weak)"></div></div>
+          </div>
+          <div style="display:grid;gap:6px">
+            <span style="font-size:12.5px" class="muted">Run condition written to the pipeline step</span>
+            <pre class="code">NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))</pre>
+          </div>
+        </div>
+        <div class="dialog-foot">
+          <button class="btn primary" type="button" data-toast="Preview only: writes roi_fit, sets the run condition and runs the pipeline.">Apply guardrail and enrich</button>
+          <button class="btn" type="button" data-toast="Preview only: runs graph8's pipeline without the guardrail.">Enrich all anyway</button>
+        </div>
+      </div>
+      <div class="side-note">
+        <div class="rcard">
+          <span class="eyebrow">Tested live <span class="tag real">REAL</span></span>
+          <p style="color:var(--ink)">On a 3-contact list with one high-fit contact, graph8's own run record showed <strong>1 enriched, 2 skipped</strong>, and the ledger charged 3 credits.</p>
+        </div>
+        <div class="rcard">
+          <span class="eyebrow">Why our own estimate</span>
+          <p>graph8's estimator ignores the run condition and "skip existing values", so it quoted 498 either way. The Advisor counts matching contacts through routing preview and prices them from the provider table.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECAP -->
+  <section id="recap" aria-labelledby="h-recap">
+    <div class="sec-head">
+      <h2 id="h-recap">Weekly recap in graph8</h2>
+      <p>Posted by the Advisor into a Work channel with no agents in it, so it costs nothing. At most three items, and skipped in a quiet week.</p>
+    </div>
+    <div class="frame">
+      <div class="chrome"><span class="crumb">graph8 Work <span>› #roi-advisor</span></span><span class="spacer"></span><span class="pill">No agents in channel · 0 credits per post</span></div>
+      <div class="frame-body">
+        <div class="chat">
+          <div class="msg">
+            <div class="avatar" aria-hidden="true">ROI</div>
+            <div class="bubble">
+              <span class="who">ROI Advisor · Monday 09:00</span>
+              <strong>Last week: 2,900 credits → 11 meetings, 263 each (▼ 9%) <span class="tag sim">SIM</span></strong>
+              <ol>
+                <li>Scale: Fintech VPs booked 7 meetings at 118 credits each. A lookalike list is ready.</li>
+                <li>Cut: the Starter list spent 1,100 credits with no meetings. Guardrail suggested.</li>
+                <li>Recover: 77 credits on failed AI enrichment. The refund draft is in Recovery. <span class="tag real">REAL</span></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK -->
+  <section id="ask" aria-labelledby="h-ask">
+    <div class="sec-head">
+      <h2 id="h-ask">Ask anywhere (MCP)</h2>
+      <p>The Advisor is also an MCP server. Claude, Cursor and other agents can ask it questions, and graph8 can register it for its own workflows.</p>
+    </div>
+    <div class="two">
+      <div class="frame">
+        <div class="chrome"><span class="crumb">Claude <span>› connected to ROI Advisor</span></span></div>
+        <div class="frame-body">
+          <div class="chat">
+            <div class="msg"><div class="avatar user" aria-hidden="true">You</div><div class="bubble"><span class="who">You</span>What's my cost per meeting for fintech VPs this month, and should I spend more there?</div></div>
+            <div class="msg"><div class="avatar" aria-hidden="true">C</div><div class="bubble"><span class="who">Claude</span>
+              <div class="toolcall">cost_per_outcome(dimension: "segment", value: "VP|Sales|Fintech|51-200", outcome: "meeting")</div>
+              <p>124 credits per meeting across 17 meetings, 62% below your 326 average. The Advisor rates this high confidence and has a lookalike list ready. <span class="tag sim">SIM</span></p>
+            </div></div>
+          </div>
+        </div>
+      </div>
+      <div class="side-note">
+        <div class="rcard">
+          <span class="eyebrow">Tools</span>
+          <p style="color:var(--ink)"><code>roi_summary</code> <code>cost_per_outcome</code> <code>prespend_estimate</code> <code>list_findings</code> <code>explain_charge</code></p>
+        </div>
+        <div class="rcard">
+          <span class="eyebrow">Status</span>
+          <p>Registering an MCP server in graph8 works and shows up in workflows. graph8 only accepts SSE servers, so the Advisor serves SSE and streamable HTTP. A graph8 workflow calling our tools is build task 2.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILD PLAN -->
+  <section id="build" aria-labelledby="h-build">
+    <div class="sec-head">
+      <h2 id="h-build">Build plan</h2>
+      <p>A thin working slice of every part in two days. The risky unknowns are tested first. Deeper work follows in the same order if time allows.</p>
+    </div>
+    <div class="plan">
+      <div class="day">
+        <span class="eyebrow">Day 1 · morning</span>
+        <ol>
+          <li>Next.js app on Vercel, password gate, graph8 SDK client with a 40/s rate limiter</li>
+          <li>Webhook receiver deployed; capture real payloads from a [sim] deal and a workflow run <span class="risk">RISK</span></li>
+          <li>MCP server (SSE + HTTP); register in graph8 and call a tool from a workflow <span class="risk">RISK</span></li>
+          <li>Create the 5 custom objects and their fields</li>
+        </ol>
+      </div>
+      <div class="day">
+        <span class="eyebrow">Day 1 · afternoon</span>
+        <ol>
+          <li>Ledger sync and attribution engine, tested against today's real ledger</li>
+          <li>Run capture: pipeline runs, workflow events, spend through the Advisor</li>
+          <li>Outcomes: deal history, engagement summaries, signed simulated events</li>
+          <li>Findings and the surfacing rules</li>
+        </ol>
+      </div>
+      <div class="day">
+        <span class="eyebrow">Day 2</span>
+        <ol>
+          <li>Dashboard: Overview, Charges, Recovery, Before you spend</li>
+          <li>Guardrail flow on a real list</li>
+          <li>Weekly recap to #roi-advisor on a Vercel cron</li>
+          <li>Seed demo data, rehearse, clean up [sim] records</li>
+        </ol>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="frame-body">
+        <h3>Checked live before design sign-off</h3>
+        <ul class="checks">
+          <li><span class="ok" aria-hidden="true">✓</span><span>51 of 52 endpoints exist in the SDK contract</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Skill charges match runs by token count, within 1 second</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Custom objects: 37 writes per second, duplicates rejected</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Rate limit 50/s and 1,000/min, with 429 on overflow</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Webhook signatures: valid accepted; tampered, stale and wrong-secret rejected</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Guardrail run condition skips low-fit contacts</span></li>
+          <li><span class="ok" aria-hidden="true">✓</span><span>Recap posts to an agent-free channel for 0 credits</span></li>
+          <li><span class="open" aria-hidden="true">!</span><span>Skill runs and enrichment jobs send no webhooks</span></li>
+          <li><span class="open" aria-hidden="true">!</span><span>Deals can't be backdated, so trends use simulated outcome timestamps</span></li>
+          <li><span class="open" aria-hidden="true">!</span><span>graph8 calling an external MCP tool is still unproven</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const tip=document.getElementById('tip');
+  const fmt=n=>n.toLocaleString('en-US');
+  function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+  function showTip(ev,html){tip.innerHTML=html;tip.hidden=false;const x=Math.min(ev.clientX+14,window.innerWidth-tip.offsetWidth-8);const y=Math.max(8,ev.clientY-tip.offsetHeight-12);tip.style.left=x+'px';tip.style.top=y+'px';}
+  function hideTip(){tip.hidden=true;}
+  // bar with square baseline end and 4px rounded data end
+  function barPath(x,y,w,h,r){r=Math.min(r,w,h/2);return `M${x},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x}Z`;}
+
+  function hbar(id,rows,opts){
+    const host=document.getElementById(id);
+    const W=620,labelW=opts.labelW||200,valW=64,rowH=30,barH=14,top=6;
+    const H=top+rows.length*rowH+(opts.avg?22:6);
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,'aria-hidden':'true'},host);
+    const x0=labelW,x1=W-valW;const max=opts.max;
+    const sx=v=>x0+(v/max)*(x1-x0);
+    el('line',{x1:x0,x2:x0,y1:top-2,y2:top+rows.length*rowH-4,class:'axis'},svg);
+    rows.forEach((r,i)=>{
+      const y=top+i*rowH+(rowH-barH)/2-4;
+      const t=el('text',{x:labelW-10,y:y+barH/2+4,'text-anchor':'end'},svg);t.textContent=r.label;
+      const w=Math.max(2,sx(r.value)-x0);
+      const p=el('path',{d:barPath(x0,y,w,barH,4),fill:r.color||'var(--series)'},svg);
+      const v=el('text',{x:x0+w+6,y:y+barH/2+4,class:'val'},svg);v.textContent=fmt(r.value);
+      const hit=el('rect',{x:0,y:y-7,width:W,height:barH+14,fill:'transparent'},svg);
+      hit.addEventListener('pointermove',e=>{showTip(e,`${r.label}<br><b>${fmt(r.value)}</b> ${opts.unit}${r.note?'<br>'+r.note:''}`);p.setAttribute('opacity','.85');});
+      hit.addEventListener('pointerleave',()=>{hideTip();p.removeAttribute('opacity');});
+    });
+    if(opts.avg){
+      const ax=sx(opts.avg);const yb=top+rows.length*rowH-4;
+      el('line',{x1:ax,x2:ax,y1:top-2,y2:yb,stroke:'var(--ink-2)','stroke-width':1.5,'stroke-dasharray':'4 3'},svg);
+      const t=el('text',{x:ax,y:yb+15,'text-anchor':'middle'},svg);t.textContent=`average ${fmt(opts.avg)}`;
+    }
+  }
+
+  hbar('c-services',[
+    {label:'Onboarding research',value:860,note:'studio_global · 43 charges'},
+    {label:'Landing page template',value:100,note:'1 charge'},
+    {label:'Skill runs',value:93,note:'billed as voice_llm · 15 charges'},
+    {label:'AI enrichment',value:77,note:'all 11 records failed'},
+    {label:'Email verification',value:40,note:'40 checks'},
+    {label:'Image generation',value:25},
+    {label:'Agent replies',value:24,note:'studio_copilot · side effect'},
+    {label:'Brand classifier',value:24},
+    {label:'Waterfall enrichment',value:17,note:'14 on unreadable results'}
+  ],{max:900,unit:'credits',labelW:170});
+
+  hbar('c-lists',[
+    {label:'Fintech VPs, 51–500',value:124,note:'17 meetings · 2,100 credits'},
+    {label:'Website visitors (intent)',value:136,note:'11 meetings · 1,500 credits'},
+    {label:'Healthcare Directors',value:433,note:'6 meetings · 2,600 credits'},
+    {label:'Starter list, founders',value:1200,note:'4 meetings · 4,800 credits'}
+  ],{max:1250,unit:'credits per meeting',avg:326,labelW:190});
+
+  // trend line
+  (function(){
+    const host=document.getElementById('c-trend');
+    const data=[410,396,384,371,352,343,331,326];
+    const labels=['Aug 3','Aug 10','Aug 17','Aug 24','Aug 31','Sep 7','Sep 14','Sep 21'];
+    const W=620,H=200,L=44,R=40,T=14,B=28;
+    const y0=300,y1=450;const sx=i=>L+i*(W-L-R)/(data.length-1);const sy=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,'aria-hidden':'true'},host);
+    [300,350,400,450].forEach(v=>{el('line',{x1:L,x2:W-R,y1:sy(v),y2:sy(v),class:'grid'},svg);const t=el('text',{x:L-8,y:sy(v)+4,'text-anchor':'end'},svg);t.textContent=v;});
+    labels.forEach((lb,i)=>{if(i%2===0||i===labels.length-1){const t=el('text',{x:sx(i),y:H-8,'text-anchor':'middle'},svg);t.textContent=lb;}});
+    const pts=data.map((v,i)=>[sx(i),sy(v)]);
+    el('path',{d:`M${pts[0][0]},${sy(y0)}`+pts.map(p=>`L${p[0]},${p[1]}`).join('')+`L${pts[pts.length-1][0]},${sy(y0)}Z`,fill:'var(--series-soft)'},svg);
+    el('path',{d:'M'+pts.map(p=>p.join(',')).join('L'),fill:'none',stroke:'var(--series)','stroke-width':2,'stroke-linejoin':'round','stroke-linecap':'round'},svg);
+    const last=pts[pts.length-1];
+    el('circle',{cx:last[0],cy:last[1],r:5,fill:'var(--series)',stroke:'var(--panel)','stroke-width':2},svg);
+    const lt=el('text',{x:last[0]+8,y:last[1]+4,class:'val'},svg);lt.textContent='326';
+    const cross=el('line',{x1:0,x2:0,y1:T,y2:H-B,stroke:'var(--ink-2)','stroke-width':1,visibility:'hidden'},svg);
+    const dot=el('circle',{r:4,fill:'var(--series)',stroke:'var(--panel)','stroke-width':2,visibility:'hidden'},svg);
+    const hit=el('rect',{x:L,y:T,width:W-L-R,height:H-T-B,fill:'transparent'},svg);
+    hit.addEventListener('pointermove',e=>{
+      const box=svg.getBoundingClientRect();const px=(e.clientX-box.left)*W/box.width;
+      const i=Math.max(0,Math.min(data.length-1,Math.round((px-L)/((W-L-R)/(data.length-1)))));
+      cross.setAttribute('x1',pts[i][0]);cross.setAttribute('x2',pts[i][0]);cross.setAttribute('visibility','visible');
+      dot.setAttribute('cx',pts[i][0]);dot.setAttribute('cy',pts[i][1]);dot.setAttribute('visibility','visible');
+      showTip(e,`Week of ${labels[i]}<br><b>${data[i]}</b> credits per meeting`);
+    });
+    hit.addEventListener('pointerleave',()=>{hideTip();cross.setAttribute('visibility','hidden');dot.setAttribute('visibility','hidden');});
+  })();
+
+  // coverage bar
+  (function(){
+    const bar=document.getElementById('covbar');
+    [[216,'var(--series-strong)','Exact'],[1033,'var(--series)','Time window'],[11,'var(--series-weak)','Service only']].forEach(([v,c,n])=>{
+      const d=document.createElement('div');d.style.flex=v;d.style.background=c;
+      d.addEventListener('pointermove',e=>showTip(e,`${n}<br><b>${fmt(v)}</b> credits · ${Math.round(v/1260*100)}%`));
+      d.addEventListener('pointerleave',hideTip);bar.appendChild(d);
+    });
+  })();
+
+  // buttons
+  function toast(btn,msg){let n=btn.parentElement.querySelector('.btn-note');if(!n){n=document.createElement('span');n.className='toast btn-note';n.setAttribute('aria-live','polite');btn.insertAdjacentElement('afterend',n);}n.textContent=msg;}
+  document.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b,b.dataset.toast)));
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{const t=document.getElementById(b.dataset.go);if(t)t.scrollIntoView({block:'start'});}));
+  const copyBtn=document.getElementById('copy-refund'),note=document.getElementById('copy-note'),ta=document.getElementById('refund-text');
+  copyBtn.addEventListener('click',()=>{
+    const fallback=()=>{ta.focus();ta.select();note.textContent='Text selected. Press Ctrl+C or ⌘C to copy.';};
+    try{navigator.clipboard.writeText(ta.value).then(()=>{note.textContent='Copied.';},fallback);}catch(e){fallback();}
+  });
+})();
+</script>

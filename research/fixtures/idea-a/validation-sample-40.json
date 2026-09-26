@@ -1,0 +1,1166 @@
+{
+ "flagged": [
+  {
+   "id": 1267427,
+   "name": "Scott Mercer",
+   "first": "Scott",
+   "last": "Mercer",
+   "title": "founder",
+   "email": "scott@household-design.com",
+   "linkedin": "linkedin.com/in/rsmercer",
+   "crm_company": "contelligence",
+   "crm_domain": "contelligence.com",
+   "index_company": "Contelligence",
+   "index_domain": "contelligence.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "household-design.com"
+   },
+   "lookup": {
+    "company": "Contelligence",
+    "domain": "contelligence.com",
+    "work_email": "scott@pdmspecialists.com",
+    "title": "Sr. Business Analyst",
+    "job_start": "2022-06-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-12"
+   }
+  },
+  {
+   "id": 3337785,
+   "name": "Stephanie Jacobs",
+   "first": "Stephanie",
+   "last": "Jacobs",
+   "title": "co-founder chief strategy officer",
+   "email": "stephanie@sejsolutions.com",
+   "linkedin": "linkedin.com/in/sejmediasolutions",
+   "crm_company": "pitchagent",
+   "crm_domain": "pitchagent.io",
+   "index_company": "NeedleAI",
+   "index_domain": "needleai.app",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "sejsolutions.com"
+   },
+   "lookup": {
+    "company": "NeedleAI",
+    "domain": "needleai.app",
+    "work_email": "",
+    "title": "Co-founder And Chief Strategy Officer",
+    "job_start": "2022-03-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-08-11"
+   }
+  },
+  {
+   "id": 3453041,
+   "name": "Scott Johnson",
+   "first": "Scott",
+   "last": "Johnson",
+   "title": "company founder",
+   "email": "scott.johnson9807@us.com",
+   "linkedin": "linkedin.com/in/scott-johnson-0b982b5",
+   "crm_company": "spiritual travelings",
+   "crm_domain": "me.com",
+   "index_company": "Me",
+   "index_domain": "me.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "us.com"
+   },
+   "lookup": {
+    "company": "Me",
+    "domain": "me.com",
+    "work_email": "",
+    "title": "Company Founder",
+    "job_start": "2020-03-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-07-30"
+   }
+  },
+  {
+   "id": 919943,
+   "name": "Dan Knutson",
+   "first": "Dan",
+   "last": "Knutson",
+   "title": "founder",
+   "email": "dan@coordinatedrecovery.com",
+   "linkedin": "linkedin.com/in/danknutson",
+   "crm_company": "center of attention",
+   "crm_domain": "centerattn.com",
+   "index_company": "Jump Crypto",
+   "index_domain": "moaa.org",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "coordinatedrecovery.com"
+   },
+   "lookup": {
+    "company": "Jump Crypto",
+    "domain": "moaa.org",
+    "work_email": "dan@coordinatedrecovery.com",
+    "title": "",
+    "job_start": "2022-01-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2023-06-17"
+   }
+  },
+  {
+   "id": 2817663,
+   "name": "Akmal Ali",
+   "first": "Akmal",
+   "last": "Ali",
+   "title": "founder chief executive officer",
+   "email": "akmal.ali@alumarisk.com",
+   "linkedin": "linkedin.com/in/akmal-ali-87578211",
+   "crm_company": "inorbit.ai",
+   "crm_domain": "inorbit.ai",
+   "index_company": "inOrbit",
+   "index_domain": "securityinorbit.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "alumarisk.com"
+   },
+   "lookup": {
+    "company": "inOrbit",
+    "domain": "securityinorbit.com",
+    "work_email": "akmal@securityinorbit.com",
+    "title": "Founder & Chief Executive Officer",
+    "job_start": "2022-04-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2026-08-09"
+   }
+  },
+  {
+   "id": 2904639,
+   "name": "Jupiter Lovejoy",
+   "first": "Jupiter",
+   "last": "Lovejoy",
+   "title": "co-founder",
+   "email": "jlovejoy@markitecture.com",
+   "linkedin": "linkedin.com/in/jupiterlovejoy",
+   "crm_company": "markitecture",
+   "crm_domain": "",
+   "index_company": "",
+   "index_domain": "jupiterlovejoy.com",
+   "verify": {
+    "status": "invalid_mx",
+    "sub_status": "invalid_mx_records",
+    "is_valid": false,
+    "mx_domain": "markitecture.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "jupiterlovejoy.com",
+    "work_email": "",
+    "title": "",
+    "job_start": "2001-09-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-08-21"
+   }
+  },
+  {
+   "id": 2969054,
+   "name": "Terrie Tillman",
+   "first": "Terrie",
+   "last": "Tillman",
+   "title": "co-founder head operations",
+   "email": "ttilllman@coca-cola.com",
+   "linkedin": "linkedin.com/in/terrie-l-tillman",
+   "crm_company": "contract capital partner llc",
+   "crm_domain": "contractcapital.us",
+   "index_company": "Contract Capital Partner LLC",
+   "index_domain": "contractcapital.us",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "coca-cola.com"
+   },
+   "lookup": {
+    "company": "Contract Capital Partner LLC",
+    "domain": "contractcapital.us",
+    "work_email": "terrie.tilllman@contractcapital.us",
+    "title": "Co-founder, Head Of Operations",
+    "job_start": "2024-03-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-07-18"
+   }
+  },
+  {
+   "id": 3231266,
+   "name": "Mimi Joy",
+   "first": "Mimi",
+   "last": "Joy",
+   "title": "founder chief executive officer",
+   "email": "mimi@comprehensiveai.com",
+   "linkedin": "linkedin.com/in/mimijoy",
+   "crm_company": "comprehensive ai",
+   "crm_domain": "hatchgemini.com",
+   "index_company": "Comprehensive AI",
+   "index_domain": "cfsinnovation.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "comprehensiveai.com"
+   },
+   "lookup": {
+    "company": "Comprehensive AI",
+    "domain": "cfsinnovation.com",
+    "work_email": "",
+    "title": "Founder & Chief Executive Officer",
+    "job_start": "2023-02-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-08-17"
+   }
+  },
+  {
+   "id": 248491,
+   "name": "Ronald Spencer",
+   "first": "Ronald",
+   "last": "Spencer",
+   "title": "founder owner",
+   "email": "ronald.spencer@experis.us",
+   "linkedin": "linkedin.com/in/ronaldtspencer",
+   "crm_company": "milestones achieved, inc",
+   "crm_domain": "milestonesachieved.com",
+   "index_company": "Milestones Achieved, Inc",
+   "index_domain": "milestonesachieved.com",
+   "verify": {
+    "status": "invalid_mx",
+    "sub_status": "invalid_mx_records",
+    "is_valid": false,
+    "mx_domain": "experis.us"
+   },
+   "lookup": {
+    "company": "Milestones Achieved, Inc",
+    "domain": "milestonesachieved.com",
+    "work_email": "",
+    "title": "Founder & Owner",
+    "job_start": "2018-09-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-08-21"
+   }
+  },
+  {
+   "id": 3344619,
+   "name": "Steve Green",
+   "first": "Steve",
+   "last": "Green",
+   "title": "founder",
+   "email": "steve@netupnow.com",
+   "linkedin": "linkedin.com/in/stevegogreen",
+   "crm_company": "foodiechats",
+   "crm_domain": "foodiechats.com",
+   "index_company": "",
+   "index_domain": "foodiechats.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "netupnow.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "foodiechats.com",
+    "work_email": "steve@netupnow.com",
+    "title": "",
+    "job_start": null,
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-06"
+   }
+  },
+  {
+   "id": 1088906,
+   "name": "Scott Zeller",
+   "first": "Scott",
+   "last": "Zeller",
+   "title": "co-founder general counsel vice president business development",
+   "email": "scott.zeller@rallyme.com",
+   "linkedin": "linkedin.com/in/scott-zeller-39b6294",
+   "crm_company": "startup ready",
+   "crm_domain": "startupready.com",
+   "index_company": "Great Coach, Inc.",
+   "index_domain": "greatcoach.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "rallyme.com"
+   },
+   "lookup": {
+    "company": "Great Coach, Inc.",
+    "domain": "greatcoach.com",
+    "work_email": "scott.zeller@greatcoach.com",
+    "title": "Co-founder, General Counsel, Vp Of Business Development",
+    "job_start": "2018-02-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-05-07"
+   }
+  },
+  {
+   "id": 523686,
+   "name": "Ram Moskowitz",
+   "first": "Ram",
+   "last": "Moskowitz",
+   "title": "owner founder",
+   "email": "ram@newlooksurface.com",
+   "linkedin": "linkedin.com/in/ram-moskowitz-46057427",
+   "crm_company": "new look remodeling group",
+   "crm_domain": "seambi.com",
+   "index_company": "Seambi",
+   "index_domain": "seambi.com",
+   "verify": {
+    "status": "invalid_mx",
+    "sub_status": "invalid_mx_records",
+    "is_valid": false,
+    "mx_domain": "newlooksurface.com"
+   },
+   "lookup": {
+    "company": "Seambi",
+    "domain": "seambi.com",
+    "work_email": "ram.moskowitz@seambi.com",
+    "title": "Owner/founder",
+    "job_start": "2002-10-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-07-11"
+   }
+  },
+  {
+   "id": 1537946,
+   "name": "Joseph Waskiewicz",
+   "first": "Joseph",
+   "last": "Waskiewicz",
+   "title": "founder",
+   "email": "jwaskiewicz@ryde-tech.com",
+   "linkedin": "linkedin.com/in/joewask",
+   "crm_company": "ryde technologies",
+   "crm_domain": "ryderecruiting.com",
+   "index_company": "Ryde Technologies, LLC",
+   "index_domain": "rydesharing.com",
+   "verify": {
+    "status": "smtp_protocol",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "ryde-tech.com"
+   },
+   "lookup": {
+    "company": "Ryde Technologies, LLC",
+    "domain": "rydesharing.com",
+    "work_email": "",
+    "title": "Founder",
+    "job_start": "2017-03-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2020-06-13"
+   }
+  },
+  {
+   "id": 3347099,
+   "name": "Roger Quest",
+   "first": "Roger",
+   "last": "Quest",
+   "title": "founder chief executive officer",
+   "email": "roger@rogerquest.com",
+   "linkedin": "linkedin.com/in/rogerquest",
+   "crm_company": "vnet. mandalay",
+   "crm_domain": "vnet.com.mm",
+   "index_company": "Vnet. Mandalay",
+   "index_domain": "vnet.com.mm",
+   "verify": {
+    "status": "dead_server",
+    "sub_status": "missing_mx_records",
+    "is_valid": false,
+    "mx_domain": "rogerquest.com"
+   },
+   "lookup": {
+    "company": "Vnet. Mandalay",
+    "domain": "vnet.com.mm",
+    "work_email": "roger@rogerquest.com",
+    "title": "Founder & Chief Executive Officer",
+    "job_start": "2012-01-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-08-01"
+   }
+  },
+  {
+   "id": 1398834,
+   "name": "Michelle M.",
+   "first": "Michelle",
+   "last": "M.",
+   "title": "co-founder creative director",
+   "email": "michelle@axiomra.com",
+   "linkedin": "linkedin.com/in/michelle-mejia-socal",
+   "crm_company": "elev8 design studio",
+   "crm_domain": "elev8designstudio.com",
+   "index_company": "BriVal Multimedia Design Studio",
+   "index_domain": "argentcre.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "axiomra.com"
+   },
+   "lookup": {
+    "company": "BriVal Multimedia Design Studio",
+    "domain": "argentcre.com",
+    "work_email": "michelle@axiomra.com",
+    "title": "Founder/creative Director",
+    "job_start": "2024-04-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2026-08-18"
+   }
+  },
+  {
+   "id": 2015039,
+   "name": "Ji Bowlus",
+   "first": "Ji",
+   "last": "Bowlus",
+   "title": "founder chief executive officer",
+   "email": "jbowlus@g-omedia.com",
+   "linkedin": "linkedin.com/in/jibowlus",
+   "crm_company": "hello hapi",
+   "crm_domain": "hellohapi.com",
+   "index_company": "",
+   "index_domain": "gamesbeat.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "g-omedia.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "gamesbeat.com",
+    "work_email": "jbowlus@g-omedia.com",
+    "title": "",
+    "job_start": "2019-04-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-03"
+   }
+  },
+  {
+   "id": 3419316,
+   "name": "Laura Mills",
+   "first": "Laura",
+   "last": "Mills",
+   "title": "president founder",
+   "email": "laura.mills@marriott.com",
+   "linkedin": "linkedin.com/in/laura-m-b244b345",
+   "crm_company": "mila",
+   "crm_domain": "milasw.com",
+   "index_company": "MiLa Corporation",
+   "index_domain": "mila.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "marriott.com"
+   },
+   "lookup": {
+    "company": "MiLa Corporation",
+    "domain": "mila.com",
+    "work_email": "laura.mills@marriott.com",
+    "title": "President / Founder",
+    "job_start": "2011-04-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-06"
+   }
+  },
+  {
+   "id": 212205,
+   "name": "Mustafa Hassonjee",
+   "first": "Mustafa",
+   "last": "Hassonjee",
+   "title": "founder chief executive officer",
+   "email": "mh@triconeco.com",
+   "linkedin": "linkedin.com/in/mustafa-hassonjee-a2a73b17b",
+   "crm_company": "tricone consortium",
+   "crm_domain": "triconeconsortium.com",
+   "index_company": "Tricone Group",
+   "index_domain": "triconegroup.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "triconeco.com"
+   },
+   "lookup": {
+    "company": "Tricone Group",
+    "domain": "triconegroup.com",
+    "work_email": "mh@triconeco.com",
+    "title": "Founder And Ceo",
+    "job_start": "1996-12-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-07-26"
+   }
+  },
+  {
+   "id": 699347,
+   "name": "Ian Baek",
+   "first": "Ian",
+   "last": "Baek",
+   "title": "founder president organic skin care sheet mask cosmetics",
+   "email": "ianbaek@orgaid.com",
+   "linkedin": "linkedin.com/in/ianbaek",
+   "crm_company": "ianai",
+   "crm_domain": "ianai.co",
+   "index_company": "ianaiERP",
+   "index_domain": "ianaierp.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "orgaid.com"
+   },
+   "lookup": {
+    "company": "ianaiERP",
+    "domain": "ianaierp.com",
+    "work_email": "ianbaek@ianai.co",
+    "title": "Chief Executive Officer",
+    "job_start": "2024-01-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2026-08-02"
+   }
+  },
+  {
+   "id": 3027430,
+   "name": "Rachel Knepp",
+   "first": "Rachel",
+   "last": "Knepp",
+   "title": "co-founder",
+   "email": "rknepp@jammber.com",
+   "linkedin": "linkedin.com/in/rachelknepp",
+   "crm_company": "mozaic.io",
+   "crm_domain": "mozaic.io",
+   "index_company": "Mozaic",
+   "index_domain": "mozaic.io",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_problem",
+    "is_valid": false,
+    "mx_domain": "jammber.com"
+   },
+   "lookup": {
+    "company": "Mozaic",
+    "domain": "mozaic.io",
+    "work_email": "rknepp@mozaic.io",
+    "title": "Svp Sales & Growth",
+    "job_start": "2020-03-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-07"
+   }
+  }
+ ],
+ "consistent": [
+  {
+   "id": 2514933,
+   "name": "Mike Goff",
+   "first": "Mike",
+   "last": "Goff",
+   "title": "founder + principal",
+   "email": "mgoff@goffmarketing.com",
+   "linkedin": "linkedin.com/in/rmgoff",
+   "crm_company": "goff + marketing",
+   "crm_domain": "goffmarketing.com",
+   "index_company": "",
+   "index_domain": "goffmarketing.com",
+   "verify": {
+    "status": "antispam_system",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "goffmarketing.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "goffmarketing.com",
+    "work_email": "mgoff@goffmarketing.com",
+    "title": "",
+    "job_start": "2016-12-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-07-11"
+   }
+  },
+  {
+   "id": 841057,
+   "name": "Salar Hajimirsadeghi",
+   "first": "Salar",
+   "last": "Hajimirsadeghi",
+   "title": "founder chief executive officer",
+   "email": "salar@faliam.com",
+   "linkedin": "linkedin.com/in/salarhajimirsadeghi",
+   "crm_company": "faliam",
+   "crm_domain": "faliam.com",
+   "index_company": "Faliam",
+   "index_domain": "faliam.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "faliam.com"
+   },
+   "lookup": {
+    "company": "Faliam",
+    "domain": "faliam.com",
+    "work_email": "salar@faliam.com",
+    "title": "Founder, Ceo",
+    "job_start": "2021-10-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-08-08"
+   }
+  },
+  {
+   "id": 385846,
+   "name": "James Mayer",
+   "first": "James",
+   "last": "Mayer",
+   "title": "founder",
+   "email": "jamesmayer@mayerbranding.com",
+   "linkedin": "linkedin.com/in/james-mayer-b4740023",
+   "crm_company": "mayer branding",
+   "crm_domain": "mayerbranding.com",
+   "index_company": "Mayer Branding",
+   "index_domain": "mayerbranding.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "mayerbranding.com"
+   },
+   "lookup": {
+    "company": "Mayer Branding",
+    "domain": "mayerbranding.com",
+    "work_email": "",
+    "title": "Founder",
+    "job_start": "2015-06-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-07-17"
+   }
+  },
+  {
+   "id": 3381132,
+   "name": "Garrick Ballantine",
+   "first": "Garrick",
+   "last": "Ballantine",
+   "title": "chief revenue officer",
+   "email": "garrick.ballantine@ketiv.com",
+   "linkedin": "linkedin.com/in/garrickballantine",
+   "crm_company": "ketiv technologies, inc.",
+   "crm_domain": "ketiv.com",
+   "index_company": "KETIV Technologies, Inc.",
+   "index_domain": "ketiv.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "ketiv.com"
+   },
+   "lookup": {
+    "company": "KETIV Technologies, Inc.",
+    "domain": "ketiv.com",
+    "work_email": "garrick.ballantine@ketiv.com",
+    "title": "Chief Revenue Officer (cro)",
+    "job_start": "2023-08-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-08-17"
+   }
+  },
+  {
+   "id": 627311,
+   "name": "Karolina Facchin",
+   "first": "Karolina",
+   "last": "Facchin",
+   "title": "co-founder executive director",
+   "email": "lina@searchscientists.com",
+   "linkedin": "linkedin.com/in/karolina-facchin",
+   "crm_company": "search scientists",
+   "crm_domain": "searchscientists.com",
+   "index_company": "Search Scientists",
+   "index_domain": "searchscientists.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "searchscientists.com"
+   },
+   "lookup": {
+    "company": "Search Scientists",
+    "domain": "searchscientists.com",
+    "work_email": "lina@searchscientists.com",
+    "title": "Co-founder, Executive Director",
+    "job_start": "2012-05-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-06-28"
+   }
+  },
+  {
+   "id": 2675679,
+   "name": "Preeti Garg",
+   "first": "Preeti",
+   "last": "Garg",
+   "title": "chief operations officer co-founder",
+   "email": "preeti@fluencymedia.com",
+   "linkedin": "linkedin.com/in/preetigarg1",
+   "crm_company": "fluency media",
+   "crm_domain": "fluencymedia.com",
+   "index_company": "Fluency Media",
+   "index_domain": "fluencymedia.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "fluencymedia.com"
+   },
+   "lookup": {
+    "company": "Fluency Media",
+    "domain": "fluencymedia.com",
+    "work_email": "preeti@fluencymedia.com",
+    "title": "Coo And Co-founder",
+    "job_start": "2003-01-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-08-01"
+   }
+  },
+  {
+   "id": 65925,
+   "name": "Dana Fortin",
+   "first": "Dana",
+   "last": "Fortin",
+   "title": "chief revenue officer",
+   "email": "dfortin@embracehomeloans.com",
+   "linkedin": "linkedin.com/in/dana-fortin-62b0ba3",
+   "crm_company": "embrace home loans",
+   "crm_domain": "embracehomeloans.com",
+   "index_company": "",
+   "index_domain": "embracehomeloans.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "embracehomeloans.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "embracehomeloans.com",
+    "work_email": "dfortin@embracehomeloans.com",
+    "title": "",
+    "job_start": "2021-01-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-07-28"
+   }
+  },
+  {
+   "id": 695635,
+   "name": "Leslie Pratch",
+   "first": "Leslie",
+   "last": "Pratch",
+   "title": "chief executive officer founder",
+   "email": "leslie@pratchco.com",
+   "linkedin": "linkedin.com/in/lesliepratch",
+   "crm_company": "pratch & company",
+   "crm_domain": "pratchco.com",
+   "index_company": "Pratch & Company",
+   "index_domain": "pratchco.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_not_found",
+    "is_valid": false,
+    "mx_domain": "pratchco.com"
+   },
+   "lookup": {
+    "company": "Pratch & Company",
+    "domain": "pratchco.com",
+    "work_email": "leslie@pratchco.com",
+    "title": "Ceo And Founder",
+    "job_start": "1998-02-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-08-14"
+   }
+  },
+  {
+   "id": 1238330,
+   "name": "Jamie Elden",
+   "first": "Jamie",
+   "last": "Elden",
+   "title": "global chief revenue officer partner",
+   "email": "jamie.elden@listrak.com",
+   "linkedin": "linkedin.com/in/jamieelden",
+   "crm_company": "listrak",
+   "crm_domain": "listrak.com",
+   "index_company": "",
+   "index_domain": "listrak.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "listrak.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "listrak.com",
+    "work_email": "jelden@listrak.com",
+    "title": "",
+    "job_start": "2023-07-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-16"
+   }
+  },
+  {
+   "id": 2519416,
+   "name": "Peter Brassington",
+   "first": "Peter",
+   "last": "Brassington",
+   "title": "founder",
+   "email": "pbrassington@dataunveil.com",
+   "linkedin": "linkedin.com/in/peterbrassington",
+   "crm_company": "data unveil",
+   "crm_domain": "dataunveil.com",
+   "index_company": "Data Unveil",
+   "index_domain": "dataunveil.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "dataunveil.com"
+   },
+   "lookup": {
+    "company": "Data Unveil",
+    "domain": "dataunveil.com",
+    "work_email": "pbrassington@dataunveil.com",
+    "title": "Founder",
+    "job_start": "2020-03-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-07-05"
+   }
+  },
+  {
+   "id": 1104388,
+   "name": "Dawn Lyons",
+   "first": "Dawn",
+   "last": "Lyons",
+   "title": "co-founder asentiv bni executive director",
+   "email": "dawn@asentiv.com",
+   "linkedin": "linkedin.com/in/dawn-lyons-83b3323",
+   "crm_company": "asentiv global",
+   "crm_domain": "asentiv.com",
+   "index_company": "",
+   "index_domain": "asentiv.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "asentiv.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "asentiv.com",
+    "work_email": "dawn@asentiv.com",
+    "title": "",
+    "job_start": "2004-01-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-06-20"
+   }
+  },
+  {
+   "id": 476734,
+   "name": "Tim Midyett",
+   "first": "Tim",
+   "last": "Midyett",
+   "title": "co-founder co-owner",
+   "email": "tim.midyett@oxoptimal.com",
+   "linkedin": "linkedin.com/in/tim-midyett-b5a37aa",
+   "crm_company": "ox optimal",
+   "crm_domain": "oxoptimal.com",
+   "index_company": "Ox Optimal",
+   "index_domain": "oxoptimal.com",
+   "verify": {
+    "status": "ok",
+    "sub_status": "mailbox_ok",
+    "is_valid": true,
+    "mx_domain": "oxoptimal.com"
+   },
+   "lookup": {
+    "company": "Ox Optimal",
+    "domain": "oxoptimal.com",
+    "work_email": "tim.midyett@oxoptimal.com",
+    "title": "Co-founder And Co-owner",
+    "job_start": "2012-08-01",
+    "job_end": null,
+    "email_conf": 5,
+    "updated": "2026-08-29"
+   }
+  },
+  {
+   "id": 2210457,
+   "name": "Gordon Orr",
+   "first": "Gordon",
+   "last": "Orr",
+   "title": "managing director founder",
+   "email": "gordon.orr@quarkandlepton.com",
+   "linkedin": "linkedin.com/in/gordonorr",
+   "crm_company": "quark + lepton llc",
+   "crm_domain": "quarkandlepton.com",
+   "index_company": "Quark + Lepton LLC",
+   "index_domain": "quarkandlepton.com",
+   "verify": {
+    "status": "invalid_mx",
+    "sub_status": "missing_mx_ip",
+    "is_valid": false,
+    "mx_domain": "quarkandlepton.com"
+   },
+   "lookup": {
+    "company": "Quark + Lepton LLC",
+    "domain": "quarkandlepton.com",
+    "work_email": "gordon.orr@quarkandlepton.com",
+    "title": "Managing Director",
+    "job_start": "2015-10-01",
+    "job_end": null,
+    "email_conf": 75,
+    "updated": "2026-07-05"
+   }
+  },
+  {
+   "id": 3496414,
+   "name": "Ajai Shankar",
+   "first": "Ajai",
+   "last": "Shankar",
+   "title": "co-founder",
+   "email": "ajai.shankar@maximuslife.com",
+   "linkedin": "linkedin.com/in/ajai-shankar-3a285b17b",
+   "crm_company": "maximuslife",
+   "crm_domain": "maximuslife.com",
+   "index_company": "MaximusLife",
+   "index_domain": "maximuslife.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "maximuslife.com"
+   },
+   "lookup": {
+    "company": "MaximusLife",
+    "domain": "maximuslife.com",
+    "work_email": "ajai.shankar@maximuslife.com",
+    "title": "Co-founder",
+    "job_start": null,
+    "job_end": null,
+    "email_conf": 95,
+    "updated": "2026-08-21"
+   }
+  },
+  {
+   "id": 2821591,
+   "name": "Kelly James",
+   "first": "Kelly",
+   "last": "James",
+   "title": "president founder",
+   "email": "kelly@ridetrip.com",
+   "linkedin": "linkedin.com/in/kelly-james-a5882122",
+   "crm_company": "trip bikes",
+   "crm_domain": "ridetrip.com",
+   "index_company": "The Construct",
+   "index_domain": "ridetrip.com",
+   "verify": {
+    "status": "email_disabled",
+    "sub_status": "mailbox_problem",
+    "is_valid": false,
+    "mx_domain": "ridetrip.com"
+   },
+   "lookup": {
+    "company": "The Construct",
+    "domain": "ridetrip.com",
+    "work_email": "",
+    "title": "President",
+    "job_start": "2018-12-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-07-24"
+   }
+  },
+  {
+   "id": 1152615,
+   "name": "Yann Phung",
+   "first": "Yann",
+   "last": "Phung",
+   "title": "co-founder vice president operations",
+   "email": "yphung@paylease.com",
+   "linkedin": "linkedin.com/in/yann-phung-0874808",
+   "crm_company": "paylease",
+   "crm_domain": "paylease.com",
+   "index_company": "PayLease",
+   "index_domain": "paylease.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "paylease.com"
+   },
+   "lookup": {
+    "company": "PayLease",
+    "domain": "paylease.com",
+    "work_email": "pyann@paylease.com",
+    "title": "",
+    "job_start": "2003-05-01",
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-08-08"
+   }
+  },
+  {
+   "id": 1736379,
+   "name": "Russell Sails",
+   "first": "Russell",
+   "last": "Sails",
+   "title": "president co founder",
+   "email": "russell.s@onthebrinkmediagroup.com",
+   "linkedin": "linkedin.com/in/russell-sails-6b95018",
+   "crm_company": "on the brink media group llc",
+   "crm_domain": "onthebrinkmediagroup.com",
+   "index_company": "On The Brink Marketing Group, Inc.",
+   "index_domain": "onthebrinkmediagroup.com",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "onthebrinkmediagroup.com"
+   },
+   "lookup": {
+    "company": "On The Brink Marketing Group, Inc.",
+    "domain": "onthebrinkmediagroup.com",
+    "work_email": "russell.s@onthebrinkmediagroup.com",
+    "title": "President / Co Founder",
+    "job_start": "2009-07-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-16"
+   }
+  },
+  {
+   "id": 2912435,
+   "name": "Prateek Kumar",
+   "first": "Prateek",
+   "last": "Kumar",
+   "title": "co-founder head product",
+   "email": "pkumar@sway.dm",
+   "linkedin": "linkedin.com/in/prateekk2",
+   "crm_company": "swaydm",
+   "crm_domain": "sway.dm",
+   "index_company": "Stealth AI Startup",
+   "index_domain": "sway.dm",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "sway.dm"
+   },
+   "lookup": {
+    "company": "Stealth AI Startup",
+    "domain": "sway.dm",
+    "work_email": "pkumar@sway.dm",
+    "title": "Ai Builder",
+    "job_start": null,
+    "job_end": null,
+    "email_conf": 50,
+    "updated": "2026-07-21"
+   }
+  },
+  {
+   "id": 2570525,
+   "name": "Ramasubbu Venkatesh",
+   "first": "Ramasubbu",
+   "last": "Venkatesh",
+   "title": "co-founder chief executive officer",
+   "email": "venky@anvai.ai",
+   "linkedin": "linkedin.com/in/ramasubbu-venkatesh",
+   "crm_company": "anvai",
+   "crm_domain": "anvai.ai",
+   "index_company": "",
+   "index_domain": "anvai.ai",
+   "verify": {
+    "status": "ok_for_all",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "anvai.ai"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "anvai.ai",
+    "work_email": "ramasubbu.venkatesh@anvai.ai",
+    "title": "",
+    "job_start": "2021-01-01",
+    "job_end": null,
+    "email_conf": 25,
+    "updated": "2026-08-18"
+   }
+  },
+  {
+   "id": 3060033,
+   "name": "Rafael Babilonia",
+   "first": "Rafael",
+   "last": "Babilonia",
+   "title": "founder chief executive officer",
+   "email": "rafael@rbvaluesource.com",
+   "linkedin": "linkedin.com/in/rafael-babilonia",
+   "crm_company": "rb valuesource",
+   "crm_domain": "rbvaluesource.com",
+   "index_company": "",
+   "index_domain": "rbvaluesource.com",
+   "verify": {
+    "status": "unknown",
+    "sub_status": null,
+    "is_valid": false,
+    "mx_domain": "rbvaluesource.com"
+   },
+   "lookup": {
+    "company": "",
+    "domain": "rbvaluesource.com",
+    "work_email": "",
+    "title": "",
+    "job_start": "2024-04-01",
+    "job_end": null,
+    "email_conf": 0,
+    "updated": "2026-06-27"
+   }
+  }
+ ]
+}

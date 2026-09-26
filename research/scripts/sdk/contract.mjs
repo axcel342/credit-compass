@@ -1,0 +1,11 @@
+import fs from 'fs';
+const src = fs.readFileSync('node_modules/@graph8/sdk/dist/index.mjs', 'utf8');
+// internal operation map entries look like:  op_id: ["METHOD", "/path", "group", "member", "tier", "scope"],
+const re = /^\s*([a-z0-9_]+):\s*\["(GET|POST|PUT|PATCH|DELETE)",\s*"([^"]+)",\s*"([^"]*)",\s*"([^"]*)",\s*"([^"]*)",\s*"([^"]*)"\]/gm;
+const ops = {}; let m;
+while ((m = re.exec(src))) ops[`${m[2]} ${m[3]}`] = { id: m[1], tier: m[6], scope: m[7] };
+const need = `GET /usage/transactions|GET /usage|GET /workflows/executions|GET /workflows/executions/{execution_id}|POST /skills/{action_id}/execute|POST /workflows/{action_id}/execute|GET /enrichment/jobs/{job_id}|GET /enrichment/ai/batch/jobs/{job_id}/status|GET /enrichment/waterfall/jobs/{job_id}/progress|POST /enrichment/ai/validate-credits|POST /enrichment/waterfall/validate-credits|GET /enrichment/providers|GET /global-context/documents/analytics|GET /research-reports|GET /landing-pages|GET /webhooks/events|POST /webhooks|PATCH /webhooks/{webhook_id}|GET /webhooks/{webhook_id}/deliveries|GET /deals|GET /deals/{deal_id}|POST /deals|PATCH /deals/{deal_id}|GET /deals/pipelines|GET /contacts|GET /contacts/{contact_id}|GET /contacts/{contact_id}/engagement-summary|GET /lists|GET /lists/{list_id}/contacts|POST /objects|POST /objects/{object_slug}/attributes|POST /objects/{object_slug}/records|GET /objects/{object_slug}/records|PATCH /objects/{object_slug}/records/{record_id}|GET /objects/{object_slug}/records/{record_id}/history|POST /fields|PATCH /fields/{column_id}/values|POST /search/contacts|POST /search/contacts/save|POST /enrichment/list-routing/rules|POST /enrichment/list-routing/rules/preview|POST /voice/mcp-servers|GET /workflows/mcp-servers|POST /workflows|POST /app-pages|GET /analytics/outbound/email-metrics/by-step|GET /analytics/outbound/sequence-performance|POST /enrichment/verify-email|POST /enrichment/lookup/person|POST /workbench/tables|POST /workbench/tables/{table_id}/rows|POST /support/tickets`.split('|');
+let missing = 0;
+for (const k of need) { const o = ops[k]; if (!o) missing++; console.log((o ? 'OK  ' : 'MISS') + ' ' + k.padEnd(52) + (o ? `${o.tier.padEnd(11)} ${o.id}` : '')); }
+console.log(`\ncontract ops total: ${Object.keys(ops).length} | needed: ${need.length} | missing: ${missing}`);
+fs.writeFileSync('../sdk_ops.json', JSON.stringify(ops));

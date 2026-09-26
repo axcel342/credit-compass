@@ -1,0 +1,591 @@
+{
+ "search-contacts": {
+  "verb": "GET",
+  "path": "/contacts"
+ },
+ "search-companies": {
+  "verb": "GET",
+  "path": "/companies"
+ },
+ "lookup-person": {
+  "verb": "POST",
+  "path": "/enrichment/lookup/person"
+ },
+ "lookup-company": {
+  "verb": "POST",
+  "path": "/enrichment/lookup/company"
+ },
+ "find-contacts": {
+  "verb": "POST",
+  "path": "/search/contacts"
+ },
+ "find-companies": {
+  "verb": "POST",
+  "path": "/search/companies"
+ },
+ "build-list": {
+  "verb": "POST",
+  "path": "/search/contacts/save"
+ },
+ "create-contact": {
+  "verb": "POST",
+  "path": "/contacts"
+ },
+ "create-list": {
+  "verb": "POST",
+  "path": "/lists"
+ },
+ "add-to-list": {
+  "verb": "POST",
+  "path": "/lists/{args.list_id}/contacts"
+ },
+ "enrich": {
+  "verb": "POST",
+  "path": "/enrichment/enrich"
+ },
+ "sequences": {
+  "verb": "GET",
+  "path": "/sequences"
+ },
+ "add-to-sequence": {
+  "verb": "POST",
+  "path": "/sequences/{args.sequence_id}/contacts"
+ },
+ "create-sequence": {
+  "verb": "POST",
+  "path": "/sequences"
+ },
+ "sequence-preview": {
+  "verb": "GET",
+  "path": "/sequences/{args.sequence_id}/preview"
+ },
+ "update-sequence": {
+  "verb": "PATCH",
+  "path": "/sequences/{args.sequence_id}"
+ },
+ "update-sequence-step": {
+  "verb": "PATCH",
+  "path": "/sequences/{args.sequence_id}/steps/{args.step_id}"
+ },
+ "pause-sequence": {
+  "verb": "POST",
+  "path": "/sequences/{args.sequence_id}/pause"
+ },
+ "resume-sequence": {
+  "verb": "POST",
+  "path": "/sequences/{args.sequence_id}/resume"
+ },
+ "sequence-analytics": {
+  "verb": "GET",
+  "path": "/sequences/{args.sequence_id}/analytics"
+ },
+ "delete-sequence": {
+  "verb": "DELETE",
+  "path": "/sequences/{args.sequence_id}"
+ },
+ "campaigns": {
+  "verb": "GET",
+  "path": "/campaigns"
+ },
+ "campaign": {
+  "verb": "GET",
+  "path": "/campaigns/{args.campaign_id}"
+ },
+ "inbox-list": {
+  "verb": "GET",
+  "path": "/inbox"
+ },
+ "inbox-get": {
+  "verb": "GET",
+  "path": "/inbox/{args.reply_id}"
+ },
+ "inbox-assign": {
+  "verb": "POST",
+  "path": "/inbox/{args.reply_id}/assign?channel={args.channel}"
+ },
+ "inbox-tag": {
+  "verb": "POST",
+  "path": "/inbox/{args.reply_id}/tag?channel={args.channel}"
+ },
+ "inbox-draft": {
+  "verb": "GET",
+  "path": "/inbox/{args.reply_id}/draft"
+ },
+ "inbox-send": {
+  "verb": "POST",
+  "path": "/inbox/{args.reply_id}/send"
+ },
+ "sync-audience-list": {
+  "verb": "GET",
+  "path": "/audience-syncs"
+ },
+ "sync-audience-create": {
+  "verb": "POST",
+  "path": "/audience-syncs"
+ },
+ "sync-audience-update": {
+  "verb": "PATCH",
+  "path": "/audience-syncs/{args.config_id}"
+ },
+ "sync-audience-delete": {
+  "verb": "DELETE",
+  "path": "/audience-syncs/{args.config_id}"
+ },
+ "sync-audience-trigger": {
+  "verb": "POST",
+  "path": "/audience-syncs/{args.config_id}/trigger"
+ },
+ "sync-audience-runs": {
+  "verb": "GET",
+  "path": "/audience-syncs/{args.config_id}/runs"
+ },
+ "sync-audience-errors": {
+  "verb": "GET",
+  "path": "/audience-syncs/{args.config_id}/errors"
+ },
+ "sync-crm-list": {
+  "verb": "GET",
+  "path": "/crm-syncs"
+ },
+ "sync-crm-push": {
+  "verb": "POST",
+  "path": "/crm-syncs/{args.provider}/{args.entity}/push"
+ },
+ "sync-crm-fields": {
+  "verb": "GET",
+  "path": "/crm-syncs/{args.provider}/fields"
+ },
+ "sync-crm-status": {
+  "verb": "GET",
+  "path": "/crm-syncs/{args.provider}/status"
+ },
+ "list-pipelines": {
+  "verb": "GET",
+  "path": "/deals/pipelines"
+ },
+ "list-deals": {
+  "verb": "GET",
+  "path": "/deals"
+ },
+ "get-deal": {
+  "verb": "GET",
+  "path": "/deals/{args.deal_id}"
+ },
+ "create-deal": {
+  "verb": "POST",
+  "path": "/deals"
+ },
+ "update-deal": {
+  "verb": "PATCH",
+  "path": "/deals/{args.deal_id}"
+ },
+ "delete-deal": {
+  "verb": "DELETE",
+  "path": "/deals/{args.deal_id}"
+ },
+ "list-contact-deals": {
+  "verb": "GET",
+  "path": "/contacts/{args.contact_id}/deals"
+ },
+ "list-company-deals": {
+  "verb": "GET",
+  "path": "/companies/{args.company_id}/deals"
+ },
+ "list-tasks": {
+  "verb": "GET",
+  "path": "/tasks"
+ },
+ "list-contact-tasks": {
+  "verb": "GET",
+  "path": "/contacts/{args.contact_id}/tasks"
+ },
+ "create-task": {
+  "verb": "POST",
+  "path": "/contacts/{args.contact_id}/tasks"
+ },
+ "update-task": {
+  "verb": "PATCH",
+  "path": "/tasks/{args.task_id}"
+ },
+ "delete-task": {
+  "verb": "DELETE",
+  "path": "/tasks/{args.task_id}"
+ },
+ "list-notes": {
+  "verb": "GET",
+  "path": "/contacts/{args.contact_id}/notes"
+ },
+ "create-note": {
+  "verb": "POST",
+  "path": "/contacts/{args.contact_id}/notes"
+ },
+ "update-note": {
+  "verb": "PATCH",
+  "path": "/notes/{args.note_id}"
+ },
+ "delete-note": {
+  "verb": "DELETE",
+  "path": "/notes/{args.note_id}"
+ },
+ "list-fields": null,
+ "create-field": {
+  "verb": "POST",
+  "path": "/fields"
+ },
+ "set-field-value": {
+  "verb": "PATCH",
+  "path": "/fields/{args.column_id}/values"
+ },
+ "delete-field": {
+  "verb": "DELETE",
+  "path": "/fields/{args.column_id}"
+ },
+ "list-quotes": {
+  "verb": "GET",
+  "path": "/quotes"
+ },
+ "get-quote": {
+  "verb": "GET",
+  "path": "/quotes/{args.quote_id}"
+ },
+ "create-quote": {
+  "verb": "POST",
+  "path": "/quotes"
+ },
+ "update-quote": {
+  "verb": "PUT",
+  "path": "/quotes/{args.quote_id}"
+ },
+ "delete-quote": {
+  "verb": "DELETE",
+  "path": "/quotes/{args.quote_id}"
+ },
+ "duplicate-quote": {
+  "verb": "POST",
+  "path": "/quotes/{args.quote_id}/duplicate"
+ },
+ "edit-quote-draft": {
+  "verb": "POST",
+  "path": "/quotes/{args.quote_id}/edit-as-draft"
+ },
+ "send-quote": {
+  "verb": "POST",
+  "path": "/quotes/{args.quote_id}/send"
+ },
+ "list-quotable-products": {
+  "verb": "GET",
+  "path": "/quotable-products"
+ },
+ "get-quote-settings": {
+  "verb": "GET",
+  "path": "/quote-settings"
+ },
+ "list-contact-quotes": {
+  "verb": "GET",
+  "path": "/contacts/{args.contact_id}/quotes"
+ },
+ "list-company-quotes": {
+  "verb": "GET",
+  "path": "/companies/{args.company_id}/quotes"
+ },
+ "list-stage-pipelines": {
+  "verb": "GET",
+  "path": "/pipelines"
+ },
+ "get-stage-pipeline": {
+  "verb": "GET",
+  "path": "/pipelines/{args.pipeline_id}"
+ },
+ "list-stage-evidence": {
+  "verb": "GET",
+  "path": "/pipelines/evidence-library"
+ },
+ "create-stage-pipeline": {
+  "verb": "POST",
+  "path": "/pipelines"
+ },
+ "update-stage-pipeline": {
+  "verb": "PUT",
+  "path": "/pipelines/{args.pipeline_id}"
+ },
+ "delete-stage-pipeline": {
+  "verb": "DELETE",
+  "path": "/pipelines/{args.pipeline_id}"
+ },
+ "create-stage": {
+  "verb": "POST",
+  "path": "/pipelines/{args.pipeline_id}/stages"
+ },
+ "update-stage": {
+  "verb": "PUT",
+  "path": "/pipelines/{args.pipeline_id}/stages/{args.stage_id}"
+ },
+ "delete-stage": {
+  "verb": "DELETE",
+  "path": "/pipelines/{args.pipeline_id}/stages/{args.stage_id}"
+ },
+ "reorder-stages": {
+  "verb": "PUT",
+  "path": "/pipelines/{args.pipeline_id}/stages/reorder"
+ },
+ "suggest-stage-pipeline": {
+  "verb": "POST",
+  "path": "/pipelines/suggest"
+ },
+ "create-stage-pipeline-from-suggestion": {
+  "verb": "POST",
+  "path": "/pipelines/from-suggestion"
+ },
+ "workflow-list": {
+  "verb": "GET",
+  "path": "/workflows"
+ },
+ "workflow-get": {
+  "verb": "GET",
+  "path": "/workflows/{args.workflow_id}"
+ },
+ "workflow-create": {
+  "verb": "POST",
+  "path": "/workflows"
+ },
+ "workflow-update": {
+  "verb": "PUT",
+  "path": "/workflows/{args.workflow_id}"
+ },
+ "workflow-delete": {
+  "verb": "DELETE",
+  "path": "/workflows/{args.workflow_id}"
+ },
+ "workflow-validate": {
+  "verb": "POST",
+  "path": "/workflows/validate"
+ },
+ "workflow-execute": {
+  "verb": "POST",
+  "path": "/workflows/{args.workflow_id}/execute"
+ },
+ "workflow-get-execution": {
+  "verb": "GET",
+  "path": "/workflows/executions/{args.execution_id}"
+ },
+ "workflow-pause-execution": {
+  "verb": "POST",
+  "path": "/workflows/executions/{args.execution_id}/pause"
+ },
+ "workflow-resume-execution": {
+  "verb": "POST",
+  "path": "/workflows/executions/{args.execution_id}/resume"
+ },
+ "workflow-stop-execution": {
+  "verb": "POST",
+  "path": "/workflows/executions/{args.execution_id}/stop"
+ },
+ "workflow-trigger-status": {
+  "verb": "GET",
+  "path": "/workflows/{args.workflow_id}/trigger-status"
+ },
+ "workflow-reset-trigger": {
+  "verb": "POST",
+  "path": "/workflows/{args.workflow_id}/trigger-reset"
+ },
+ "workflow-node-types": {
+  "verb": "GET",
+  "path": "/workflows/node-types/schema"
+ },
+ "workflow-list-slack-users": {
+  "verb": "GET",
+  "path": "/workflows/integrations/slack/users"
+ },
+ "workflow-list-slack-channels": {
+  "verb": "GET",
+  "path": "/workflows/integrations/slack/channels"
+ },
+ "workflow-list-roam-users": {
+  "verb": "GET",
+  "path": "/workflows/integrations/roam/users"
+ },
+ "workflow-list-roam-groups": {
+  "verb": "GET",
+  "path": "/workflows/integrations/roam/groups"
+ },
+ "workflow-list-mcp-servers": {
+  "verb": "GET",
+  "path": "/workflows/mcp-servers"
+ },
+ "workflow-list-dispositions": {
+  "verb": "GET",
+  "path": "/workflows/dispositions"
+ },
+ "workflow-list-form-fields": {
+  "verb": "GET",
+  "path": "/workflows/forms/{args.form_id}/fields"
+ },
+ "skill-list": {
+  "verb": "GET",
+  "path": "/skills"
+ },
+ "skill-get": {
+  "verb": "GET",
+  "path": "/skills/{args.skill_id}"
+ },
+ "skill-get-variables": {
+  "verb": "GET",
+  "path": "/skills/{args.skill_id}/variables"
+ },
+ "skill-list-models": {
+  "verb": "GET",
+  "path": "/skills/models"
+ },
+ "skill-list-templates": {
+  "verb": "GET",
+  "path": "/skills/templates"
+ },
+ "skill-create-llm": {
+  "verb": "POST",
+  "path": "/skills"
+ },
+ "skill-create-api": {
+  "verb": "POST",
+  "path": "/skills"
+ },
+ "skill-create-from-template": {
+  "verb": "POST",
+  "path": "/skills/from-template"
+ },
+ "skill-create-from-node": {
+  "verb": "POST",
+  "path": "/skills/from-node"
+ },
+ "skill-update": {
+  "verb": "PUT",
+  "path": "/skills/{args.skill_id}"
+ },
+ "skill-delete": {
+  "verb": "DELETE",
+  "path": "/skills/{args.skill_id}"
+ },
+ "skill-validate": {
+  "verb": "POST",
+  "path": "/skills/validate"
+ },
+ "skill-execute": {
+  "verb": "POST",
+  "path": "/skills/{args.skill_id}/execute"
+ },
+ "voice-call-transcript": {
+  "verb": "GET",
+  "path": "/voice/dialer/calls/{args.room_name}/transcript"
+ },
+ "voice-list-calls": {
+  "verb": "GET",
+  "path": "/voice/dialer/calls"
+ },
+ "voice-list-calls-for-contact": {
+  "verb": "GET",
+  "path": "/voice/dialer/calls"
+ },
+ "voice-list-calls-for-sdr": {
+  "verb": "GET",
+  "path": "/voice/dialer/calls"
+ },
+ "intent-stats": {
+  "verb": "GET",
+  "path": "/intent/stats"
+ },
+ "intent-list-keywords": {
+  "verb": "POST",
+  "path": "/intent/keywords/list"
+ },
+ "intent-create-from-domain": {
+  "verb": "POST",
+  "path": "/intent/keywords/create-from-domain"
+ },
+ "intent-delete-keyword": {
+  "verb": "DELETE",
+  "path": "/intent/keywords/{args.keyword_id}"
+ },
+ "intent-keyword-companies": {
+  "verb": "POST",
+  "path": "/intent/keywords/{args.keyword_id}/companies"
+ },
+ "intent-keyword-contacts": {
+  "verb": "POST",
+  "path": "/intent/keywords/{args.keyword_id}/contacts"
+ },
+ "intent-keyword-urls": {
+  "verb": "POST",
+  "path": "/intent/keywords/{args.keyword_id}/urls"
+ },
+ "intent-pages-by-domain": {
+  "verb": "POST",
+  "path": "/intent/pages-by-domain"
+ },
+ "intent-search-pages": {
+  "verb": "POST",
+  "path": "/intent/pages/search"
+ },
+ "intent-page-visitors": {
+  "verb": "POST",
+  "path": "/intent/pages/visitors"
+ },
+ "intent-page-contacts": {
+  "verb": "POST",
+  "path": "/intent/pages/contacts"
+ },
+ "intent-page-visitor-counts": {
+  "verb": "POST",
+  "path": "/intent/pages/visitor-counts"
+ },
+ "intent-url-companies": {
+  "verb": "POST",
+  "path": "/intent/url-companies"
+ },
+ "studio-global-context": {
+  "verb": "GET",
+  "path": "/global-context/documents"
+ },
+ "studio-icps": {
+  "verb": "GET",
+  "path": "/icps"
+ },
+ "studio-personas": {
+  "verb": "GET",
+  "path": "/personas"
+ },
+ "studio-intelligence-data": {
+  "verb": "GET",
+  "path": "/intelligence-data"
+ },
+ "studio-research-reports": {
+  "verb": "GET",
+  "path": "/research-reports"
+ },
+ "list-meetings": {
+  "verb": "GET",
+  "path": "/inbox/meetings"
+ },
+ "get-meeting": {
+  "verb": "GET",
+  "path": "/inbox/meetings/{args.meeting_id}"
+ },
+ "logs": {
+  "verb": "GET",
+  "path": "/logs"
+ },
+ "usage": {
+  "verb": "GET",
+  "path": "/usage"
+ },
+ "usage-transactions": {
+  "verb": "GET",
+  "path": "/usage/transactions"
+ },
+ "webhooks": {
+  "verb": "GET",
+  "path": "/webhooks"
+ },
+ "webhooks-events": {
+  "verb": "GET",
+  "path": "/webhooks/events"
+ }
+}

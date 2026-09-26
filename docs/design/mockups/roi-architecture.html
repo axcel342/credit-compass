@@ -1,0 +1,40 @@
+<h2>Where would ROI Advisor live?</h2>
+<p class="subtitle">Based on what was tested live today. Green = inside graph8 (native), blue = our small external engine.</p>
+
+<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px">
+  <div style="flex:1;min-width:300px;border:2px solid #2e7d32;border-radius:10px;padding:12px">
+    <div class="label" style="color:#2e7d32">Inside graph8 (what the user sees)</div>
+    <div style="border:1px solid #c8e6c9;border-radius:8px;padding:8px;margin:8px 0"><b>① ROI dashboard = an App Page</b><br>graph8 hosts it in-app (sandboxed frame, editable by chat). It reads a <b>custom object</b> or <b>Workbench table</b>, the only two source types available today, which is where our engine writes the numbers.<br><span style="color:#b26a00">⚠ Generating the page uses graph8's AI, which is down today; needs a retest.</span></div>
+    <div style="border:1px solid #c8e6c9;border-radius:8px;padding:8px;margin:8px 0"><b>② Pre-spend advisor = native guardrails</b><br>graph8 has no plug-in slot in its Enrich dialog. Instead we write an <b>"ROI fit"</b> field per contact, and graph8's own <b>list-routing rules</b>, <b>enrichment run conditions</b> and <b>qualify-first pipelines</b> skip low-ROI records automatically. The advice gets enforced, with no pop-up.</div>
+    <div style="border:1px solid #c8e6c9;border-radius:8px;padding:8px;margin:8px 0"><b>③ Weekly recap = a graph8 workflow</b><br>Scheduled trigger → pull findings (Workbench rows or our MCP tool) → <b>Slack</b> / <b>email</b> nodes. All native node types.</div>
+    <div style="border:1px solid #c8e6c9;border-radius:8px;padding:8px;margin:8px 0"><b>④ Ask it anything = our engine registered as an MCP server</b><br>Orgs can register custom MCP servers, so graph8 workflows and agents can call "cost per meeting for fintech VPs?" as a tool.</div>
+  </div>
+
+  <div style="flex:0 0 60px;display:flex;align-items:center;justify-content:center;font-size:24px">⇄</div>
+
+  <div style="flex:1;min-width:280px;border:2px solid #1565c0;border-radius:10px;padding:12px">
+    <div class="label" style="color:#1565c0">External ROI engine (small service)</div>
+    <p style="margin:6px 0">Needed because graph8's hosted app runtime <b>doesn't exist yet</b> (its own API says so).</p>
+    <ol style="margin:6px 0 6px 18px;padding:0">
+      <li><b>Collect spend:</b> credit ledger + job and run records (captured as they happen)</li>
+      <li><b>Collect outcomes:</b> webhooks (deals ✔ tested live), engagement summaries per contact, analytics</li>
+      <li><b>Attribute:</b> charge → run → contact → list / segment / step / channel</li>
+      <li><b>Compute:</b> cost per meeting / deal; waste; findings with confidence</li>
+      <li><b>Write back</b> to graph8: custom object (dashboard), ROI-fit field (guardrails), Workbench (recap)</li>
+    </ol>
+  </div>
+</div>
+
+<h3 style="margin-top:16px">What the live tests showed about the data</h3>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+  <tr style="text-align:left;border-bottom:1px solid #ccc"><th>Data</th><th>Result</th><th>Usable for ROI?</th></tr>
+  <tr><td>Credit ledger</td><td>Service, amount, time, token counts. No list or contact reference.</td><td>✅ cost side, needs joining</td></tr>
+  <tr><td>Skill / workflow runs</td><td><b>12 of 14</b> skill charges matched a run exactly by token count, and through it a contact or company</td><td>✅ exact, if run IDs are captured as they happen (they can't be listed afterwards)</td></tr>
+  <tr><td>Onboarding research docs</td><td>graph8's own records cover <b>60 of 860</b> credits; all 23 docs never used</td><td>⚠ approximate (time-window)</td></tr>
+  <tr><td>Enrichment jobs</td><td>Status by job ID; no history list; the enrichment dashboard says cost = 0</td><td>⚠ capture as it happens</td></tr>
+  <tr><td>API request log</td><td>Only the last 100 requests</td><td>❌ not a durable source</td></tr>
+  <tr><td>Deals (outcomes)</td><td>[sim] deal showed up in deal and team analytics instantly; <code>deal.created/updated/stage_changed</code> webhooks fired</td><td>✅ (note: <code>deal.won</code> did <b>not</b> fire)</td></tr>
+  <tr><td>Per-contact engagement</td><td>Emails, calls, meetings, visits, downloads per contact/company</td><td>✅ (zeros here; needs real sends)</td></tr>
+  <tr><td>Segments</td><td>Seniority, department, industry, size on every contact and company</td><td>✅</td></tr>
+</table>
+<p class="subtitle" style="margin-top:10px">Does this split between inside and outside graph8 work for you? Details and new add-on ideas are in the terminal.</p>

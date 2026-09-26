@@ -1,0 +1,8 @@
+{"formula": "{{udo_roi_fit_11e946f0}} = \"high\""}
+{"formula": "EQ({{udo_roi_fit_11e946f0}}, \"high\")"}
+{"formula": "IF({{udo_roi_fit_11e946f0}} = \"high\", true, false)"}
+{"formula": "CONTAINS({{udo_roi_fit_11e946f0}}, \"high\")"}
+{"formula": "NOT(EQ({{udo_roi_fit_11e946f0}}, \"low\"))"}
+{"formula": "{{udo_roi_fit_11e946f0}} <> \"low\""}
+{"formula": "ISBLANK({{udo_roi_fit_11e946f0}})"}
+{"formula": "{{udo_roi_fit_11e946f0}}"}
