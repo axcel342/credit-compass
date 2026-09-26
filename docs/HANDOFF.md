@@ -138,3 +138,13 @@ Delivery results (`GET /webhooks/{id}/deliveries`): all three deliveries recorde
 - `status` was `"completed"`, `trigger_type` `"manual"`, `runtime_type` `"workflow"`, `error_message` `null`.
 - On `deal.created`, `amount_delta` is `null`, `changed_fields` is an empty string, and `company_name`/`pipeline_name` were empty strings.
 - ID fields (`deal_id`, `company_id`, `stage_id`, `to_stage_id`, `from_stage_id`, `pipeline_id`, `owner_id`, `action_id`, `workflow_id`, `execution_id`) are strings; `company_id` is a string even though contact IDs are numbers.
+
+## 11. MCP from graph8: result
+
+**Steps 1–6 passed (2026-09-26, Task 4 risk probe).** The MCP server is built and locally verified: the auth tests pass (4/4), streamable HTTP `POST /api/mcp` `tools/list` returns the `ping` tool, a request without the bearer token returns 401, and `/api/sse` correctly reports `redisUrl is required` until a Redis URL is configured. The Upstash add is the only thing outstanding.
+
+**Blocked at Redis (brief Step 7):** `npx vercel integration add upstash/upstash-kv` failed with Vercel API 422 `no_eligible_plan` and opened a browser checkout; no `REDIS_URL`/`KV_URL` was created and the CLI lists only paid plans. Decision: the user will add the free Upstash Redis from the browser later, and it is not blocking the build.
+
+**Fallback in force until then (spec §6.4):** graph8 cannot call the MCP server. The MCP server serves outside agents over streamable HTTP; inside graph8, answers live in the `#roi-advisor` channel and the `roi_*` custom objects.
+
+**To resume:** once `REDIS_URL`/`KV_URL` exists in the Vercel project (names only; then `npx vercel deploy --prod`), registration can proceed by running the already-created `scripts/register-mcp.ts`, then the graph8 `[sim] ROI Advisor MCP test` probe workflow (brief Steps 8–10).
