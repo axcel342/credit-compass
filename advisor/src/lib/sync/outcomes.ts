@@ -57,7 +57,8 @@ export function outcomeFromEvent(e: WebhookEnvelope, contacts?: Map<number, Cont
   const contactId = Number(pick(d, "contact_id", "contact.id")) || null;
   const simulated = pick(d, "simulated") === true;
   return {
-    extId: e.id ?? `${e.event}:${e.timestamp}:${contactId}`, type, occurredAt: String(pick(d, "occurred_at") ?? e.timestamp), contactId,
+    extId: e.id ?? `${e.event}:${e.timestamp}:${contactId}`, type,
+    occurredAt: String(pick(d, "occurred_at", "occurredAt", "timestamp") ?? e.timestamp ?? new Date().toISOString()), contactId,
     companyId: Number(pick(d, "company_id", "company.id")) || null, dealId: (pick(d, "deal_id") as string | null) ?? null,
     amount: Number(pick(d, "amount")) || null, listId: Number(pick(d, "list_id", "audience_id")) || null,
     sequenceId: (pick(d, "sequence_id", "sequence.id") as string | null) ?? null, step: Number(pick(d, "step", "step_order")) || null,

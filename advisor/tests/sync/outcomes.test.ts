@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { FakeG8 } from "../helpers/fake-client";
 import { OPS } from "@/lib/g8/ops";
 import { pollDealOutcomes, outcomeFromEvent } from "@/lib/sync/outcomes";
+import type { WebhookEnvelope } from "@/lib/webhooks/verify";
 import { loadFixture } from "../fixtures";
 
 const won = loadFixture<{ data: Record<string, unknown> }>("graph8/deal_won.json").data;
@@ -31,6 +32,13 @@ describe("outcomeFromEvent", () => {
   });
   it("ignores events that aren't outcomes", () =>
     expect(outcomeFromEvent({ id: "e", event: "task.created", timestamp: "2026-09-26T10:00:00Z", org_id: "o", data: {} })).toBeNull());
+  it("falls back to ingest time when the envelope has no timestamp and no occurred_at", () => {
+    const event = { id: "evt_no_ts", event: "engagement.email_sent", org_id: "o", data: { contact_id: 5 } } as unknown as WebhookEnvelope;
+    const o = outcomeFromEvent(event);
+    expect(o).not.toBeNull();
+    expect(o!.occurredAt).not.toBe("undefined");
+    expect(Number.isNaN(Date.parse(o!.occurredAt))).toBe(false);
+  });
 });
 
 describe("pollDealOutcomes close_date handling", () => {

@@ -33,7 +33,6 @@ export interface GuardablePipeline { id: string; name: string; configRef: string
 export async function ensurePipeline(c: G8Caller, listId: number): Promise<GuardablePipeline> {
   const existing = (await c.call<{ items: Pipeline[] }>(OPS.listListPipelines, { path: { list_id: listId } })).items ?? [];
   const p = existing.find((x) => x.name === "Verified emails")
-    ?? existing.find((x) => x.steps?.some((s) => s.type === "waterfall" && s.config_ref))
     ?? await c.call<Pipeline>(OPS.createPipelineFromTemplate, { path: { list_id: listId }, body: { template_key: "verified_emails" } });
   const step = (p.steps ?? []).find((s) => s.type === "waterfall");
   if (!step?.config_ref) throw new Error("The pipeline has no email-finder step to guard.");

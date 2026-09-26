@@ -60,7 +60,9 @@ export async function runSync(deps: { c: G8Caller; now?: string; contacts?: Map<
       unusedDocs: await fetchUnusedDocs(deps.c), onboardingCredits });
     const existingFindings = (await s.findings.list()).map((r) => valuesToFinding(r.values));
     const merged = mergeFindings(fresh2, existingFindings);
+    const mergedIds = new Set(merged.map((f) => f.extId));
     for (const f of merged) await s.findings.upsert(findingToValues(f));
+    for (const f of existingFindings) if (!mergedIds.has(f.extId)) await s.findings.upsert(findingToValues({ ...f, status: "applied" }));
 
     return { newLedgerRows: fresh.length, charges: real.length, coverage: coverage(real), findings: merged.length };
   } finally {

@@ -14,6 +14,10 @@ describe("pre-spend", () => {
     expect(classifyFit({ rate: 0.05, orgRate: 0.05, n: 10, consistency: "ok" })).toBe("medium");
     expect(classifyFit({ rate: 0.5, orgRate: 0.05, n: 2, consistency: "ok" })).toBe("unknown");
   });
+  it("treats a zero org rate as insufficient evidence instead of calling everything high", () => {
+    expect(classifyFit({ rate: 0.1, orgRate: 0, n: 10, consistency: "ok" })).toBe("unknown");
+    expect(classifyFit({ rate: 0.1, orgRate: 0, n: 10, consistency: "flagged" })).toBe("low");
+  });
   it("calibrates from the real AI enrichment gap (quoted 37, charged 50)", () => {
     expect(calibrationFactor([{ quoted: 37, actual: 50 }])).toBeCloseTo(1.351, 3);
     expect(calibrationFactor([])).toBe(1);

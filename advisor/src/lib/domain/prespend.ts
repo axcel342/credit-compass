@@ -7,6 +7,7 @@ export function smoothedRate(meetings: number, reached: number, orgRate: number,
 export function classifyFit(p: { rate: number; orgRate: number; n: number; consistency: "ok" | "flagged" | "unknown" }): "high" | "medium" | "low" | "unknown" {
   if (p.consistency === "flagged") return "low";
   if (p.n < 3) return "unknown";
+  if (p.orgRate <= 0) return "unknown";
   if (p.rate >= 1.5 * p.orgRate) return "high";
   if (p.rate <= 0.5 * p.orgRate) return "low";
   return "medium";

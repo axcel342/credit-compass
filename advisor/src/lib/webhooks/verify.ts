@@ -14,6 +14,10 @@ export function verifyDelivery(rawBody: string, headers: Headers, secret: string
   const provided = sigHeader.startsWith("sha256=") ? sigHeader.slice(7) : sigHeader;
   const a = Buffer.from(expected, "utf8"), b = Buffer.from(provided, "utf8");
   if (a.length !== b.length || !timingSafeEqual(a, b)) return { ok: false, reason: "signature mismatch" };
-  try { return { ok: true, event: JSON.parse(rawBody) as WebhookEnvelope }; }
-  catch { return { ok: false, reason: "invalid JSON" }; }
+  try {
+    const event = JSON.parse(rawBody) as WebhookEnvelope;
+    if (typeof event?.id !== "string" || !event.id || typeof event?.event !== "string" || !event.event)
+      return { ok: false, reason: "invalid envelope" };
+    return { ok: true, event };
+  } catch { return { ok: false, reason: "invalid JSON" }; }
 }

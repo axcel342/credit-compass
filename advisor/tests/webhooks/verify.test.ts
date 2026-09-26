@@ -27,4 +27,10 @@ describe("verifyDelivery", () => {
     expect(verifyDelivery(body, headersFor(now, body, "other"), secret, now).ok).toBe(false);
     expect(verifyDelivery(body, new Headers(), secret, now).ok).toBe(false);
   });
+  it("rejects a signed body whose JSON lacks id or event", () => {
+    const noId = JSON.stringify({ event: "deal.created", timestamp: "2026-09-26T15:05:47Z", org_id: "org_x", data: {} });
+    expect(verifyDelivery(noId, headersFor(now, noId), secret, now)).toEqual({ ok: false, reason: "invalid envelope" });
+    const noEvent = JSON.stringify({ id: "evt_1", timestamp: "2026-09-26T15:05:47Z", org_id: "org_x", data: {} });
+    expect(verifyDelivery(noEvent, headersFor(now, noEvent), secret, now)).toEqual({ ok: false, reason: "invalid envelope" });
+  });
 });

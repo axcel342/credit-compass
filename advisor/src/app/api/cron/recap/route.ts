@@ -10,7 +10,8 @@ export const runtime = "nodejs";
 export const maxDuration = 120;
 
 export async function GET(req: Request): Promise<Response> {
-  if (req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) return new Response("unauthorized", { status: 401 });
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return new Response("unauthorized", { status: 401 });
   const d = await loadDashboardData();
   const now = Date.now(), week = 7 * 86_400_000;
   const inWeek = (iso: string, k: number) => { const t = toMs(iso); return t > now - (k + 1) * week && t <= now - k * week; };

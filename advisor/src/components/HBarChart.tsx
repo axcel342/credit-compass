@@ -1,5 +1,5 @@
 import { linearScale } from "@/lib/dashboard/scale";
-export interface Bar { label: string; value: number; note?: string }
+export interface Bar { label: string; value: number; note?: string; simulated?: boolean }
 export function HBarChart({ rows, max, avg, unit, labelW = 190, ariaLabel }: { rows: Bar[]; max: number; avg?: number; unit: string; labelW?: number; ariaLabel: string }) {
   const W = 620, valW = 64, rowH = 30, barH = 14, top = 6;
   const H = top + rows.length * rowH + (avg ? 22 : 6);
@@ -12,7 +12,7 @@ export function HBarChart({ rows, max, avg, unit, labelW = 190, ariaLabel }: { r
         {rows.map((r, i) => { const y = top + i * rowH + (rowH - barH) / 2 - 4; const w = Math.max(2, sx(r.value) - labelW); return (
           <g key={r.label}>
             <title>{`${r.label}: ${Math.round(r.value).toLocaleString("en-US")} ${unit}${r.note ? ` · ${r.note}` : ""}`}</title>
-            <text x={labelW - 10} y={y + barH / 2 + 4} textAnchor="end">{r.label}</text>
+            <text x={labelW - 10} y={y + barH / 2 + 4} textAnchor="end">{`${r.simulated ? "[sim] " : ""}${r.label}`}</text>
             <path d={path(labelW, y, w, barH)} fill="var(--series)" />
             <text x={labelW + w + 6} y={y + barH / 2 + 4} className="val">{Math.round(r.value).toLocaleString("en-US")}</text>
           </g>); })}

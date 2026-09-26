@@ -26,9 +26,9 @@ export default async function Overview() {
       </div>
       <div className="two">
         <div className="stack">
-          <HBarChart ariaLabel="Credits by service" unit="credits" max={Math.max(1, ...byService.map((s) => s.credits))} rows={byService.map((s) => ({ label: s.value, value: s.credits }))} labelW={170} />
+          <HBarChart ariaLabel="Credits by service" unit="credits" max={Math.max(1, ...byService.map((s) => s.credits))} rows={byService.map((s) => ({ label: s.value, value: s.credits, simulated: s.simulated }))} labelW={170} />
           {byList.length > 0 && <HBarChart ariaLabel="Credits per meeting by list" unit="credits per meeting" avg={org?.costPerMeeting ?? undefined}
-            max={Math.max(...byList.map((s) => s.costPerMeeting ?? 0)) * 1.05} rows={byList.map((s) => ({ label: `List ${s.value}`, value: s.costPerMeeting ?? 0, note: `${s.meetings} meetings` }))} />}
+            max={Math.max(...byList.map((s) => s.costPerMeeting ?? 0)) * 1.05} rows={byList.map((s) => ({ label: `List ${s.value}`, value: s.costPerMeeting ?? 0, note: `${s.meetings} meetings`, simulated: s.simulated }))} />}
         </div>
         <aside className="advisor"><div className="advisor-head"><h3>Advisor</h3><span className="muted">{open.length} open</span></div>
           {open.map((f) => <FindingCard key={f.extId} f={f} />)}
