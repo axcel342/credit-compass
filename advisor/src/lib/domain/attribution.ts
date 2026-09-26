@@ -45,8 +45,9 @@ export function attributeCharges(input: { ledger: LedgerRow[]; runs: Run[]; wind
           explanation: label(r), result: o.result, isWaste: o.waste !== null, wasteReason: o.waste };
       }
     }
-    const w = windowRuns.find((x) => x.service === row.service && t >= toMs(x.startedAt!) &&
-      t <= (x.completedAt ? toMs(x.completedAt) + WINDOW_TAIL_MS : toMs(x.startedAt!) + OPEN_RUN_MS));
+    const w = windowRuns.filter((x) => x.service === row.service && t >= toMs(x.startedAt!) &&
+      t <= (x.completedAt ? toMs(x.completedAt) + WINDOW_TAIL_MS : toMs(x.startedAt!) + OPEN_RUN_MS))
+      .sort((a, b) => toMs(b.startedAt!) - toMs(a.startedAt!))[0];
     if (w) {
       const o = outcomeOf(w);
       return { ...base, method: methodFor(w), runExtId: w.extId, listId: w.listId ?? null, contactId: w.contactIds?.[0] ?? null,
