@@ -31,7 +31,7 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 | Risk | Result |
 |---|---|
 | Webhook receiver (Task 3) | **PASS.** Real `deal.created`, `deal.stage_changed` and `workflow.execution_completed` deliveries verified with signatures and stored. `deal.updated` never fires (see §10). |
-| MCP from graph8 (Task 4) | **Deferred pending Redis.** Steps 1–6 passed (auth, `tools/list`, SSE reports "redisUrl is required"); registration is blocked at the Upstash add. Spec §6.4 fallback is in force: outside agents use streamable HTTP; inside graph8, answers live in `#roi-advisor` and the `roi_*` custom objects. |
+| MCP from graph8 (Task 4) | **PASS.** Registered as SSE server `d96d0ab1-84ff-46e9-a80f-3361c07c8765`; the `[sim] ROI Advisor MCP test` workflow called `ping` over SSE (execution `99cd7178-0ef7-440a-a00c-f276689459dd`, 0 credits, output "ROI Advisor is up"). The §6.4 fallback is not needed. |
 
 ### Live numbers
 
@@ -43,7 +43,7 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 
 ### Known gaps
 
-- SSE / graph8-registered MCP pending Redis (fallback in force; registration is deliberately out of the thin slice).
+- ~~SSE / graph8-registered MCP pending Redis~~ Resolved 2026-09-26: registered and probed live (§11). MCP tool-node argument passing for tools with required inputs is untested (`ping` takes none).
 - The sim seed spans 8 weeks but stats use the last 30 days, so dashboard cost-per-meeting is a partial sample of the seeded targets.
 - Dashboard deep links show contact/deal IDs rather than `app.graph8.com` URLs.
 - The refund send path is built and confirm-gated but has not been exercised (0 support requests sent).
@@ -183,13 +183,15 @@ Delivery results (`GET /webhooks/{id}/deliveries`): all three deliveries recorde
 
 ## 11. MCP from graph8: result
 
-**Steps 1–6 passed (2026-09-26, Task 4 risk probe).** The MCP server is built and locally verified: the auth tests pass (4/4), streamable HTTP `POST /api/mcp` `tools/list` returns the `ping` tool, a request without the bearer token returns 401, and `/api/sse` correctly reports `redisUrl is required` until a Redis URL is configured. The Upstash add is the only thing outstanding.
+**PASS (2026-09-26, Task 4 risk probe).** Steps 1–6 held (auth tests 4/4; streamable HTTP `POST /api/mcp` `tools/list` returns `ping`; missing bearer token → 401). After the user added Upstash Redis from the browser, live validation found one real bug and it was fixed: `mcp-handler@1.1.0` only reads `redisUrl` from its default config object, so passing a config without it made `/api/sse` fail with `redisUrl is required`. The route now passes `redisUrl: process.env.REDIS_URL ?? process.env.KV_URL` (commit `7fc769f`). Production SSE then verified: `GET /api/sse?key=…` → **HTTP 200** with `event: endpoint` + `data: /api/message?sessionId=…` (83 bytes).
 
-**Blocked at Redis (brief Step 7):** `npx vercel integration add upstash/upstash-kv` failed with Vercel API 422 `no_eligible_plan` and opened a browser checkout; no `REDIS_URL`/`KV_URL` was created and the CLI lists only paid plans. Decision: the user will add the free Upstash Redis from the browser later, and it is not blocking the build.
+Registered in graph8 with `scripts/register-mcp.ts`: **mcp_server_id `d96d0ab1-84ff-46e9-a80f-3361c07c8765`** (name "ROI Advisor", transport `sse`), visible to workflows: true.
 
-**Fallback in force until then (spec §6.4):** graph8 cannot call the MCP server. The MCP server serves outside agents over streamable HTTP; inside graph8, answers live in the `#roi-advisor` channel and the `roi_*` custom objects.
+Probe workflow `[sim] ROI Advisor MCP test` (action_id `7c67f0f9-fc71-4d0d-86dd-7dd2a3b4f19a`) validated clean (`{"valid":true,"errors":[],"warnings":[],"missing_references":[]}`) and executed: **execution_id `99cd7178-0ef7-440a-a00c-f276689459dd`**, status `completed`, 0 credits (`cost_usd: null`, tokens 0), tool node output:
 
-**To resume:** once `REDIS_URL`/`KV_URL` exists in the Vercel project (names only; then `npx vercel deploy --prod`), registration can proceed by running the already-created `scripts/register-mcp.ts`, then the graph8 `[sim] ROI Advisor MCP test` probe workflow (brief Steps 8–10).
+`{"tool":"ping","content":"ROI Advisor is up","is_error":false,"mcp_server":"ROI Advisor"}`
+
+graph8 can call an external MCP tool over SSE, so spec §6.4's fallback is **not** needed. Nuance: the brief's `tool_config: { arguments: { note: "from graph8" } }` passed validation but the argument did not reach the tool (output lacks `: from graph8`); argument passing for MCP tool nodes with required inputs is still to be pinned down. The note is optional and the probe's intent — can graph8 call our tool — is proven.
 
 ## 12. First live sync
 
