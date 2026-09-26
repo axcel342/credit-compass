@@ -1,7 +1,9 @@
 import type { G8Caller } from "../g8/client";
 import { OPS } from "../g8/ops";
 
-export const RUN_CONDITION = 'NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))';
+export const ROI_FIT_FIELD_NAME = "udo_roi_fit_11e946f0";
+
+export const RUN_CONDITION = `NOT(EQ({{${ROI_FIT_FIELD_NAME}}}, "low"))`;
 
 export async function validateCondition(c: G8Caller, formula: string): Promise<void> {
   const r = await c.call<{ valid: boolean; errors: string[] }>(OPS.validateFormula, { body: { formula } });
@@ -24,21 +26,23 @@ export async function writeFit(c: G8Caller, p: { columnId: number; fits: Map<num
   return n;
 }
 
-interface Pipeline { id: string; name: string; steps: { id: string; name?: string; type: string; config_ref?: string }[] }
+interface Pipeline { id: string; name: string; steps?: { id: string; name?: string; type: string; config_ref?: string }[] }
 
-export async function ensurePipeline(c: G8Caller, listId: number): Promise<{ id: string; name: string; configRef: string }> {
+export interface GuardablePipeline { id: string; name: string; configRef: string; stepId: string; stepName: string }
+
+export async function ensurePipeline(c: G8Caller, listId: number): Promise<GuardablePipeline> {
   const existing = (await c.call<{ items: Pipeline[] }>(OPS.listListPipelines, { path: { list_id: listId } })).items ?? [];
   const p = existing.find((x) => x.name === "Verified emails")
     ?? existing.find((x) => x.steps?.some((s) => s.type === "waterfall" && s.config_ref))
     ?? await c.call<Pipeline>(OPS.createPipelineFromTemplate, { path: { list_id: listId }, body: { template_key: "verified_emails" } });
-  const step = p.steps.find((s) => s.type === "waterfall");
+  const step = (p.steps ?? []).find((s) => s.type === "waterfall");
   if (!step?.config_ref) throw new Error("The pipeline has no email-finder step to guard.");
-  return { id: p.id, name: p.name, configRef: step.config_ref };
+  return { id: p.id, name: p.name, configRef: step.config_ref, stepId: step.id, stepName: step.name ?? "Email finder" };
 }
 
-export async function setRunCondition(c: G8Caller, p: { listId: number; pipeline: { id: string; name: string; configRef: string }; condition: string | null }): Promise<void> {
+export async function setRunCondition(c: G8Caller, p: { listId: number; pipeline: GuardablePipeline; condition: string | null }): Promise<void> {
   await c.call(OPS.updateListPipeline, { path: { list_id: p.listId, pipeline_id: p.pipeline.id }, body: { name: p.pipeline.name, enabled: false,
-    steps: [{ id: "step_1", name: "Email finder", type: "waterfall", config_ref: p.pipeline.configRef, run_condition: p.condition,
+    steps: [{ id: p.pipeline.stepId, name: p.pipeline.stepName, type: "waterfall", config_ref: p.pipeline.configRef, run_condition: p.condition,
       skip_existing_values: true, skip_recently_enriched: true, enabled: true }] } });
 }
 

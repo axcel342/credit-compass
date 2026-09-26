@@ -7,7 +7,7 @@ import { RecordStore } from "@/lib/store/records";
 import { runToValues, valuesToCharge, valuesToRun, valuesToStat } from "@/lib/store/mappers";
 import { calibrationFactor, classifyFit, estimateCredits, priceFor, smoothedRate, type ProviderRow } from "@/lib/domain/prespend";
 import { shouldWarnPreSpend } from "@/lib/domain/gate";
-import { RUN_CONDITION, assertConditionFilters, ensurePipeline, readPipelineRun, runGuardedPipeline, setRunCondition, validateCondition, writeFit } from "@/lib/guardrail/guardrail";
+import { ROI_FIT_FIELD_NAME, RUN_CONDITION, assertConditionFilters, ensurePipeline, readPipelineRun, runGuardedPipeline, setRunCondition, validateCondition, writeFit } from "@/lib/guardrail/guardrail";
 
 export interface Advice {
   listId: number; listSize: number; missing: number; quote: number; estimate: number; flagged: number; warn: boolean;
@@ -37,7 +37,7 @@ export async function adviseList(listId: number): Promise<Advice> {
     const fit = classifyFit({ rate: smoothedRate(s?.meetings ?? 0, n, orgRate), orgRate, n, consistency: info.consistency });
     fits[fit]++; fitByContact.push([row.id, fit]); consistencyByContact.push([row.id, info.consistency]);
     if (info.consistency === "flagged") flagged++;
-    if (!row.work_email && fit !== "low") missing++;
+    if (!info.email && fit !== "low") missing++;
   }
   const providers = (await c.call<{ providers: ProviderRow[] }>(OPS.listProviders)).providers;
   const price = priceFor(providers, "leadmagic", "email_finder") ?? 3;
@@ -60,7 +60,7 @@ export async function applyGuardrail(_: unknown, form: FormData): Promise<{ ok: 
   const c = g8Caller, listId = Number(form.get("listId"));
   try {
     const advice = await adviseList(listId);
-    const fieldName = process.env.ROI_FIT_FORMULA_NAME ?? "udo_roi_fit_11e946f0";
+    const fieldName = ROI_FIT_FIELD_NAME;
     await writeFit(c, { columnId: Number(process.env.ROI_FIT_COLUMN_ID ?? 757), fits: new Map(advice.fitByContact) });
     if (process.env.RECORD_CONSISTENCY_COLUMN_ID) // created by scripts/bootstrap.ts (Task 11)
       await writeFit(c, { columnId: Number(process.env.RECORD_CONSISTENCY_COLUMN_ID), fits: new Map(advice.consistencyByContact) });
@@ -71,7 +71,8 @@ export async function applyGuardrail(_: unknown, form: FormData): Promise<{ ok: 
     const before = (await c.call<{ available_credits: number }>(OPS.getUsage)).available_credits;
     const runs = new RecordStore(c, "roi_run");
     const startedAt = new Date().toISOString();
-    const { runId } = await runGuardedPipeline(c, { listId, pipelineId: pipeline.id, estimatedCredits: advice.estimate, cap: Number(process.env.ACTION_CREDIT_CAP ?? 50) });
+    const cap = Number(process.env.ACTION_CREDIT_CAP ?? 50);
+    const { runId } = await runGuardedPipeline(c, { listId, pipelineId: pipeline.id, estimatedCredits: advice.estimate, cap: Number.isFinite(cap) ? cap : 50 });
     await runs.upsert(runToValues({ extId: runId, kind: "pipeline_run", service: "waterfall_enrichment", actionName: `List pipeline · ${pipeline.name}`, startedAt,
       completedAt: null, status: "running", source: "advisor", listId, quotedCredits: advice.estimate }));
     let result = await readPipelineRun(c, runId);
