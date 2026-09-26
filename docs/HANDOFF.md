@@ -103,3 +103,38 @@ The full cleanup inventory with IDs is in spec §11. **Keep:** the `roi_fit` fie
 ## 9. Links
 
 - UI design artifact (private to the user): https://claude.ai/artifact/3kqkXtCv9t4DbuRcExPa3D. The same page is at `docs/design/roi-advisor-ui.html`.
+
+## 10. Captured webhook payloads
+
+Captured live on 2026-09-26 (Task 3 risk probe) to pin down real payload shapes. Trigger: one `[sim] payload capture` deal, created then moved New Meeting → Discovery Held, plus one manual run of workflow `712e4f5b-faee-45fd-9150-ea5853cc08dd` (`[audit-probe] web_search check`; 0 credits, `cost_usd: null`). Receiver: webhook `b114e5b9-c1ba-4874-b722-1f70318712da` ("ROI Advisor receiver") → `https://graph8-roi-advisor.vercel.app/api/webhooks/graph8`. Raw captured lines, values included: `research/fixtures/webhooks/captured-20260926T1758.txt`.
+
+Delivery results (`GET /webhooks/{id}/deliveries`): all three deliveries recorded `status: success`, `response_code: 200` (about 17:50 UTC). **`deal.updated` did NOT arrive**: moving the deal emitted only `deal.stage_changed` and produced no `deal.updated` delivery. No other subscribed event types fired (no deal.won/deleted, no failures, no enrichment/engagement/meeting events). `outcomeFromEvent` (Task 12) must therefore key off `deal.created`, `deal.stage_changed` and `workflow.execution_completed`.
+
+### `deal.created` — `data` keys (verbatim order)
+
+`amount`, `source`, `deal_id`, `currency`, `owner_id`, `stage_id`, `amount_to`, `deal_name`, `eda_event`, `changed_at`, `company_id`, `invoked_by`, `stage_name`, `amount_from`, `owner_id_to`, `pipeline_id`, `amount_delta`, `company_name`, `close_date_to`, `owner_id_from`, `pipeline_name`, `changed_fields`, `g8_correlation`, `close_date_from`, `idempotency_key`
+
+- `g8_correlation` (object) keys: `event`, `org_id`, `eda_event`, `company_id`, `idempotency_key`
+- name/email-bearing keys, values redacted here: `deal_name`, `invoked_by`, `company_name`
+
+### `deal.stage_changed` — `data` keys (verbatim order)
+
+`amount`, `source`, `deal_id`, `currency`, `owner_id`, `deal_name`, `eda_event`, `changed_at`, `company_id`, `invoked_by`, `pipeline_id`, `to_stage_id`, `company_name`, `from_stage_id`, `pipeline_name`, `to_stage_name`, `g8_correlation`, `from_stage_name`, `idempotency_key`
+
+- `g8_correlation` (object) keys: `event`, `org_id`, `eda_event`, `company_id`, `idempotency_key`
+- name/email-bearing keys, values redacted here: `deal_name`, `invoked_by`, `company_name`, `to_stage_name`, `from_stage_name`, `pipeline_name`
+
+### `workflow.execution_completed` — `data` keys (verbatim order)
+
+`email`, `org_id`, `status`, `cost_usd`, `action_id`, `eda_event`, `timestamp`, `action_name`, `duration_ms`, `workflow_id`, `execution_id`, `runtime_type`, `tokens_input`, `trigger_type`, `error_message`, `tokens_output`, `workflow_name`, `g8_correlation`, `idempotency_key`
+
+- `g8_correlation` (object) keys: `event`, `org_id`, `eda_event`, `occurred_at`, `idempotency_key`
+- name/email-bearing keys, values redacted here: `email`, `action_name`, `workflow_name`
+
+### Types worth knowing for `outcomeFromEvent`
+
+- `changed_at` is a unix-seconds float; `timestamp` (workflow) is an ISO-8601 string.
+- `cost_usd` was `null` for the free run; `tokens_input` / `tokens_output` were `0`; `duration_ms` is a number.
+- `status` was `"completed"`, `trigger_type` `"manual"`, `runtime_type` `"workflow"`, `error_message` `null`.
+- On `deal.created`, `amount_delta` is `null`, `changed_fields` is an empty string, and `company_name`/`pipeline_name` were empty strings.
+- ID fields (`deal_id`, `company_id`, `stage_id`, `to_stage_id`, `from_stage_id`, `pipeline_id`, `owner_id`, `action_id`, `workflow_id`, `execution_id`) are strings; `company_id` is a string even though contact IDs are numbers.
