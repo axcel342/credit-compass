@@ -157,3 +157,26 @@ Ran `npm run script -- scripts/import-design-runs.ts` (23 runs, 1 post) then `np
 - charges: 126
 - coverage: exact 216, window 1033, none 11, total 1260
 - findings: 5
+
+## 13. Guardrail live run
+
+Task 16 ran the guardrailed pre-spend flow once on list 13 `[sim] guardrail probe` (3 contacts) on 2026-09-26, through the same functions `applyGuardrail` calls (temp script; the request-scoped `isAuthed` check was skipped). No secrets below.
+
+Fit classes written to `roi_fit` (column 757) and `record_consistency` (column 1515):
+
+| Row | Segment n | Consistency | `roi_fit` |
+|---|---|---|---|
+| 66 | 1 | flagged (rallyme.com vs startupready.com) | **low** |
+| 81 | 0 | ok | unknown |
+| 249 | 0 | unknown | unknown |
+
+- `POST /enrichment/ai-formula/validate` for `NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))`: `valid: true`, no errors, `fieldDependencies: ["udo_roi_fit_11e946f0"]`.
+- Silent-failure check: routing preview `matching_count = 1` against a 3-contact list, so the condition filters (not 0, not everyone).
+- Pipeline reused, not created: `[sim] guardrail probe pipeline` `5275d21c-5050-466f-b89d-517afce9c45f` (list 13's existing waterfall step `step_1`, `config_ref CONTACT_WORK_EMAIL_32aa4784488a`). The stored step now has `run_condition NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))`, `skip_existing_values: true`, `skip_recently_enriched: true`, `enabled: true`; the pipeline row has `enabled: false` (manual runs still start).
+- Run **`f9cf7ef4-f37d-4e5b-8a54-b03dfd20ff88`**: `completed`; processed **2**, successful **0**, failed **1**, skipped **1** (`skipped_by_reason {"skipped":1}`; `total_records` 2 because row 66 was excluded by the run condition, row 81 skipped by skip-existing, row 249 attempted and failed).
+- **Credits spent: 0.** Balance before 8,740 → after 8,740 available credits (the one attempted record failed; no charge).
+- The `roi_run` record for the run was upserted (status completed, records_ok 0, records_failed 1, records_skipped 1, quoted 3).
+
+This is a different run from the design-validation one in §6 (`e2b2e81f…`, 3 processed / 1 successful / 2 skipped / 3 credits). The failed row 249 means that contact still has no email; re-running would need fresh approval.
+
+Live shapes confirmed: `getListContacts` rows already carry `work_email`; `listListPipelines` returns `{items}`; `estimateListPipeline` returns `required_credits` (9 for 3 contacts); `previewRoutingRule` returns `matching_count` and accepts `{source_list_id, conditions:[{field, operator:"equals", value}]}`; `setFieldValue` body is `{entity, record_id, value}`. The only adaptation needed was `ensurePipeline`: list 13's pipeline is named `[sim] guardrail probe pipeline`, not "Verified emails", so it reuses an existing pipeline whose waterfall step has a `config_ref` before falling back to `createPipelineFromTemplate`.
