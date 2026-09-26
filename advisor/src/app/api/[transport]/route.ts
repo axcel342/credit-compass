@@ -14,7 +14,7 @@ const handler = createMcpHandler(
     registerTools(server as unknown as Parameters<typeof registerTools>[0], () => loadDashboardData());
   },
   { serverInfo: { name: "graph8-roi-advisor", version: "0.1.0" } },
-  { basePath: "/api", maxDuration: 60, verboseLogs: false },
+  { basePath: "/api", maxDuration: 60, verboseLogs: false, redisUrl: process.env.REDIS_URL ?? process.env.KV_URL },
 );
 
 async function guarded(req: Request): Promise<Response> {
