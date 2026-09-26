@@ -1,0 +1,1 @@
+{"data":{"job_id":"4a3c811e-7a7c-471b-909c-1bce6f0a5af3","status":"failed","records_total":1,"records_processed":1,"records_succeeded":0,"records_failed":1,"progress_percent":100.0,"started_at":"2026-09-26T14:35:37.504991Z","completed_at":"2026-09-26T14:36:03.592605Z","credits_charged":null,"group_id":"ai_enrich_fc58ddc7","usecase":null,"model":null},"pagination":null}

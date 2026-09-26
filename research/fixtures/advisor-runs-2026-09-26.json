@@ -1,0 +1,123 @@
+{
+  "_provenance": "Runs the ROI Advisor would have captured on 2026-09-26, reconstructed from the design session's command log, job/pipeline records and ledger holds. source=advisor means the Advisor itself started the work (it records the run before calling graph8); source=poll means the record comes from a graph8 job or pipeline-run endpoint. AI job windows come from GET /enrichment/ai/batch/jobs/{id}/status (fixtures/graph8/ai_job_*_status.json); the pipeline run from fixtures/graph8/pipeline_run_guardrail.json. All times UTC.",
+  "runs": [
+    {
+      "extId": "advisor-verify-40",
+      "kind": "verification",
+      "service": "email_verification",
+      "actionName": "Email verification ×40",
+      "startedAt": "2026-09-26T13:38:00Z",
+      "completedAt": "2026-09-26T13:42:00Z",
+      "status": "completed",
+      "source": "advisor",
+      "listId": 2,
+      "recordsOk": 40,
+      "recordsFailed": 0
+    },
+    {
+      "extId": "fd26115a-92e4-4ab7-9195-36cbc224550f",
+      "kind": "ai_enrichment_job",
+      "service": "ai_enrichment",
+      "actionName": "AI enrichment · Current employer check",
+      "startedAt": "2026-09-26T14:34:19.334Z",
+      "completedAt": "2026-09-26T14:34:22.403Z",
+      "status": "failed",
+      "source": "poll",
+      "listId": 2,
+      "recordsOk": 0,
+      "recordsFailed": 10,
+      "reportedCredits": 0,
+      "quotedCredits": 37
+    },
+    {
+      "extId": "e01981b3-f600-4be7-b127-29ea706ab858",
+      "kind": "ai_enrichment_job",
+      "service": "ai_enrichment",
+      "actionName": "AI enrichment · Current employer check",
+      "startedAt": "2026-09-26T14:34:50.807Z",
+      "completedAt": "2026-09-26T14:34:52.232Z",
+      "status": "failed",
+      "source": "poll",
+      "listId": 2,
+      "recordsOk": 0,
+      "recordsFailed": 1,
+      "reportedCredits": 0
+    },
+    {
+      "extId": "4a3c811e-7a7c-471b-909c-1bce6f0a5af3",
+      "kind": "ai_enrichment_job",
+      "service": "ai_enrichment",
+      "actionName": "AI enrichment · Current employer check (web research)",
+      "startedAt": "2026-09-26T14:35:37.504Z",
+      "completedAt": "2026-09-26T14:36:03.592Z",
+      "status": "failed",
+      "source": "poll",
+      "listId": 2,
+      "recordsOk": 0,
+      "recordsFailed": 1,
+      "reportedCredits": 0
+    },
+    {
+      "extId": "advisor-leadmagic-jobchange-66",
+      "kind": "waterfall_job",
+      "service": "waterfall_enrichment",
+      "actionName": "LeadMagic job-change check",
+      "contactLabel": "Scott Zeller",
+      "contactIds": [66],
+      "listId": 2,
+      "startedAt": "2026-09-26T14:09:05Z",
+      "completedAt": "2026-09-26T14:09:35Z",
+      "status": "completed",
+      "source": "advisor",
+      "resultHint": "unreadable",
+      "recordsOk": 2,
+      "recordsFailed": 3
+    },
+    {
+      "extId": "advisor-icypeas-email-249",
+      "kind": "waterfall_job",
+      "service": "waterfall_enrichment",
+      "actionName": "Icypeas email finder",
+      "contactLabel": "William McLeroy",
+      "contactIds": [249],
+      "listId": 2,
+      "startedAt": "2026-09-26T15:28:00Z",
+      "completedAt": "2026-09-26T15:28:30Z",
+      "status": "completed",
+      "source": "advisor",
+      "recordsOk": 0,
+      "recordsFailed": 1
+    },
+    {
+      "extId": "e2b2e81f-b931-497f-a695-e8b59d774dec",
+      "kind": "pipeline_run",
+      "service": "waterfall_enrichment",
+      "actionName": "List pipeline · Email finder",
+      "listId": 13,
+      "startedAt": "2026-09-26T15:35:40.898Z",
+      "completedAt": "2026-09-26T15:37:00Z",
+      "status": "completed",
+      "source": "poll",
+      "recordsOk": 1,
+      "recordsFailed": 0,
+      "recordsSkipped": 2
+    }
+  ],
+  "advisorPosts": ["2026-09-26T15:40:38Z"],
+  "actionNames": {
+    "b478aaa0-88bf-44b4-955b-a13fe6523fd7": "Deep Company Research",
+    "7faf5ecf-a506-487d-a3fb-1c5265bacc63": "Buying Signals Scan",
+    "8ef835d7-e77d-414a-82ae-8e3ae622f4e4": "Meeting Prep Brief",
+    "45da006d-421c-4c25-b33f-f9f8cab35ed9": "Contact Dossier",
+    "c9f0e9d7-63ed-4ee5-932d-21093510b350": "Buying Signals Scan (grounded)",
+    "4e719a05-183b-4e2f-bf3f-d5e147374cce": "Grounded buying signals workflow",
+    "712e4f5b-faee-45fd-9150-ea5853cc08dd": "Web search check workflow",
+    "45401c32-a85a-4d5b-993f-7c05906f663c": "Deep Company Research (system)",
+    "1da87550-6d42-4f3d-a4e6-a2a29f5d4568": "Buying Signals Scan (system)"
+  },
+  "onboardingAnchors": {
+    "firstStudioDocCreatedAt": "2026-09-26T08:57:11Z",
+    "lastResearchReportUpdatedAt": "2026-09-26T10:06:56Z",
+    "landingPageCreatedAt": "2026-09-26T10:11:19Z"
+  }
+}
