@@ -16,7 +16,9 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 
 ## Build status (end of Task 20, 2026-09-26)
 
-**Thin slice complete.** Tasks 1–20 of `docs/superpowers/plans/2026-09-26-roi-advisor.md` are done and deployed. Final production build: `tsc --noEmit` clean, 102 tests across 29 files pass, `next build` succeeds.
+**Thin slice complete.** Tasks 1–20 of `docs/superpowers/plans/2026-09-26-roi-advisor.md` are done and deployed. Final production build: `tsc --noEmit` clean, 108 tests across 29 files pass, `next build` succeeds.
+
+A final whole-branch review added one fix wave (commit `619c01c` + `5951893`): cron routes fail closed when `CRON_SECRET` is unset, `roi_fit` treats a zero org meeting rate as unknown evidence, webhook outcomes fall back to ingest time when the envelope has no timestamp and envelopes without `id`/`event` are rejected, findings that disappear become `applied` while dismissed/snoozed ones keep their state and regenerated findings resurface as open, charts label SIM rows `[sim]`, and the guardrail reuses only the `Verified emails` pipeline. Production was redeployed and re-verified after the fixes (cron `216/1033/11` total `1,260`, 7 findings; unauthenticated cron returns 401; SSE `event: endpoint`).
 
 ### Live
 
