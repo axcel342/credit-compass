@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "script": "node --env-file=.env.local --import tsx",
-    "shots": "node --env-file=.env.local scripts/shots.mjs"
+    "shots": "node --env-file=.env.local scripts/shots.mjs",
+    "words": "node --env-file=.env.local scripts/words.mjs"
   },
   "dependencies": {
     "@graph8/sdk": "0.245.0",

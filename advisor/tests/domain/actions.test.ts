@@ -30,7 +30,7 @@ describe("buildActions", () => {
     const m = acts.find((a) => a.id === "move-spend")!;
     expect(m.title).toBe("Move spend from the Starter list to people like your Sales VPs");
     expect(m.impact).toBe("~2 more meetings a week");
-    expect(m.steps.map((s) => [s.label, s.done])).toEqual([["Build a lookalike list of your Sales VPs", false], ["Pause enrichment on the Starter list", false]]);
+    expect(m.steps.map((s) => [s.label, s.done])).toEqual([["Build a lookalike list, free", false], ["Pause the Starter list", false]]);
     expect(m.button).toMatchObject({ action: "lookalike", label: "Build lookalike list", listIds: [15], confirm: "Yes, create a new list in graph8" });
   });
   it("skips unlikely contacts on the list with the most of them", () => {

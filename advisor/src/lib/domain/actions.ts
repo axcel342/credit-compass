@@ -65,8 +65,8 @@ export function buildActions(x: ActionInput): PlannedAction[] {
       confidence: best.confidence === "high" ? "High confidence" : "Medium confidence",
       chart: [{ label: name(wId), value: perK(worst), tone: "var(--nomeet)" }, { label: name(bId), value: perK(best), tone: "var(--booked)" }],
       inGraph8: "Builds a lookalike list from graph8's free prospect search, then switches the costly list's pipeline off so it stops running on its own. Existing data stays.",
-      steps: [{ label: `Build a lookalike list of your ${name(bId)}`, sub: "Free. Saves up to 50 new contacts with the same seniority and department.", done: lookDone },
-        { label: `Pause enrichment on ${the(name(wId))}`, sub: "Switches its list pipeline off. Existing data stays.", done: pauseDone }],
+      steps: [{ label: "Build a lookalike list, free", sub: "Saves up to 50 new contacts with the same seniority and department.", done: lookDone },
+        { label: `Pause ${the(name(wId))}`, sub: "Switches its list pipeline off. Existing data stays.", done: pauseDone }],
       button: !lookDone ? { action: "lookalike", label: "Build lookalike list", listIds: [bId], confirm: "Yes, create a new list in graph8" } : !pauseDone ? { action: "pause", label: `Pause ${the(name(wId))}`, listIds: [wId], confirm: `Yes, pause ${the(name(wId))} in graph8` } : null,
       applied: lookDone && pauseDone });
   }

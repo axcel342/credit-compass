@@ -4,21 +4,7 @@ import { serviceName } from "../domain/names";
 import { toMs } from "../domain/time";
 import { n, plural } from "./story";
 
-const DAY = 86_400_000, WEEK = 7 * DAY;
 export const shortDate = (t: number | string) => new Date(typeof t === "string" ? toMs(t) : t).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
-
-export interface WeekBar { start: string; label: string; credits: number; waste: number }
-export function weeklySpend(charges: AttributedCharge[], now: string, weeks = 8): WeekBar[] {
-  const end = toMs(now), start = end - weeks * WEEK;
-  const bars = Array.from({ length: weeks }, (_, i) => ({ start: new Date(start + i * WEEK).toISOString(), label: shortDate(start + i * WEEK), credits: 0, waste: 0 }));
-  for (const c of charges) {
-    const i = Math.floor((toMs(c.chargedAt) - start) / WEEK);
-    if (i < 0 || i >= weeks) continue;
-    bars[i].credits += c.credits;
-    if (c.isWaste) bars[i].waste += c.credits;
-  }
-  return bars;
-}
 
 export interface RecoveryItem { id: string; owner: "refund" | "stopped" | "stoppable" | "usable"; title: string; detail: string; credits: number; at: string; ledgerIds: string[]; runIds: string[] }
 
