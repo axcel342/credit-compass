@@ -255,3 +255,21 @@ main{display:grid;gap:16px}
 .todo p{margin:0}
 a.btn{text-decoration:none;display:inline-block}
 @media (prefers-reduced-motion: reduce){.flow .band{transition:none}}
+
+/* charges */
+.filters{display:grid;gap:10px;margin-top:18px}
+.chips,.list-filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 12px;color:var(--ink);text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-current="true"]{box-shadow:inset 0 0 0 1.5px var(--ink);border-color:var(--ink)}
+.list-filter a{font-size:13px;color:var(--ink-2);text-decoration:none;padding:2px 8px;border-radius:6px}
+.list-filter a[aria-current="true"]{background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.acts-table td{padding:12px 10px}
+.acts-table .what b{font-weight:600}
+.mini{display:flex;height:6px;width:200px;max-width:100%;border-radius:3px;overflow:hidden;margin-top:6px}
+.split{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.acts-table details{margin-top:6px}.acts-table summary{cursor:pointer;font-size:12.5px;color:var(--ink-2)}
+.acts-table details ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px}
+.acts-table details li{display:grid;grid-template-columns:1fr 50px 140px;gap:8px;font-size:13px;background:var(--panel-2);padding:4px 8px;border-radius:5px}
+.acts-table details li b{text-align:right;font-variant-numeric:tabular-nums}
+.acts-table td{position:relative}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

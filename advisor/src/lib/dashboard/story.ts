@@ -25,3 +25,8 @@ export function statStrip(p: { total: number; meetings: number; booked: number; 
     { value: `${p.total > 0 ? Math.round((p.traced / p.total) * 100) : 0}%`, label: "traced to a contact, list or run" },
   ];
 }
+
+export function chargesHeadline(p: { traced: number; total: number; periodLabel: string }): string {
+  if (p.total <= 0) return `No charges in ${p.periodLabel}.`;
+  return `${Math.round((p.traced / p.total) * 100)}% of your credits trace back to a contact, list or run.`;
+}
