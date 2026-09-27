@@ -62,3 +62,13 @@ export function claimState(actions: ActionRecord[], found: number) {
   const credits = open ? Number(open.detail.credits ?? 0) : 0;
   return { found, requested: open ? credits : 0, refunded: open?.status === "refunded" ? credits : 0, open };
 }
+
+export interface AlsoRow { id: string; credits: number; lead: string; text: string }
+
+export function alsoRows(items: RecoveryItem[]): AlsoRow[] {
+  return items.filter((x) => x.owner !== "refund").map((x) => ({
+    id: x.id, credits: x.credits,
+    lead: x.owner === "stopped" ? "Already stopped." : x.owner === "stoppable" ? "You can stop this." : "Still yours to use.",
+    text: x.owner === "stopped" ? `${x.title}. No charges since.` : x.owner === "stoppable" ? `${x.title}. Post recaps only to #roi-advisor.` : `${x.title}.`,
+  }));
+}
