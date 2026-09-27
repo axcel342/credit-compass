@@ -63,4 +63,19 @@ describe("runSync", () => {
     expect(stored?.values.status).toBe("dismissed");
     expect(stored?.values.snoozed_until).toBe("2026-12-01T00:00:00Z");
   });
+
+  it("caches each contact's fit and only rewrites contacts that changed", async () => {
+    const g = await designDayClient();
+    const mk = (id: number, consistency: "ok" | "flagged" | "unknown") => ({ contactId: id, name: `c${id}`, email: consistency === "unknown" ? null : `c${id}@x.com`,
+      companyName: null, companyDomain: null, listIds: [13], sequenceIds: [], segmentKey: "Vice President|Sales|Software|51-200", consistency });
+    const contacts = new Map([[66, mk(66, "flagged")], [81, mk(81, "ok")], [249, mk(249, "unknown")]]);
+    await runSync({ c: g, now: "2026-09-27T00:00:00Z", contacts });
+    const rows = g.objects.get("roi_contact")!.records;
+    expect(rows.length).toBe(contacts.size);
+    expect(rows.every((r) => ["high", "medium", "low", "unknown"].includes(String(r.values.fit)))).toBe(true);
+    const writes = () => g.calls.filter((x) => x.input.path?.object_slug === "roi_contact" && x.op !== "list_object_records_objects__object_slug__records_get").length;
+    const before = writes();
+    await runSync({ c: g, now: "2026-09-27T00:10:00Z", contacts });
+    expect(writes()).toBe(before);
+  });
 });
