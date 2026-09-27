@@ -37,3 +37,10 @@ describe("Planner sentence", () => {
   it("states the estimate when graph8 has no quote", () => expect(plannerHeadline({ graph8Quote: null, estimate: 126, listLabel: "Starter list", def: verify })).toBe("Email verification on the Starter list should cost about 126 credits."));
   it("says when there is nothing to do", () => expect(plannerHeadline({ graph8Quote: null, estimate: 0, listLabel: "Founders", def: find })).toBe("Nothing to do: every contact on Founders is already done or skipped."));
 });
+
+import { optimizeHeadline } from "@/lib/dashboard/story";
+describe("Optimize sentence", () => {
+  it("sums monthly savings and mentions moving spend", () => expect(optimizeHeadline({ count: 3, monthly: 4400, hasMove: true })).toBe("3 changes would save about 4,400 credits a month and move spend to the lists that book."));
+  it("handles one change without savings", () => expect(optimizeHeadline({ count: 1, monthly: 0, hasMove: true })).toBe("1 change would move spend to the lists that book."));
+  it("handles nothing to do", () => expect(optimizeHeadline({ count: 0, monthly: 0, hasMove: false })).toBe("Your spend looks efficient right now."));
+});

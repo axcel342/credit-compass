@@ -52,3 +52,9 @@ export function plannerHeadline(p: { graph8Quote: number | null; estimate: numbe
   const noun = p.def.noun[0].toUpperCase() + p.def.noun.slice(1);
   return `${noun} on the ${p.listLabel} should cost about ${n(p.estimate)} credits.`;
 }
+
+export function optimizeHeadline(p: { count: number; monthly: number; hasMove: boolean }): string {
+  if (p.count <= 0) return "Your spend looks efficient right now.";
+  const parts = [p.monthly > 0 ? `save about ${n(p.monthly)} credits a month` : null, p.hasMove ? "move spend to the lists that book" : null].filter(Boolean);
+  return `${plural(p.count, "change")} would ${parts.length ? parts.join(" and ") : "make your spend go further"}.`;
+}

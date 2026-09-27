@@ -1,8 +1,13 @@
-import { loadDashboardData } from "@/lib/dashboard/data";
+import { loadDashboardData, periodView } from "@/lib/dashboard/data";
 import { currentCaller } from "@/lib/workspace/current";
 import { listChoices, type EnrichmentType } from "@/lib/domain/planner";
 import { loadPlan } from "@/lib/dashboard/planner-data";
-import { plannerHeadline } from "@/lib/dashboard/story";
+import { optimizeHeadline } from "@/lib/dashboard/story";
+import { RecordStore } from "@/lib/store/records";
+import { valuesToContact } from "@/lib/store/mappers";
+import { buildActions } from "@/lib/domain/actions";
+import { ActionCard } from "@/components/ActionCard";
+import { AppliedChanges } from "@/components/AppliedChanges";
 import { Headline } from "@/components/Headline";
 import { Planner } from "@/components/Planner";
 
@@ -17,10 +22,16 @@ export default async function OptimizePage({ searchParams }: { searchParams: Pro
   if (listId === undefined) return <Headline text="No lists with contacts yet." lede="Create a list in graph8, then run Sync now." />;
   const plan = await loadPlan(c, d, listId, type);
   const hrefFor = (p: { list?: number; type?: string }) => `/optimize?${new URLSearchParams({ list: String(p.list ?? listId), type: p.type ?? type, ...(sp.period === "30d" ? { period: "30d" } : {}) })}#plan`;
+  const v = periodView(d, "8w");
+  const contacts = (await new RecordStore(c, "roi_contact").list()).map((r) => valuesToContact(r.values));
+  const actions = buildActions({ charges: v.charges, stats: v.stats, listNames: d.listNames, contacts, actions: d.actions });
+  const open = actions.filter((a) => !a.applied);
   return (
     <>
-      <Headline text={plannerHeadline({ graph8Quote: plan.graph8Quote, estimate: plan.walk.estimate, listLabel: plan.listLabel, def: plan.def })}
-        lede="Pick a list and an enrichment, see what it should really cost and book, then let graph8 skip the contacts least likely to book." />
+      <Headline text={optimizeHeadline({ count: open.length, monthly: open.reduce((s, a) => s + a.monthlyCredits, 0), hasMove: open.some((a) => a.id === "move-spend") })}
+        lede="Each change comes from your own charges and meetings. Applying one changes a setting in graph8 and costs no credits; you can undo it here." />
+      <div className="acts">{actions.map((a) => <ActionCard key={a.id} a={a} />)}</div>
+      <AppliedChanges actions={d.actions} runs={d.runs} listNames={d.listNames} />
       <Planner plan={plan} choices={choices} hrefFor={hrefFor} />
     </>
   );
