@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { authorizeMcp, authorizeSse, isSsePath, resolveMcpCaller } from "@/lib/mcp/auth";
+import { authorizeMcp, authorizeSse, isSseSessionPath, resolveMcpCaller } from "@/lib/mcp/auth";
 import { MemoryWorkspaceStore } from "@/lib/workspace/store";
 import { encrypt } from "@/lib/workspace/crypto";
 import { createHash } from "node:crypto";
@@ -19,22 +19,19 @@ describe("authorizeMcp", () => {
 describe("SSE stays on the demo token", () => {
   beforeEach(() => { process.env.MCP_TOKEN = "demo-token"; });
   const req = (url: string, t?: string) => new Request(url, t ? { headers: { authorization: `Bearer ${t}` } } : undefined);
-  it("recognises the SSE transport paths only", () => {
-    expect(isSsePath("/api/sse")).toBe(true);
-    expect(isSsePath("/api/message")).toBe(true);
-    expect(isSsePath("/api/mcp")).toBe(false);
+  it("gates only the SSE session path, not /message or /mcp", () => {
+    expect(isSseSessionPath("/api/sse")).toBe(true);
+    expect(isSseSessionPath("/api/message")).toBe(false);
+    expect(isSseSessionPath("/api/mcp")).toBe(false);
   });
-  it("accepts the demo token on /sse and /message, by header or ?key=", () => {
+  it("accepts the demo token on /sse, by header or ?key=", () => {
     expect(authorizeSse(req("https://x/api/sse?key=demo-token"))).toBe(true);
     expect(authorizeSse(req("https://x/api/sse", "demo-token"))).toBe(true);
-    expect(authorizeSse(req("https://x/api/message?sessionId=a&key=demo-token"))).toBe(true);
-    expect(authorizeSse(req("https://x/api/message?sessionId=a", "demo-token"))).toBe(true);
   });
-  it("rejects a workspace or missing token on the SSE paths", () => {
+  it("rejects a workspace or missing token on /sse", () => {
     expect(authorizeSse(req("https://x/api/sse?key=ws-token"))).toBe(false);
     expect(authorizeSse(req("https://x/api/sse", "ws-token"))).toBe(false);
-    expect(authorizeSse(req("https://x/api/message?sessionId=a"))).toBe(false);
-    expect(authorizeSse(req("https://x/api/mcp?key=demo-token"))).toBe(false);
+    expect(authorizeSse(req("https://x/api/sse"))).toBe(false);
   });
 });
 

@@ -1,6 +1,6 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
-import { authorizeSse, isSsePath, resolveMcpCaller } from "@/lib/mcp/auth";
+import { authorizeSse, isSseSessionPath, resolveMcpCaller } from "@/lib/mcp/auth";
 import { mcpWorkspace } from "@/lib/mcp/context";
 import { registerTools } from "@/lib/mcp/tools";
 import { loadDashboardData } from "@/lib/dashboard/data";
@@ -21,7 +21,8 @@ const handler = createMcpHandler(
 
 async function guarded(req: Request): Promise<Response> {
   const pathname = new URL(req.url).pathname;
-  if (isSsePath(pathname)) return authorizeSse(req) ? handler(req) : new Response("unauthorized", { status: 401 });
+  if (isSseSessionPath(pathname)) return authorizeSse(req) ? handler(req) : new Response("unauthorized", { status: 401 });
+  if (pathname.endsWith("/message")) return handler(req); // SSE message posts carry the session id, as before
   const c = await resolveMcpCaller(req, workspaceStore());
   if (!c) return new Response("unauthorized", { status: 401 });
   return mcpWorkspace.run(c, () => handler(req));

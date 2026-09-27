@@ -21,13 +21,13 @@ export function isDemoMcpToken(req: Request, token: string): boolean {
   return !!key && same(key, token);
 }
 
-export function isSsePath(pathname: string): boolean {
-  return pathname.endsWith("/sse") || pathname.endsWith("/message");
+export function isSseSessionPath(pathname: string): boolean {
+  return pathname.endsWith("/sse");
 }
 
 export function authorizeSse(req: Request): boolean {
   const demo = process.env.MCP_TOKEN;
-  return !!demo && isSsePath(new URL(req.url).pathname) && isDemoMcpToken(req, demo);
+  return !!demo && isDemoMcpToken(req, demo);
 }
 
 export async function resolveMcpCaller(req: Request, store: WorkspaceStore): Promise<G8Caller | null> {
