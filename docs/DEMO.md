@@ -26,9 +26,9 @@ Rehearsal-ready against production. Two rules for the demo: never present `[sim]
 
 ## Click steps
 
-1. **Overview.** Read the headline aloud; say once that meetings, deals and the email-finding spend are simulated (the pill says so). Hover a flow band, then click "Booked a meeting".
+1. **Overview.** Read the chain left to right (credits spent, meetings booked, won value); say once that meetings, deals and the email-finding spend are simulated (the pill says so). Point at the first Do next row, then click "Booked a meeting" in the bar.
 2. **Charges** opens filtered. Clear the filter; expand the AI enrichment row ("3 jobs").
-3. **Recovery.** Click the Sep 26 week; show the owner columns and the refund draft. **Do not send.**
+3. **Recovery.** Click "Request a refund of 91"; show the refund items and the draft. **Do not send.**
 4. **Optimize spend.** Walk the three action cards; show "Changes you've made"; in the planner switch Find emails ↔ Verify emails to show the cost walk and forecast. **Do not run.**
 5. **Weekly recap in `#roi-advisor`** and **MCP** as before (`cost_per_outcome` now accepts "Sales VPs").
    - Recap: graph8 → Work → `#roi-advisor` holds the cron-posted recap (3 items, 0 credits). Optionally re-post through `/api/cron/recap` with the `CRON_SECRET` bearer (also 0 credits, still only `#roi-advisor`) — mention it, don't do it unless rehearsing.
@@ -43,7 +43,7 @@ Rehearsal-ready against production. Two rules for the demo: never present `[sim]
 
 ## Known numbers to say out loud
 
-- Demo dataset, last 8 weeks (includes demo data): **10,766 credits → 27 meetings and 9 won deals**; booked 2,897 / no meeting 6,652 / unused 860 / unknown 242 / waste 115; repeat enrichment 12%; cohorts span all 8 weeks.
+- Demo dataset, last 8 weeks (includes demo data): **10,766 credits → 27 meetings and 9 won deals**; booked 2,897 / no meeting 6,652 / unused 860 / unknown 242 / waste 115; repeat enrichment 12%; charges span all 8 weeks.
 - Credits per meeting by list: **Sales VPs 124** (17 meetings), **Founders 433** (6), **Starter list 1,232.75** (4).
 - Fit spread after the 27 Sep sync (255 contacts): **33 high / 100 medium / 122 low / 0 unknown**.
 - Planner on the Starter list: the headline contrasts graph8's quote for find emails (≈ 498, what graph8's estimator says) with the Advisor estimate the cost walk shows (≈ 36); verify emails walks 250 → −12 (no email) → −121 (unlikely) → ≈ 117 (no graph8 quote for verify). Read the exact numbers off the screen.

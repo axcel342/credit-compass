@@ -14,7 +14,6 @@ function Bought({ a }: { a: Activity }) {
     <span className="bought" title={b.title}>
       <span className="bmini" aria-hidden="true">{BUCKETS.filter((k) => b.buckets[k] > 0).map((k) => <i key={k} style={{ flex: b.buckets[k], background: `var(--${k})` }} />)}</span>
       <span><span className={b.share >= 50 ? "share good-ink" : "share"}>{b.share}%</span> booked</span>
-      <span className="sr-only">. {b.title}</span>
     </span>);
   return (
     <span className={b.bucket === "waste" ? "res bad-ink" : "res"} title={b.title}>

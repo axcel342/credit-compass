@@ -12,8 +12,7 @@ export function Planner({ plan, choices, rule, hrefFor }: { plan: Plan; choices:
       <div className="pl-head">
         <h2 id="plan-h">Plan your next enrichment</h2>
         <form method="get" action="/optimize#plan" className="planner-sel">
-          <label htmlFor="list" className="sr-only">List</label>
-          <select id="list" name="list" defaultValue={plan.listId} title={synced}>{choices.map((l) => <option key={l.id} value={l.id}>{l.label}, {l.total} contacts</option>)}</select>
+          <select id="list" name="list" aria-label="List" defaultValue={plan.listId} title={synced}>{choices.map((l) => <option key={l.id} value={l.id}>{l.label}, {l.total} contacts</option>)}</select>
           <input type="hidden" name="type" value={plan.def.key} />
           <button className="btn ghost" type="submit">Check this list</button>
           <span className="seg" role="group" aria-label="Enrichment">

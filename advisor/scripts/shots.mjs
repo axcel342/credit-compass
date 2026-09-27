@@ -9,7 +9,7 @@ const paths = process.argv.slice(2).length ? process.argv.slice(2) : ["/", "/cha
 mkdirSync(".shots", { recursive: true });
 const browser = await chromium.launch({ executablePath: exe });
 for (const [w, h] of [[1440, 900], [390, 844]]) {
-  const page = await browser.newPage({ viewport: { width: w, height: h } });
+  const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: process.env.COLOR_SCHEME === "dark" ? "dark" : "light" });
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
@@ -19,7 +19,7 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   for (const p of paths) {
     const t0 = Date.now();
     await page.goto(`${base}${p}`, { waitUntil: "networkidle", timeout: 120000 });
-    const file = `.shots/${w}${p === "/" ? "_root" : p.replace(/[/?=&]+/g, "_")}.png`;
+    const file = `.shots/${w}${process.env.COLOR_SCHEME === "dark" ? "_dark" : ""}${p === "/" ? "_root" : p.replace(/[/?=&]+/g, "_")}.png`;
     await page.screenshot({ path: file, fullPage: true });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     console.log(`${w}px ${p} ${Date.now() - t0}ms ${file}${overflow ? " HORIZONTAL-OVERFLOW" : ""}`);

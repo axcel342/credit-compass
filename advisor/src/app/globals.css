@@ -228,6 +228,7 @@ a.btn{text-decoration:none;display:inline-block}
 .claim > summary{list-style:none;cursor:pointer;padding:11px 16px;font-size:14px}
 .claim > summary::-webkit-details-marker{display:none}
 .claim .refund{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;justify-items:start;text-align:left}
+details.claim:not([open]) .refund{display:none}
 .also{display:grid;border-top:1px solid var(--line);margin-top:12px}
 .also-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:18px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line-2);font-size:14.5px}
 .also-row .fig{font-size:24px;color:var(--ink-2)}

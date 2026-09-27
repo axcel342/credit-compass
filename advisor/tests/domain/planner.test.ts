@@ -22,12 +22,12 @@ describe("availableTypes", () => {
   it("runs Find emails when the template exists, keeps Verify as an estimate without its template and Phones off", () => {
     const a = availableTypes([{ key: "verified_emails", name: "Verified emails" }]);
     expect(a.map((x) => [x.def.key, x.runnable])).toEqual([["find", true], ["verify", false], ["phones", false]]);
-    expect(a[1].reason).toBe("graph8 has no list template for email verification, so this is an estimate only.");
+    expect(a[1].reason).toBe("Estimate only. No graph8 verification template.");
     expect(a[2].reason).toBe("Available once graph8's phone template is checked.");
   });
   it("does not mistake a qualification template for email verification", () => {
     const a = availableTypes([{ key: "qualify_then_email", name: "Qualify → verified emails" }]);
-    expect(a[1]).toMatchObject({ runnable: false, reason: "graph8 has no list template for email verification, so this is an estimate only." });
+    expect(a[1]).toMatchObject({ runnable: false, reason: "Estimate only. No graph8 verification template." });
   });
 });
 
