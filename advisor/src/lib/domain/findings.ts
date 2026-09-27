@@ -1,12 +1,13 @@
 import type { AttributedCharge, Finding, FindingKind, Outcome, Run, Stat } from "./types";
-import { toMs } from "./time";
+import { repeatEnrichment } from "./repeat";
 
 export interface FindingContext {
   now: string; period: string; statsByList: Stat[]; statsBySegment: Stat[]; charges: AttributedCharge[]; runs: Run[]; outcomes: Outcome[];
-  unusedDocs: { name: string; createdAt: string }[]; onboardingCredits: number;
+  unusedDocs: { name: string; createdAt: string }[]; onboardingCredits: number; listNames: Map<string, string>;
 }
 
 const n = (x: number) => Math.round(x).toLocaleString("en-US");
+const plural = (k: number, one: string, many = `${one}s`) => `${n(k)} ${k === 1 ? one : many}`;
 
 function mk(ctx: FindingContext, kind: FindingKind, scope: string, p: { title: string; body: string; stake: number; confidence: Finding["confidence"];
   evidence: Record<string, unknown>; action?: string; payload?: Record<string, unknown>; simulated?: boolean }): Finding {
@@ -18,30 +19,36 @@ function mk(ctx: FindingContext, kind: FindingKind, scope: string, p: { title: s
 export function generateFindings(ctx: FindingContext): Finding[] {
   const out: Finding[] = [];
   const sum = (xs: AttributedCharge[]) => xs.reduce((s, c) => s + c.credits, 0);
-  const wasteGroups: [string, string, string][] = [
-    ["failed_job", "Charged for jobs that failed", "Refund request"],
-    ["no_change", "Charged for results you can't use", "Refund request"],
-  ];
-  for (const [reason, title, action] of wasteGroups) {
-    const xs = ctx.charges.filter((c) => c.wasteReason === reason);
-    if (!xs.length) continue;
-    const runs = [...new Set(xs.map((c) => c.runExtId).filter(Boolean))];
-    out.push(mk(ctx, "waste", reason, { title, body: `${n(sum(xs))} credits went to work that produced nothing usable (${runs.length} runs).`,
-      stake: sum(xs), confidence: "high", evidence: { runs, ledgerIds: xs.map((c) => c.ledgerId) }, action, payload: { reason } }));
+  const mismatchRuns = new Set(ctx.runs.filter((r) => r.reportedCredits === 0).map((r) => r.extId)
+    .filter((id) => ctx.charges.some((c) => c.runExtId === id && c.credits > 0)));
+  const failed = ctx.charges.filter((c) => c.wasteReason === "failed_job");
+  if (failed.length) {
+    const runs = [...new Set(failed.map((c) => c.runExtId).filter((x): x is string => !!x))];
+    const alsoMismatch = runs.length > 0 && runs.every((id) => mismatchRuns.has(id));
+    out.push(mk(ctx, "waste", "failed_job", { title: "graph8 owes you for jobs that failed",
+      body: `${n(sum(failed))} credits went to ${plural(runs.length, "job")} that failed on every record.${alsoMismatch ? " graph8's job records say 0 credits were used." : ""}`,
+      stake: sum(failed), confidence: "high", evidence: { runs, ledgerIds: failed.map((c) => c.ledgerId), billingMismatch: alsoMismatch }, action: "Refund request", payload: { reason: "failed_job" } }));
+  }
+  const unreadable = ctx.charges.filter((c) => c.wasteReason === "no_change");
+  if (unreadable.length) {
+    const runs = [...new Set(unreadable.map((c) => c.runExtId).filter((x): x is string => !!x))];
+    out.push(mk(ctx, "waste", "no_change", { title: "graph8 owes you for results you can't use",
+      body: `${n(sum(unreadable))} credits went to ${runs.length === 1 ? "1 job whose result" : `${plural(runs.length, "job")} whose results`} can't be read back.`,
+      stake: sum(unreadable), confidence: "high", evidence: { runs, ledgerIds: unreadable.map((c) => c.ledgerId) }, action: "Refund request", payload: { reason: "no_change" } }));
+  }
+  const failedRuns = new Set(failed.map((c) => c.runExtId));
+  const otherMismatch = [...mismatchRuns].filter((id) => !failedRuns.has(id));
+  if (otherMismatch.length) {
+    const xs = ctx.charges.filter((c) => c.runExtId !== null && otherMismatch.includes(c.runExtId));
+    out.push(mk(ctx, "fix", "billing_mismatch", { title: "Charged for jobs that report no charge",
+      body: `graph8's job records say 0 credits were used, but the ledger charged ${n(sum(xs))}.`, stake: sum(xs), confidence: "high",
+      evidence: { runs: otherMismatch }, action: "Refund request" }));
   }
   const side = ctx.charges.filter((c) => c.wasteReason === "agent_side_effect");
   if (side.length) out.push(mk(ctx, "side_effect", "agent_reply", { title: "Automated posts are waking graph8's agent",
     body: `${n(sum(side))} credits were charged when graph8's agent replied to automated posts. Post recaps only to #roi-advisor.`,
     stake: sum(side), confidence: "high", evidence: { ledgerIds: side.map((c) => c.ledgerId) }, action: "Use #roi-advisor" }));
   for (const r of ctx.runs) {
-    const linked = ctx.charges.filter((c) => c.runExtId === r.extId);
-    const actual = sum(linked);
-    if (r.reportedCredits === 0 && actual > 0) {
-      const all = ctx.runs.filter((x) => x.reportedCredits === 0).flatMap((x) => ctx.charges.filter((c) => c.runExtId === x.extId));
-      if (!out.some((f) => f.extId.startsWith("fix|billing_mismatch"))) out.push(mk(ctx, "fix", "billing_mismatch", { title: "Charged for jobs that report no charge",
-        body: `graph8's job records say 0 credits were used, but the ledger charged ${n(sum(all))}.`, stake: sum(all), confidence: "high",
-        evidence: { runs: [...new Set(all.map((c) => c.runExtId))] }, action: "Refund request" }));
-    }
     if (r.quotedCredits && r.service) {
       const svcRuns = ctx.runs.filter((x) => x.service === r.service && x.quotedCredits);
       const quoted = svcRuns.reduce((s, x) => s + (x.quotedCredits ?? 0), 0);
@@ -54,19 +61,24 @@ export function generateFindings(ctx: FindingContext): Finding[] {
   const org = ctx.statsByList.find((s) => s.dimension === "org");
   const orgCpm = org?.costPerMeeting ?? null;
   for (const s of ctx.statsByList.filter((x) => x.dimension !== "org")) {
+    const name = ctx.listNames.get(s.value) ?? `list ${s.value}`;
     if (orgCpm && s.costPerMeeting !== null && s.costPerMeeting <= 0.6 * orgCpm && s.confidence !== "low" && s.meetings >= 5)
-      out.push(mk(ctx, "scale", `list:${s.value}`, { title: `Scale ${s.value}`, body: `${n(s.costPerMeeting)} credits per meeting, ${Math.round((1 - s.costPerMeeting / orgCpm) * 100)}% below your average.`,
+      out.push(mk(ctx, "scale", `list:${s.value}`, { title: `Scale ${name}`, body: `${name} book meetings at ${n(s.costPerMeeting)} credits each, ${Math.round((1 - s.costPerMeeting / orgCpm) * 100)}% below your average.`,
         stake: s.credits, confidence: s.confidence, evidence: { value: s.value, costPerMeeting: s.costPerMeeting, meetings: s.meetings }, action: "Build lookalike list", simulated: s.simulated }));
     const tooCostly = orgCpm !== null && s.costPerMeeting !== null && s.costPerMeeting >= 2 * orgCpm;
     const noMeetings = s.meetings === 0 && s.credits >= 1000 && s.contactsReached >= 100;
     if (tooCostly || noMeetings)
-      out.push(mk(ctx, "cut", `list:${s.value}`, { title: `Cut back on ${s.value}`, body: tooCostly ? `${n(s.costPerMeeting!)} credits per meeting, over twice your average.` : `${n(s.credits)} credits and no meetings.`,
+      out.push(mk(ctx, "cut", `list:${s.value}`, { title: `Cut back on ${name}`, body: tooCostly ? `${name} costs ${n(s.costPerMeeting!)} credits per meeting, over twice your average.` : `${name} took ${n(s.credits)} credits and booked no meetings.`,
         stake: s.credits, confidence: s.confidence === "low" ? "medium" : s.confidence, evidence: { value: s.value, costPerMeeting: s.costPerMeeting, meetings: s.meetings }, action: "Apply guardrail", simulated: s.simulated }));
   }
-  const stale = ctx.unusedDocs.filter((d) => toMs(ctx.now) - toMs(d.createdAt) >= 7 * 86_400_000);
-  if (stale.length) out.push(mk(ctx, "unused", "studio_docs", { title: `${stale.length} paid documents never used`,
-    body: `${stale.length} onboarding documents have zero uses. They came out of about ${n(ctx.onboardingCredits)} credits of research.`,
-    stake: ctx.onboardingCredits, confidence: "medium", evidence: { documents: stale.length } }));
+  if (ctx.unusedDocs.length) out.push(mk(ctx, "unused", "studio_docs", { title: `${plural(ctx.unusedDocs.length, "paid document")} never used`,
+    body: `${plural(ctx.unusedDocs.length, "onboarding document")} ${ctx.unusedDocs.length === 1 ? "has" : "have"} never been used. They came out of about ${n(ctx.onboardingCredits)} credits of research.`,
+    stake: ctx.onboardingCredits, confidence: "medium", evidence: { documents: ctx.unusedDocs.length } }));
+  const rep = repeatEnrichment(ctx.charges);
+  if (rep.credits >= 50) out.push(mk(ctx, "repeat_enrichment", "contacts", { title: "Paying to enrich the same contacts again",
+    body: `${n(rep.credits)} credits went to contacts that were enriched again within 30 days.`, stake: rep.credits, confidence: "high",
+    evidence: { charges: rep.charges, contacts: rep.contacts, byList: Object.fromEntries([...rep.byList].map(([k, v]) => [String(k), Math.round(v)])) },
+    action: "Turn on skip recently enriched", simulated: rep.simulated }));
   const total = sum(ctx.charges), none = sum(ctx.charges.filter((c) => c.method === "none"));
   if (total > 0 && none / total >= 0.1) out.push(mk(ctx, "traceability", "service_only", { title: "Spend you can't trace",
     body: `${n(none)} credits (${Math.round((none / total) * 100)}%) can't be tied to a contact or list. Run repeated skills inside a workflow so they can be traced.`,

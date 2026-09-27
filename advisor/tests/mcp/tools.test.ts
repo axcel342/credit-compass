@@ -5,8 +5,8 @@ import type { DashboardData } from "@/lib/dashboard/data";
 import { loadDesignInput } from "../helpers/design-fixture";
 
 const charges = attributeCharges(loadDesignInput());
-const d: DashboardData = { charges, runs: [], coverage: coverage(charges), waste: 115, now: "2026-10-04T00:00:00Z",
-  stats: [{ period: "30d", dimension: "segment", value: "Vice President|Sales|Fintech|51-200", credits: 2100, creditsExact: 2100, meetings: 17, deals: 0, wonValue: 0,
+const d: DashboardData = { charges, outcomes: [], lists: [], listNames: new Map(), hasDemoData: true, runs: [], coverage: coverage(charges), waste: 115, now: "2026-10-04T00:00:00Z",
+  stats: [{ period: "8w", dimension: "segment", value: "Vice President|Sales|Fintech|51-200", credits: 2100, creditsExact: 2100, meetings: 17, deals: 0, wonValue: 0,
     contactsReached: 212, costPerMeeting: 124, costPerDeal: null, vsAvgPct: -62, evidenceN: 17, confidence: "high", simulated: true, computedAt: "2026-10-04T00:00:00Z" }],
   findings: [] };
 

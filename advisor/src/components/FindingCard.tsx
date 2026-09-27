@@ -1,7 +1,7 @@
 import type { Finding } from "@/lib/domain/types";
 import { Tag } from "./Tag";
-const KIND_CLASS: Record<Finding["kind"], string> = { scale: "scale", cut: "cut", waste: "waste", fix: "fix", unused: "info", data_risk: "watch", what_worked: "scale", traceability: "info", side_effect: "fix" };
-const KIND_LABEL: Record<Finding["kind"], string> = { scale: "Scale", cut: "Cut", waste: "Waste", fix: "Fix", unused: "Unused", data_risk: "Data risk", what_worked: "Worked", traceability: "Trace", side_effect: "Side effect" };
+const KIND_CLASS: Record<Finding["kind"], string> = { scale: "scale", cut: "cut", waste: "waste", fix: "fix", unused: "info", data_risk: "watch", what_worked: "scale", traceability: "info", side_effect: "fix", repeat_enrichment: "info" };
+const KIND_LABEL: Record<Finding["kind"], string> = { scale: "Scale", cut: "Cut", waste: "Waste", fix: "Fix", unused: "Unused", data_risk: "Data risk", what_worked: "Worked", traceability: "Trace", side_effect: "Side effect", repeat_enrichment: "Repeat" };
 export function FindingCard({ f, children }: { f: Finding; children?: React.ReactNode }) {
   return (
     <div className="finding">

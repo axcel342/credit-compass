@@ -8,7 +8,7 @@ import { syncNow } from "./actions";
 
 export default async function Overview() {
   const d = await loadDashboardData();
-  const org = d.stats.find((s) => s.dimension === "org" && s.period === "30d");
+  const org = d.stats.find((s) => s.dimension === "org" && s.period === "8w");
   const byService = d.stats.filter((s) => s.dimension === "service").sort((a, b) => b.credits - a.credits);
   const byList = d.stats.filter((s) => s.dimension === "list" && s.costPerMeeting !== null).sort((a, b) => (a.costPerMeeting ?? 0) - (b.costPerMeeting ?? 0));
   const { open, watching } = dashboardBuckets(d.findings, d.now);

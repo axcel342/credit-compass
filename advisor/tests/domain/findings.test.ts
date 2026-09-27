@@ -10,8 +10,9 @@ const stat = (value: string, credits: number, meetings: number, cpm: number | nu
   period: "30d", dimension: value === "all" ? "org" : "list", value, credits, creditsExact: credits, meetings, deals: 0, wonValue: 0, contactsReached: reached,
   costPerMeeting: cpm, costPerDeal: null, vsAvgPct: null, evidenceN: meetings, confidence: conf, simulated: true, computedAt: "2026-10-04T00:00:00Z" });
 const statsByList = [stat("all", 12400, 38, 326), stat("fintech", 2100, 17, 124), stat("starter", 4800, 4, 1200, "medium"), stat("health", 2600, 6, 433, "medium")];
-const findings = generateFindings({ now: "2026-10-04T00:00:00Z", period: "30d", statsByList, statsBySegment: [], charges, runs: input.runs, outcomes: [],
-  unusedDocs: Array.from({ length: 23 }, (_, i) => ({ name: `doc ${i}`, createdAt: "2026-09-26T09:00:00Z" })), onboardingCredits: 860 });
+const findings = generateFindings({ now: "2026-10-04T00:00:00Z", period: "8w", statsByList, statsBySegment: [], charges, runs: input.runs, outcomes: [],
+  unusedDocs: Array.from({ length: 23 }, (_, i) => ({ name: `doc ${i}`, createdAt: "2026-09-26T09:00:00Z" })), onboardingCredits: 860,
+  listNames: new Map([["fintech", "Fintech VPs"], ["starter", "Starter list"]]) });
 const byKind = (k: string) => findings.filter((f) => f.kind === k);
 
 describe("generateFindings", () => {
@@ -19,19 +20,38 @@ describe("generateFindings", () => {
     expect(byKind("waste").map((f) => f.creditsAtStake).sort((a, b) => a - b)).toEqual([14, 77]);
     expect(byKind("side_effect")[0].creditsAtStake).toBe(24);
   });
-  it("flags the billing mismatch on jobs that report 0 credits but were charged", () => {
-    expect(byKind("fix").some((f) => f.extId.startsWith("fix|billing_mismatch") && f.creditsAtStake === 77)).toBe(true);
+  it("folds the billing mismatch into the failed-job finding instead of listing the same 77 credits twice", () => {
+    expect(findings.some((f) => f.extId.startsWith("fix|billing_mismatch"))).toBe(false);
+    const w = byKind("waste").find((f) => f.creditsAtStake === 77)!;
+    expect(w.title).toBe("graph8 owes you for jobs that failed");
+    expect(w.body).toBe("77 credits went to 3 jobs that failed on every record. graph8's job records say 0 credits were used.");
   });
   it("flags the estimate gap: quoted 37, charged 50", () => {
     const f = byKind("fix").find((x) => x.extId.startsWith("fix|estimate_gap"));
     expect(f?.evidence).toMatchObject({ quoted: 37, actual: 50 });
   });
-  it("suggests scaling fintech (≤0.6× average) and cutting starter (≥2× average)", () => {
-    expect(byKind("scale").map((f) => f.evidence.value)).toEqual(["fintech"]);
-    expect(byKind("cut").map((f) => f.evidence.value)).toEqual(["starter"]);
+  it("names lists in scale and cut findings", () => {
+    expect(byKind("scale").map((f) => f.title)).toEqual(["Scale Fintech VPs"]);
+    expect(byKind("scale")[0].body).toBe("Fintech VPs book meetings at 124 credits each, 62% below your average.");
+    expect(byKind("cut")[0].body).toBe("Starter list costs 1,200 credits per meeting, over twice your average.");
   });
-  it("reports 23 unused documents after 7 days", () => expect(byKind("unused")[0].evidence).toMatchObject({ documents: 23 }));
+  it("reports unused documents without waiting 7 days", () => {
+    const f = byKind("unused")[0];
+    expect(f.evidence).toMatchObject({ documents: 23 });
+    expect(f.title).toBe("23 paid documents never used");
+  });
+  it("uses correct plurals", () => expect(byKind("waste").find((f) => f.creditsAtStake === 14)!.body).toBe("14 credits went to 1 job whose result can't be read back."));
   it("does not raise traceability when service-only spend is under 10%", () => expect(byKind("traceability")).toHaveLength(0));
+  it("raises repeat enrichment when the same contacts are charged again within 30 days", () => {
+    const base = charges[0];
+    const again = [0, 1, 2, 3, 4, 5].map((i) => ({ ...base, ledgerId: `rep${i}`, service: "waterfall_enrichment", contactId: 42, listId: 15, credits: 20,
+      isWaste: false, wasteReason: null, result: "success" as const, chargedAt: `2026-09-0${i + 1}T00:00:00Z` }));
+    const fs = generateFindings({ now: "2026-10-04T00:00:00Z", period: "8w", statsByList: [], statsBySegment: [], charges: again, runs: [], outcomes: [],
+      unusedDocs: [], onboardingCredits: 0, listNames: new Map([["15", "Sales VPs"]]) });
+    const r = fs.find((f) => f.kind === "repeat_enrichment")!;
+    expect(r).toMatchObject({ creditsAtStake: 100, title: "Paying to enrich the same contacts again", action: "Turn on skip recently enriched" });
+    expect(r.evidence).toMatchObject({ charges: 5, contacts: 1, byList: { "15": 100 } });
+  });
 });
 
 describe("mergeFindings", () => {

@@ -49,7 +49,7 @@ export interface Stat {
   evidenceN: number; confidence: Confidence; simulated: boolean; computedAt: string;
 }
 
-export type FindingKind = "scale" | "cut" | "waste" | "fix" | "unused" | "data_risk" | "what_worked" | "traceability" | "side_effect";
+export type FindingKind = "scale" | "cut" | "waste" | "fix" | "unused" | "data_risk" | "what_worked" | "traceability" | "side_effect" | "repeat_enrichment";
 export type FindingStatus = "open" | "dismissed" | "snoozed" | "applied";
 
 export interface Finding {
@@ -63,3 +63,6 @@ export interface ContactInfo {
   contactId: number; name: string; email: string | null; companyName: string | null; companyDomain: string | null;
   listIds: number[]; sequenceIds: string[]; segmentKey: string; consistency: "ok" | "flagged" | "unknown";
 }
+
+export type OutcomeBucket = "booked" | "nomeet" | "unused" | "unknown" | "waste";
+export type Period = "8w" | "30d";
