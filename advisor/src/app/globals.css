@@ -322,7 +322,6 @@ a.btn{text-decoration:none;display:inline-block}
 .impact{font:600 14px var(--f-display);color:var(--booked);white-space:nowrap}
 .act-side{display:flex;flex-direction:column;gap:8px;justify-content:center;border-left:1px solid var(--line-2);padding-left:18px}
 .act-side form{display:grid;gap:8px}
-.what{font-size:13.5px;background:var(--panel-2);border-radius:6px;padding:8px 10px}
 .evbar{display:flex;height:24px;border-radius:5px;overflow:hidden;font-size:12px;font-weight:600;margin:10px 0 4px}
 .evbar span{display:flex;align-items:center;padding-left:8px;white-space:nowrap;overflow:hidden;color:var(--ink)}
 .cmp div{display:grid;grid-template-columns:100px 1fr 40px;gap:10px;align-items:center;margin:5px 0;font-size:14px}
@@ -440,3 +439,19 @@ a.btn{text-decoration:none;display:inline-block}
   .lb{grid-template-columns:72px minmax(0,1fr) 44px}
   .lb .note{grid-column:2/-1;margin-top:-8px}
 }
+
+/* number first: charges */
+.c-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap;margin-top:30px}
+.filters{margin-top:4px}
+.acts-table td{vertical-align:middle}
+.acts-table .when{color:var(--muted);white-space:nowrap}
+.acts-table td.num{font:650 14.5px var(--f-display);font-variant-numeric:tabular-nums}
+.bought{display:flex;align-items:center;gap:10px}
+.bmini{display:flex;width:92px;height:8px;border-radius:3px;overflow:hidden;flex:none}
+.share{font:700 15px var(--f-display);font-variant-numeric:tabular-nums}
+.res{display:inline-flex;align-items:center;gap:8px}
+.res .dot{width:8px;height:8px}
+.acts-table .match{color:var(--muted);font-size:13px}
+.acts-table .fold td{background:var(--panel-2)}
+.acts-table .fold a{font-weight:600;text-decoration:none}
+.acts-table .fold a:hover{text-decoration:underline}
