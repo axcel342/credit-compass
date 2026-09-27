@@ -351,3 +351,31 @@ a.btn{text-decoration:none;display:inline-block}
 .good-ink{color:var(--good-ink)}
 .bad-ink{color:var(--bad-ink)}
 .h-scr{font:720 clamp(22px,2.6vw,28px)/1.15 var(--f-display);letter-spacing:-.02em;margin:0}
+
+/* number first: recovery */
+.claim-none{margin-top:30px}
+.claim-lead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px 40px;align-items:start;margin-top:30px;scroll-margin-top:80px}
+.r-fig{display:flex;align-items:baseline;gap:12px;margin:0}
+.r-fig .fig{font-size:clamp(60px,7.4vw,92px)}
+.r-fig .u{font:700 clamp(18px,2vw,24px) var(--f-display);color:var(--ink-2)}
+.r-lab{font-size:18px;margin-top:8px}
+.r-items{list-style:none;margin:18px 0 0;padding:0;display:grid;max-width:580px}
+.r-items li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line);font-size:14.5px}
+.r-items b{font:700 15.5px var(--f-display);font-variant-numeric:tabular-nums}
+.r-steps{list-style:none;margin:20px 0 0;padding:0;display:flex;align-items:center;max-width:580px;font-size:13px;color:var(--muted)}
+.r-steps li{display:flex;align-items:center;gap:8px;flex:1;white-space:nowrap}
+.r-steps li:last-child{flex:none}
+.r-steps li::before{content:"";width:12px;height:12px;border-radius:50%;border:1.5px solid var(--nomeet);flex:none;background:var(--bg)}
+.r-steps li.done{color:var(--ink);font-weight:600}
+.r-steps li.done::before{background:var(--ink);border-color:var(--ink)}
+.r-steps li:not(:last-child)::after{content:"";flex:1;height:1.5px;background:var(--line);margin-right:8px}
+.claim-act{display:grid;justify-items:end;gap:10px;max-width:420px}
+.claim{display:grid;justify-items:end;gap:12px}
+.claim > summary{list-style:none;cursor:pointer;padding:11px 16px;font-size:14px}
+.claim > summary::-webkit-details-marker{display:none}
+.claim .refund{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;justify-items:start;text-align:left}
+.also{display:grid;border-top:1px solid var(--line);margin-top:12px}
+.also-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:18px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line-2);font-size:14.5px}
+.also-row .fig{font-size:24px;color:var(--ink-2)}
+@media (max-width:760px){.claim-lead{grid-template-columns:1fr}.claim-act,.claim{justify-items:start}}
+@media (max-width:620px){.also-row{grid-template-columns:64px minmax(0,1fr)}}
