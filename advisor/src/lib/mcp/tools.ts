@@ -6,13 +6,13 @@ const n = (x: number) => Math.round(x).toLocaleString("en-US");
 
 export function roiSummary(d: DashboardData): string {
   const pct = d.coverage.total ? Math.round((d.coverage.exact / d.coverage.total) * 100) : 0;
-  const org = d.stats.find((s) => s.dimension === "org");
+  const org = d.stats.find((s) => s.dimension === "org" && s.period === "8w");
   const cpm = org?.costPerMeeting != null ? `${n(org.costPerMeeting)} credits per meeting` : "no meetings recorded yet";
   return `${n(d.coverage.total)} credits spent; ${pct}% traced exactly; ${n(d.waste)} wasted; ${cpm}.`;
 }
 
 export function costPerOutcome(d: DashboardData, p: { dimension: "list" | "segment" | "service"; value: string }): string {
-  const s = d.stats.find((x) => x.dimension === p.dimension && x.value === p.value);
+  const s = d.stats.find((x) => x.dimension === p.dimension && x.value === p.value && x.period === "8w");
   if (!s) return `No data for ${p.dimension} "${p.value}".`;
   if (s.costPerMeeting === null) return `${p.value}: ${n(s.credits)} credits, no meetings yet.`;
   const vs = s.vsAvgPct === null ? "" : `${Math.abs(Math.round(s.vsAvgPct))}% ${s.vsAvgPct < 0 ? "below" : "above"} average, `;

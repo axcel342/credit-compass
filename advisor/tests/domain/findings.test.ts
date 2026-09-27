@@ -11,7 +11,7 @@ const stat = (value: string, credits: number, meetings: number, cpm: number | nu
   costPerMeeting: cpm, costPerDeal: null, vsAvgPct: null, evidenceN: meetings, confidence: conf, simulated: true, computedAt: "2026-10-04T00:00:00Z" });
 const statsByList = [stat("all", 12400, 38, 326), stat("fintech", 2100, 17, 124), stat("starter", 4800, 4, 1200, "medium"), stat("health", 2600, 6, 433, "medium")];
 const findings = generateFindings({ now: "2026-10-04T00:00:00Z", period: "8w", statsByList, statsBySegment: [], charges, runs: input.runs, outcomes: [],
-  unusedDocs: Array.from({ length: 23 }, (_, i) => ({ name: `doc ${i}`, createdAt: "2026-09-26T09:00:00Z" })), onboardingCredits: 860,
+  unusedDocs: Array.from({ length: 23 }, (_, i) => ({ name: `doc ${i}`, createdAt: "2026-10-02T09:00:00Z" })), onboardingCredits: 860,
   listNames: new Map([["fintech", "Fintech VPs"], ["starter", "Starter list"]]) });
 const byKind = (k: string) => findings.filter((f) => f.kind === k);
 
