@@ -5,7 +5,8 @@ import { dashboardBuckets } from "@/lib/domain/gate";
 import { rollingCostPerMeeting, firstTouchCohorts, trendChange } from "@/lib/domain/trend";
 import { overviewHeadline, overviewLede, statStrip, plural } from "@/lib/dashboard/story";
 import { flowData, layoutFlow } from "@/lib/dashboard/flow";
-import { doNextItems } from "@/lib/dashboard/donext";
+import { doNextItems, doNextImpact } from "@/lib/dashboard/donext";
+import { buildActions } from "@/lib/domain/actions";
 import { Headline } from "@/components/Headline";
 import { StatStrip } from "@/components/StatStrip";
 import { FlowDiagram } from "@/components/FlowDiagram";
@@ -23,6 +24,8 @@ export default async function Overview({ searchParams }: { searchParams: Promise
   const best = byList[0]?.value;
   const periodQuery = period === "30d" ? "period=30d" : "";
   const trendPoints = rollingCostPerMeeting(d.charges, d.outcomes, d.now);
+  const v8 = period === "8w" ? v : periodView(d, "8w");
+  const impact = doNextImpact(buildActions({ charges: v8.charges, stats: v8.stats, listNames: d.listNames, contacts: [], actions: d.actions }));
   return (
     <>
       <Headline text={overviewHeadline({ total, meetings: v.meetings, won: v.won, wonValue: v.wonValue, periodLabel: PERIOD_LABEL[period] })} lede={overviewLede({ unused: v.buckets.unused, waste: v.buckets.waste })} />
@@ -33,7 +36,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           : <p className="small">No charges in {PERIOD_LABEL[period]}. Switch to 8 weeks or run Sync now.</p>}
       </section>
       <div className="grid2">
-        <DoNext items={doNextItems(dashboardBuckets(d.findings, d.now).open, 4, periodQuery)} />
+        <DoNext items={doNextItems(dashboardBuckets(d.findings, d.now).open, 4, periodQuery, impact)} />
         <section className="panel">
           <div className="ph"><h2>Credits per meeting, by list</h2><span className="small">Lower is better</span></div>
           {byList.length ? <HBarChart ariaLabel="Credits per meeting by list" unit="credits per meeting" labelW={130} max={Math.max(...byList.map((s) => s.costPerMeeting!)) * 1.05}
