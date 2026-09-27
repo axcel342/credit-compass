@@ -12,7 +12,7 @@ Credit Compass then steers the next spend, skipping low-fit contacts through gra
 | `docs/HANDOFF.md` | Context, decisions, working rules, pending questions |
 | `docs/superpowers/specs/2026-09-26-roi-advisor-design.md` | Approved design with live validation evidence |
 | `docs/superpowers/plans/2026-09-26-roi-advisor.md` | Implementation plan |
-| `docs/design/roi-advisor-ui.html` | Approved UI (open it in a browser) |
+| `docs/design/credit-compass-ui-v2.html` | Approved UI (open it in a browser) |
 | `docs/DEMO.md` | The 5-minute live demo script, URLs, pre-demo checklist and cleanup plan |
 | `research/` | Real-org fixtures, graph8 reference data, probe scripts |
 | `g8-product-overview.md`, `g8-reference.md` | graph8 product overview and full CLI/MCP/API reference |

@@ -8,7 +8,7 @@ const para = (text: string, bold = false): WorkBlock => ({ type: "paragraph", co
 export function buildRecapBlocks(p: { spendThisWeek: number; meetingsThisWeek: number; items: Finding[]; simulated: boolean }): WorkBlock[] {
   const n = (x: number) => Math.round(x).toLocaleString("en-US");
   const each = p.meetingsThisWeek > 0 ? ` (${n(p.spendThisWeek / p.meetingsThisWeek)} each)` : "";
-  return [para(`Last week: ${n(p.spendThisWeek)} credits → ${n(p.meetingsThisWeek)} meetings${each}${p.simulated ? " [sim]" : ""}`, true),
+  return [para(`Last week: ${n(p.spendThisWeek)} credits → ${n(p.meetingsThisWeek)} meetings${each}${p.simulated ? ", includes demo data" : ""}`, true),
     ...p.items.slice(0, 3).map((f, i) => para(`${i + 1}. ${f.body}`))];
 }
 
