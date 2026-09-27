@@ -1,11 +1,10 @@
 import Link from "next/link";
 import type { Plan } from "@/lib/dashboard/planner-data";
-import { RUN_CONDITION } from "@/lib/guardrail/guardrail";
 import { CostWalk } from "./CostWalk";
 import { ForecastBar } from "./ForecastBar";
 import { RunPlan } from "@/app/(dash)/optimize/RunPlan";
 
-export function Planner({ plan, choices, hrefFor }: { plan: Plan; choices: { id: number; label: string; total: number }[]; hrefFor: (p: { list?: number; type?: string }) => string }) {
+export function Planner({ plan, choices, rule, hrefFor }: { plan: Plan; choices: { id: number; label: string; total: number }[]; rule: string; hrefFor: (p: { list?: number; type?: string }) => string }) {
   const f = plan.fits;
   return (
     <section className="panel" id="plan" aria-labelledby="plan-h">
@@ -26,7 +25,7 @@ export function Planner({ plan, choices, hrefFor }: { plan: Plan; choices: { id:
       <h3 className="sub">Who gets skipped</h3>
       <div className="fitbar" aria-hidden="true"><span style={{ flex: f.high, background: "var(--booked)" }} /><span style={{ flex: f.medium, background: "var(--maybe)" }} /><span style={{ flex: f.low, background: "var(--waste)" }} /><span style={{ flex: f.unknown, background: "var(--unknown)" }} /></div>
       <p className="small">Likely to book {f.high}, maybe {f.medium}, unlikely {f.low}, unknown {f.unknown}. Unlikely means the email doesn&apos;t match their company (those bounced about twice as often when we checked) or people like them rarely book.</p>
-      <details><summary>The rule graph8 will run</summary><p className="small">Written to the list pipeline&apos;s run condition, so graph8 enforces it on every run: <code>{RUN_CONDITION}</code></p></details>
+      <details><summary>The rule graph8 will run</summary><p className="small">Written to the list pipeline&apos;s run condition, so graph8 enforces it on every run: <code>{rule}</code></p></details>
       {plan.runnable ? <RunPlan listId={plan.listId} estimate={plan.walk.estimate} records={plan.walk.records} verb={plan.def.verb} /> : <p className="small">{plan.reason ?? "graph8 has no pipeline for this list yet."}</p>}
     </section>
   );

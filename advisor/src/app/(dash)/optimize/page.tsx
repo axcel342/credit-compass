@@ -1,5 +1,6 @@
 import { loadDashboardData, periodView } from "@/lib/dashboard/data";
-import { currentCaller } from "@/lib/workspace/current";
+import { currentCaller, currentWorkspace } from "@/lib/workspace/current";
+import { runCondition } from "@/lib/guardrail/guardrail";
 import { listChoices, type EnrichmentType } from "@/lib/domain/planner";
 import { loadPlan } from "@/lib/dashboard/planner-data";
 import { optimizeHeadline } from "@/lib/dashboard/story";
@@ -14,7 +15,7 @@ import { Planner } from "@/components/Planner";
 type SP = { list?: string; type?: string; period?: string };
 export default async function OptimizePage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
-  const c = await currentCaller();
+  const c = await currentCaller(), ws = await currentWorkspace();
   const d = await loadDashboardData(c);
   const choices = listChoices(d.lists, d.listNames);
   const listId = choices.some((l) => String(l.id) === sp.list) ? Number(sp.list) : (choices.find((l) => d.listNames.get(String(l.id)) === "Starter list") ?? choices[0])?.id;
@@ -32,7 +33,7 @@ export default async function OptimizePage({ searchParams }: { searchParams: Pro
         lede="Each change comes from your own charges and meetings. Applying one changes a setting in graph8 and costs no credits; you can undo it here." />
       <div className="acts">{actions.map((a) => <ActionCard key={a.id} a={a} />)}</div>
       <AppliedChanges actions={d.actions} runs={d.runs} listNames={d.listNames} />
-      <Planner plan={plan} choices={choices} hrefFor={hrefFor} />
+      <Planner plan={plan} choices={choices} rule={runCondition(ws.fitFieldName)} hrefFor={hrefFor} />
     </>
   );
 }

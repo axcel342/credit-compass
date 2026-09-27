@@ -4,7 +4,7 @@ import { RecordStore } from "../store/records";
 import { actionToValues, valuesToAction } from "../store/mappers";
 import type { ActionRecord, ContactCacheRow } from "../domain/types";
 import { findEnrichmentPipeline, listPipelines, patchPipeline, restorePipeline, type PipelinePatch, type PipelineSettings } from "../guardrail/pipeline";
-import { ROI_FIT_FIELD_NAME, RUN_CONDITION, assertConditionFilters, validateCondition, writeFit } from "../guardrail/guardrail";
+import { assertConditionFilters, runCondition, validateCondition, writeFit } from "../guardrail/guardrail";
 
 async function existing(c: G8Caller, extId: string): Promise<ActionRecord | null> {
   const r = (await new RecordStore(c, "roi_action").list()).find((x) => x.values.ext_id === extId);
@@ -33,11 +33,11 @@ export async function applyPause(c: G8Caller, listId: number, now: string) {
   return patchList(c, "pause_list", listId, { enabled: false }, now);
 }
 
-export async function applyGuardrailRule(c: G8Caller, listId: number, rows: ContactCacheRow[], now: string) {
-  await writeFit(c, { columnId: Number(process.env.ROI_FIT_COLUMN_ID ?? 757), fits: new Map(rows.map((r) => [r.contactId, r.fit])) });
-  await validateCondition(c, RUN_CONDITION);
-  await assertConditionFilters(c, { listId, listSize: rows.length, fieldName: ROI_FIT_FIELD_NAME, value: "low" });
-  return patchList(c, "guardrail", listId, { step: { run_condition: RUN_CONDITION } }, now, { contacts: rows.length });
+export async function applyGuardrailRule(c: G8Caller, listId: number, rows: ContactCacheRow[], now: string, field: { columnId: number; name: string }) {
+  await writeFit(c, { columnId: field.columnId, fits: new Map(rows.map((r) => [r.contactId, r.fit])) });
+  await validateCondition(c, runCondition(field.name));
+  await assertConditionFilters(c, { listId, listSize: rows.length, fieldName: field.name, value: "low" });
+  return patchList(c, "guardrail", listId, { step: { run_condition: runCondition(field.name) } }, now, { contacts: rows.length });
 }
 
 export async function applyLookalike(c: G8Caller, p: { listId: number; title: string; filters: { field: string; operator: string; value: string[] }[] }, now: string) {

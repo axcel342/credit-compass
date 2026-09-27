@@ -2,25 +2,26 @@
 import { revalidatePath } from "next/cache";
 import { OPS } from "@/lib/g8/ops";
 import { isAuthed } from "@/lib/auth";
-import { currentCaller } from "@/lib/workspace/current";
+import { currentCaller, currentWorkspace } from "@/lib/workspace/current";
 import { loadDashboardData } from "@/lib/dashboard/data";
 import { loadPlan } from "@/lib/dashboard/planner-data";
 import { RecordStore } from "@/lib/store/records";
 import { runToValues } from "@/lib/store/mappers";
-import { ROI_FIT_FIELD_NAME, RUN_CONDITION, assertConditionFilters, ensurePipeline, readPipelineRun, runGuardedPipeline, setRunCondition, validateCondition, writeFit } from "@/lib/guardrail/guardrail";
+import { assertConditionFilters, ensurePipeline, readPipelineRun, runCondition, runGuardedPipeline, setRunCondition, validateCondition, writeFit } from "@/lib/guardrail/guardrail";
 
 export async function runPlan(_: unknown, form: FormData): Promise<{ ok: boolean; message: string }> {
   if (!(await isAuthed())) return { ok: false, message: "Sign in first." };
   if (form.get("confirm") !== "yes") return { ok: false, message: "Tick the box to confirm the run and its cost." };
-  const c = await currentCaller(), listId = Number(form.get("listId"));
+  const c = await currentCaller(), ws = await currentWorkspace(), listId = Number(form.get("listId"));
   try {
     const plan = await loadPlan(c, await loadDashboardData(c), listId, "find");
     if (!plan.runnable) return { ok: false, message: plan.reason ?? "This enrichment can't run on this list yet." };
-    await writeFit(c, { columnId: Number(process.env.ROI_FIT_COLUMN_ID ?? 757), fits: new Map(plan.rows.map((r) => [r.contactId, r.fit])) });
-    await validateCondition(c, RUN_CONDITION);
-    await assertConditionFilters(c, { listId, listSize: plan.rows.length, fieldName: ROI_FIT_FIELD_NAME, value: "low" });
+    const condition = runCondition(ws.fitFieldName);
+    await writeFit(c, { columnId: ws.fitColumnId, fits: new Map(plan.rows.map((r) => [r.contactId, r.fit])) });
+    await validateCondition(c, condition);
+    await assertConditionFilters(c, { listId, listSize: plan.rows.length, fieldName: ws.fitFieldName, value: "low" });
     const pipeline = await ensurePipeline(c, listId);
-    await setRunCondition(c, { listId, pipeline, condition: RUN_CONDITION });
+    await setRunCondition(c, { listId, pipeline, condition });
     const before = (await c.call<{ available_credits: number }>(OPS.getUsage)).available_credits;
     const startedAt = new Date().toISOString(), cap = Number(process.env.ACTION_CREDIT_CAP ?? 50);
     const { runId } = await runGuardedPipeline(c, { listId, pipelineId: pipeline.id, estimatedCredits: plan.walk.estimate, cap: Number.isFinite(cap) ? cap : 50 });
