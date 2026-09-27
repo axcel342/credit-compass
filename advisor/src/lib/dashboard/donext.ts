@@ -1,33 +1,40 @@
 import type { Finding } from "../domain/types";
-import type { PlannedAction } from "../domain/actions";
-import { n, plural } from "./story";
+import type { Payoff, PlannedAction } from "../domain/actions";
+import { n } from "./story";
 
-export interface DoNextItem { id: string; text: string; sub: string; label: string; href: string }
-export interface DoNextImpact { repeatMonthly: number | null; moveSpend: string | null }
-const NO_IMPACT: DoNextImpact = { repeatMonthly: null, moveSpend: null };
+export interface DoNextItem { id: string; figure: string; unit: string; text: string; label: string; href: string }
+export interface DoNextImpact { repeat: Payoff | null; move: (Payoff & { title: string }) | null; refundRequested: boolean }
+const NO_IMPACT: DoNextImpact = { repeat: null, move: null, refundRequested: false };
 const WEIGHT = { high: 1, medium: 0.6, low: 0.2 } as const;
-const BUTTON: Partial<Record<Finding["kind"], [string, string]>> = {
-  cut: ["See how to cut it", "/optimize#move-spend"], scale: ["Build a lookalike list", "/optimize#move-spend"],
-  repeat_enrichment: ["Stop paying twice", "/optimize#repeat"], waste: ["Request a refund", "/recovery#claim"],
-  unused: ["See it in Recovery", "/recovery"], side_effect: ["See it in Recovery", "/recovery"], fix: ["Plan the next enrichment", "/optimize#plan"],
+
+type Group = "move" | "repeat" | "unused" | "refund" | "side_effect" | "fix";
+const GROUP: Partial<Record<Finding["kind"], Group>> = {
+  cut: "move", scale: "move", repeat_enrichment: "repeat", unused: "unused", waste: "refund", side_effect: "side_effect", fix: "fix",
+};
+const BUTTON: Record<Group, [string, string]> = {
+  move: ["Move spend", "/optimize#move-spend"], repeat: ["Stop paying twice", "/optimize#repeat"], unused: ["See it", "/recovery"],
+  refund: ["Claim refund", "/recovery#claim"], side_effect: ["See it", "/recovery"], fix: ["Plan it", "/optimize#plan"],
 };
 
-export function doNextImpact(actions: PlannedAction[]): DoNextImpact {
+export function doNextImpact(actions: PlannedAction[], refundRequested = false): DoNextImpact {
   const open = (id: PlannedAction["id"]) => actions.find((a) => a.id === id && !a.applied);
-  return { repeatMonthly: open("repeat")?.monthlyCredits ?? null, moveSpend: open("move-spend")?.impact ?? null };
+  const move = open("move-spend"), repeat = open("repeat");
+  return { repeat: repeat ? repeat.payoff : null, move: move ? { ...move.payoff, title: move.title } : null, refundRequested };
 }
 
-function payoff(f: Finding, impact: DoNextImpact): string {
-  const k = plural(f.creditsAtStake, "credit");
-  switch (f.kind) {
-    case "cut": return impact.moveSpend ? `${impact.moveSpend} if you move this spend` : `${k} spent on this list`;
-    case "scale": return "Up to 50 more contacts like them, free";
-    case "repeat_enrichment": return impact.repeatMonthly ? `Saves ~${n(impact.repeatMonthly)} credits a month` : `${k} paid twice`;
-    case "waste": return `${k} to claim back`;
-    case "unused": return `${k} of research ready to use`;
-    case "side_effect": return `Stops ${k} of agent charges`;
-    case "fix": return `${k} over graph8's quotes`;
-    default: return `${k} at stake`;
+function content(g: Group, fs: Finding[], impact: DoNextImpact): Pick<DoNextItem, "figure" | "unit" | "text"> {
+  const stake = n(fs.reduce((s, f) => s + f.creditsAtStake, 0));
+  switch (g) {
+    case "move": {
+      if (impact.move) return { figure: impact.move.figure, unit: impact.move.unit, text: impact.move.title };
+      const lead = fs.find((f) => f.kind === "cut") ?? fs[0];
+      return { figure: n(lead.creditsAtStake), unit: lead.kind === "cut" ? "credits on a costly list" : "credits on your best list", text: lead.body };
+    }
+    case "repeat": return { ...(impact.repeat ?? { figure: stake, unit: "credits paid twice" }), text: "Stop paying twice for the same contacts" };
+    case "unused": return { figure: stake, unit: "credits unused", text: "Onboarding research nobody has opened" };
+    case "refund": return { figure: stake, unit: "credits back", text: "graph8 owes you for work that produced nothing" };
+    case "side_effect": return { figure: stake, unit: "credits of agent charges", text: "Automated posts woke graph8's agent" };
+    case "fix": return { figure: stake, unit: "credits over quotes", text: fs[0].body };
   }
 }
 
@@ -38,8 +45,13 @@ function withPeriod(href: string, periodQuery: string): string {
 }
 
 export function doNextItems(findings: Finding[], max = 4, periodQuery = "", impact: DoNextImpact = NO_IMPACT): DoNextItem[] {
-  return findings.filter((f) => BUTTON[f.kind])
-    .sort((a, b) => b.creditsAtStake * WEIGHT[b.confidence] - a.creditsAtStake * WEIGHT[a.confidence])
-    .slice(0, max)
-    .map((f) => ({ id: f.extId, text: f.body, sub: payoff(f, impact), label: BUTTON[f.kind]![0], href: withPeriod(BUTTON[f.kind]![1], periodQuery) }));
+  const groups = new Map<Group, Finding[]>();
+  for (const f of findings) {
+    const g = GROUP[f.kind];
+    if (!g || (g === "refund" && impact.refundRequested)) continue;
+    groups.set(g, [...(groups.get(g) ?? []), f]);
+  }
+  const score = (fs: Finding[]) => Math.max(...fs.map((f) => f.creditsAtStake * WEIGHT[f.confidence]));
+  return [...groups].sort((a, b) => score(b[1]) - score(a[1])).slice(0, max)
+    .map(([g, fs]) => ({ id: fs.map((f) => f.extId).join("+"), ...content(g, fs, impact), label: BUTTON[g][0], href: withPeriod(BUTTON[g][1], periodQuery) }));
 }

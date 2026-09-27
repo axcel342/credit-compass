@@ -15,18 +15,29 @@ export function appliedSummary(a: ActionRecord, runs: Run[], listName: string): 
   return `${base} ${after.length === 0 ? "No runs since." : `${plural(skipped, "contact")} skipped since, about ${skipped * 3} credits saved.`}`;
 }
 
-export function AppliedChanges({ actions, runs, listNames }: { actions: ActionRecord[]; runs: Run[]; listNames: Map<string, string> }) {
+export function splitApplied(actions: ActionRecord[]): { active: ActionRecord[]; undone: ActionRecord[] } {
   const xs = actions.filter((a) => a.kind !== "refund_request").sort((a, b) => toMs(b.appliedAt) - toMs(a.appliedAt));
+  return { active: xs.filter((a) => a.status !== "undone"), undone: xs.filter((a) => a.status === "undone") };
+}
+
+function AppliedRow({ a, runs, listNames }: { a: ActionRecord; runs: Run[]; listNames: Map<string, string> }) {
+  return (
+    <div className="applied">
+      <i className="dot" style={{ background: a.status === "applied" ? "var(--booked)" : "var(--unknown)" }} />
+      <div><b>{LABEL[a.kind]}</b><br /><span className="small">{appliedSummary(a, runs, listNamesGet(listNames, a.listId))}</span></div>
+      {a.status === "applied" && a.kind !== "lookalike" && <form action={undo}><input type="hidden" name="extId" value={a.extId} /><button className="btn ghost" type="submit">Undo</button></form>}
+    </div>);
+}
+
+export function AppliedChanges({ actions, runs, listNames }: { actions: ActionRecord[]; runs: Run[]; listNames: Map<string, string> }) {
+  const { active, undone } = splitApplied(actions);
+  if (!active.length && !undone.length) return null;
   return (
     <section className="panel" aria-labelledby="applied-h">
-      <div className="ph"><h2 id="applied-h">Changes you&apos;ve made</h2><span className="small">What each one has done since</span></div>
-      {xs.length === 0 && <p className="small">None yet. Changes you apply above show up here with what they did.</p>}
-      {xs.map((a) => (
-        <div className="applied" key={a.extId}>
-          <i className="dot" style={{ background: a.status === "applied" ? "var(--booked)" : "var(--unknown)" }} />
-          <div><b>{LABEL[a.kind]}</b><br /><span className="small">{appliedSummary(a, runs, listNamesGet(listNames, a.listId))}</span></div>
-          {a.status === "applied" && a.kind !== "lookalike" && <form action={undo}><input type="hidden" name="extId" value={a.extId} /><button className="btn ghost" type="submit">Undo</button></form>}
-        </div>))}
+      <div className="ph"><h2 id="applied-h">Changes you&apos;ve made</h2></div>
+      {active.map((a) => <AppliedRow key={a.extId} a={a} runs={runs} listNames={listNames} />)}
+      {undone.length > 0 && (
+        <details className="more"><summary>{undone.length} undone</summary>{undone.map((a) => <AppliedRow key={a.extId} a={a} runs={runs} listNames={listNames} />)}</details>)}
     </section>
   );
 }

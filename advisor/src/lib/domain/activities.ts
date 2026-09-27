@@ -1,6 +1,7 @@
 import type { AttributedCharge, Method, OutcomeBucket, Run, WasteReason } from "./types";
 import { serviceName } from "./names";
 import { EXACT_METHODS } from "./attribution";
+import { BUCKETS } from "./buckets";
 import { toMs } from "./time";
 
 export interface ActivityChild { key: string; label: string; credits: number; charges: number; result: string }
@@ -71,4 +72,25 @@ export function groupActivities(charges: AttributedCharge[], runs: Run[], bucket
       simulated: xs.some((c) => c.simulated), ledgerIds: xs.map((c) => c.ledgerId), children });
   }
   return out.sort((a, b) => b.credits - a.credits);
+}
+
+const SHORT: Record<OutcomeBucket, string> = { booked: "booked", emailed: "emailed, no meeting yet", nomeet: "no meeting yet", unused: "never used", unknown: "can't tell yet", waste: "wasted" };
+
+export type Bought = ({ kind: "result"; text: string; bucket: OutcomeBucket } | { kind: "split"; share: number; buckets: Record<OutcomeBucket, number> }
+  | { kind: "single"; bucket: OutcomeBucket }) & { title: string };
+
+export function boughtCell(a: Activity): Bought {
+  const parts = BUCKETS.filter((b) => a.buckets[b] > 0);
+  const title = parts.map((b) => `${Math.round(a.buckets[b]).toLocaleString("en-US")} ${SHORT[b]}`).join(", ");
+  if (a.result) return { kind: "result", text: a.result, bucket: parts[0] ?? "unknown", title };
+  if (parts.length > 1) return { kind: "split", share: Math.round((a.buckets.booked / a.credits) * 100), buckets: a.buckets, title };
+  return { kind: "single", bucket: parts[0] ?? "unknown", title };
+}
+
+export function foldSmall(rows: Activity[], share = 0.01): { shown: Activity[]; small: Activity[]; smallCredits: number } {
+  const total = rows.reduce((s, a) => s + a.credits, 0);
+  const isSmall = (a: Activity) => a.credits < share * total && a.buckets.waste === 0;
+  const small = rows.filter(isSmall);
+  if (small.length < 2) return { shown: rows, small: [], smallCredits: 0 };
+  return { shown: rows.filter((a) => !isSmall(a)), small, smallCredits: small.reduce((s, a) => s + a.credits, 0) };
 }

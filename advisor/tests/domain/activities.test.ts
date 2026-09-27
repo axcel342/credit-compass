@@ -48,3 +48,38 @@ describe("groupActivities", () => {
   });
   it("sorts by credits, largest first", () => expect(acts.map((a) => a.credits)).toEqual([72, 20, 12]));
 });
+
+import { boughtCell, foldSmall, type Activity } from "@/lib/domain/activities";
+const act = (p: Partial<Activity>): Activity => ({ key: "k", title: "Email finding", detail: "", service: "waterfall_enrichment", listId: null,
+  from: "2026-09-26T00:00:00.000Z", to: "2026-09-26T00:00:00.000Z", credits: 100, charges: 1,
+  buckets: { booked: 0, emailed: 0, nomeet: 100, unused: 0, unknown: 0, waste: 0 }, match: "exact", matchNote: "Run ID", result: null,
+  simulated: false, ledgerIds: [], children: [], ...p });
+const split = (booked: number, emailed: number, nomeet: number) => ({ booked, emailed, nomeet, unused: 0, unknown: 0, waste: 0 });
+
+describe("boughtCell", () => {
+  it("shows the share that booked when a row bought several things", () =>
+    expect(boughtCell(act({ credits: 4800, buckets: split(548.56, 2331.48, 1919.96) }))).toEqual({ kind: "split", share: 11, buckets: split(548.56, 2331.48, 1919.96),
+      title: "549 booked, 2,331 emailed, no meeting yet, 1,920 no meeting yet" }));
+  it("says 0% booked rather than hiding it", () => expect(boughtCell(act({ buckets: split(0, 50, 50) }))).toMatchObject({ kind: "split", share: 0 }));
+  it("uses the row's result when it has one", () =>
+    expect(boughtCell(act({ credits: 55, result: "Wasted: failed on 11 of 11", buckets: { ...split(0, 0, 0), waste: 55 } })))
+      .toEqual({ kind: "result", text: "Wasted: failed on 11 of 11", bucket: "waste", title: "55 wasted" }));
+  it("names the single outcome otherwise", () => expect(boughtCell(act({ credits: 40, buckets: split(0, 0, 40) }))).toEqual({ kind: "single", bucket: "nomeet", title: "40 no meeting yet" }));
+});
+
+describe("foldSmall", () => {
+  const w = (credits: number) => act({ key: `w${credits}`, credits, buckets: { ...split(0, 0, 0), waste: credits }, result: "Wasted: the job failed" });
+  const r = (credits: number) => act({ key: `r${credits}`, credits, buckets: split(0, 0, credits) });
+  const today = [r(4800), r(2598), r(2016), r(860), r(100), r(93), w(55), r(40), r(25), w(24), r(24.5), w(22), w(14), r(3)];
+  it("folds rows under 1% of spend and never folds waste", () => {
+    const f = foldSmall(today);
+    expect(f.small.map((x) => x.credits)).toEqual([100, 93, 40, 25, 24.5, 3]);
+    expect(f.smallCredits).toBe(285.5);
+    expect(f.shown.map((x) => x.credits)).toEqual([4800, 2598, 2016, 860, 55, 24, 22, 14]);
+  });
+  it("leaves a single small row in place", () => expect(foldSmall([r(10000), r(5)])).toEqual({ shown: [r(10000), r(5)], small: [], smallCredits: 0 }));
+  it("measures against the rows on screen, so a waste-only view folds nothing", () => {
+    expect(foldSmall([w(55), w(24), w(22), w(14)]).small).toEqual([]);
+    expect(foldSmall([r(10000), r(5), r(5)]).smallCredits).toBe(10);
+  });
+});

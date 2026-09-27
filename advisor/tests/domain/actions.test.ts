@@ -50,6 +50,24 @@ describe("buildActions", () => {
     expect(m.button).toMatchObject({ action: "pause", label: "Pause the Starter list", listIds: [2], confirm: "Yes, pause the Starter list in graph8" });
   });
   it("offers nothing when the data doesn't support it", () => expect(buildActions({ charges: [], stats: [], listNames: names, contacts: [], actions: [] })).toEqual([]));
+  it("gives each action a payoff figure and unit", () =>
+    expect(acts.map((a) => [a.id, a.payoff])).toEqual([
+      ["repeat", { figure: "48", unit: "credits a month" }], ["move-spend", { figure: "+2", unit: "meetings a week" }], ["skip-unlikely", { figure: "12", unit: "credits a run" }]]));
+  it("keeps evidence to one line, and only where the chart can't say it", () => {
+    expect(acts.map((a) => a.evidence)).toEqual([null, null, "Emails that don't match the company bounced 45% of the time, against 20% for the rest."]);
+  });
+  it("charts the fit of the list the rule would change", () => {
+    const more = [...contacts, row(300, 2, "high"), row(301, 2, "medium"), row(302, 2, "unknown")];
+    expect(buildActions({ ...input, contacts: more }).find((a) => a.id === "skip-unlikely")!.chart).toEqual([
+      { label: "Likely", value: 1, tone: "var(--booked)" }, { label: "Maybe", value: 1, tone: "var(--maybe)" },
+      { label: "Unlikely", value: 12, tone: "var(--waste)" }, { label: "Unknown", value: 1, tone: "var(--unknown)" }]);
+    expect(acts.find((a) => a.id === "skip-unlikely")!.chart).toEqual([{ label: "Unlikely", value: 12, tone: "var(--waste)" }]);
+  });
+  it("shows a small gain with one decimal, and credits when the gain rounds to nothing", () => {
+    const withWorst = (cpm: number) => buildActions({ ...input, stats: [stats[0], stats[1], stat("2", 1000, 4, cpm, "low")] }).find((a) => a.id === "move-spend")!.payoff;
+    expect(withWorst(400)).toEqual({ figure: "+0.2", unit: "meetings a week" });
+    expect(withWorst(248)).toEqual({ figure: "125", unit: "credits a week to move" });
+  });
 });
 
 describe("lookalikeFilters", () => {

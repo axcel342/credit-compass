@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { weeklySpend, recoveryItems, refundDraftFor, claimState } from "@/lib/dashboard/recovery";
+import { weeklySpend, recoveryItems, refundDraftFor, claimState, alsoRows } from "@/lib/dashboard/recovery";
 import { recoveryHeadline, recoveryLede } from "@/lib/dashboard/story";
 import type { ActionRecord, AttributedCharge, Run } from "@/lib/domain/types";
 
@@ -44,6 +44,13 @@ describe("recoveryItems", () => {
     expect(text).toContain("We were charged 91 credits for work that produced nothing usable:");
     expect(text).toContain("- AI enrichment failed on 11 of 11 records and was still charged: 77 credits (jobs fd26115a, 4a3c811e; Sep 26).");
     expect(text).toContain("Please refund the 91 credits. Org: org_x.");
+  });
+  it("turns everything that isn't refundable into one quiet line each", () => {
+    expect(alsoRows(items)).toEqual([
+      { id: "unused", credits: 860, lead: "Still yours to use.", text: "23 onboarding documents nobody has used." },
+      { id: "side_effect", credits: 24, lead: "Already stopped.", text: "Automated posts woke graph8's agent. No charges since." }]);
+    expect(alsoRows(recoveryItems(charges, runs, { ...ctx, advisorPosts: [] })).find((x) => x.id === "side_effect"))
+      .toEqual({ id: "side_effect", credits: 24, lead: "You can stop this.", text: "Automated posts woke graph8's agent. Post recaps only to #roi-advisor." });
   });
 });
 

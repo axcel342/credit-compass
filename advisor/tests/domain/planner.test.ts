@@ -50,3 +50,8 @@ describe("forecast", () => {
     expect(forecastMeetings({ records: 0, meetings: 4, reached: 250, orgRate: 0.1 })).toEqual({ expected: 0, lo: 0, hi: 0, lowConfidence: true });
   });
 });
+
+describe("short labels for the cost walk", () => {
+  it("names who each enrichment leaves out", () =>
+    expect(ENRICHMENT_TYPES.map((t) => t.shortNotTarget)).toEqual(["Already have an email", "No email to verify", "Already have a phone"]));
+});
