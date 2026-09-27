@@ -13,6 +13,7 @@ export default function LoginPage() {
         <button className="btn primary" type="submit" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</button>
         {state?.error && <p role="alert">{state.error}</p>}
       </form>
+      <p className="small">Using your own graph8 org? <a href="/connect">Connect your graph8 account</a>.</p>
     </main>
   );
 }

@@ -47,6 +47,7 @@ export const OPS = {
   listWebhooks: "list_webhooks_webhooks_get",
   createWebhook: "create_webhook_webhooks_post",
   updateWebhook: "update_webhook_webhooks__webhook_id__patch",
+  deleteWebhook: "delete_webhook_webhooks__webhook_id__delete",
   listWebhookDeliveries: "list_webhook_deliveries_webhooks__webhook_id__deliveries_get",
   createMcpServer: "create_mcp_server_voice_mcp_servers_post",
   listMcpServers: "list_mcp_servers_workflows_mcp_servers_get",
