@@ -1,7 +1,6 @@
 import { loadDashboardData } from "@/lib/dashboard/data";
 import { dashboardBuckets } from "@/lib/domain/gate";
 import { buildRefundDraft } from "@/lib/recovery/refund";
-import { Tag } from "@/components/Tag";
 import { SendRefund } from "./SendRefund";
 const LABEL: Record<string, string> = { waste: "Waste", fix: "Fix", side_effect: "Side effect", unused: "Unused" };
 export default async function RecoveryPage() {
@@ -14,7 +13,7 @@ export default async function RecoveryPage() {
       <div className="frame"><div className="frame-body">
         <div className="cards">{cards.map((f) => (
           <div className="rcard" key={f.extId}>
-            <span className={`kind ${f.kind === "unused" ? "info" : f.kind === "waste" ? "waste" : "fix"}`}>{LABEL[f.kind]}</span> <Tag simulated={f.simulated} />
+            <span className={`kind ${f.kind === "unused" ? "info" : f.kind === "waste" ? "waste" : "fix"}`}>{LABEL[f.kind]}</span>
             <div className="amt">{f.creditsAtStake.toLocaleString("en-US")}</div><p>{f.body}</p>
           </div>))}
           {cards.length === 0 && <p>Nothing to recover right now.</p>}

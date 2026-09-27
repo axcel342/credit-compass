@@ -18,11 +18,11 @@ export default async function Overview() {
     <section>
       <div className="sec-head"><h2>Overview</h2><form action={syncNow}><button className="btn" type="submit">Sync now</button></form></div>
       <div className="kpis">
-        <KpiTile label="Credits spent" value={n(d.coverage.total)} note={`${d.charges.filter((c) => !c.simulated).length} charges`} simulated={false} />
-        <KpiTile label="Wasted" value={n(d.waste)} note="Failed jobs, unreadable results, side effects" simulated={false} alert />
-        <KpiTile label="Traced exactly" value={`${pct}%`} note={`${n(d.coverage.exact)} credits tied to a contact, list or run`} simulated={false} />
-        <KpiTile label="Meetings" value={org ? n(org.meetings) : "0"} note="Last 8 weeks" simulated={org?.simulated ?? false} />
-        <KpiTile label="Credits per meeting" value={org?.costPerMeeting !== null && org ? n(org.costPerMeeting!) : "—"} note={org ? formatCostPerMeeting(org) : "No data yet"} simulated={org?.simulated ?? false} />
+        <KpiTile label="Credits spent" value={n(d.coverage.total)} note={`${d.charges.filter((c) => !c.simulated).length} charges`} />
+        <KpiTile label="Wasted" value={n(d.waste)} note="Failed jobs, unreadable results, side effects" alert />
+        <KpiTile label="Traced exactly" value={`${pct}%`} note={`${n(d.coverage.exact)} credits tied to a contact, list or run`} />
+        <KpiTile label="Meetings" value={org ? n(org.meetings) : "0"} note="Last 8 weeks" />
+        <KpiTile label="Credits per meeting" value={org?.costPerMeeting !== null && org ? n(org.costPerMeeting!) : "—"} note={org ? formatCostPerMeeting(org) : "No data yet"} />
       </div>
       <div className="two">
         <div className="stack">

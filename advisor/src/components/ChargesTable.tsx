@@ -1,7 +1,6 @@
 import type { AttributedCharge } from "@/lib/domain/types";
 import { EXACT_METHODS } from "@/lib/domain/attribution";
 import { toMs } from "@/lib/domain/time";
-import { Tag } from "./Tag";
 
 const RESULT: Record<AttributedCharge["result"], [string, string]> = {
   success: ["var(--good)", "Completed"], failed: ["var(--crit)", "Failed · waste"], unreadable: ["var(--crit)", "Result not readable · waste"],
@@ -17,7 +16,7 @@ export function ChargesTable({ charges }: { charges: AttributedCharge[] }) {
         const [color, words] = RESULT[c.result];
         return (<tr key={c.ledgerId}>
           <td className="mono">{new Date(toMs(c.chargedAt)).toISOString().slice(5, 16).replace("T", " ")}</td>
-          <td className="what">{c.explanation} {c.simulated && <Tag simulated />}<small>{c.service}</small></td>
+          <td className="what">{c.explanation}<small>{c.service}</small></td>
           <td className="num">{c.credits.toLocaleString("en-US")}</td>
           <td><span className={`method ${m[0]}`}>{m[1]}</span></td>
           <td><span className="result"><i className="dot" style={{ background: color }} />{words}</span></td>

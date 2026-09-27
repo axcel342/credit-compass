@@ -6,7 +6,7 @@ export default function LoginPage() {
   const [state, action, pending] = useActionState(login, undefined);
   return (
     <main className="page" style={{ maxWidth: 420 }}>
-      <h1>ROI Advisor</h1>
+      <h1>Credit Compass</h1>
       <form action={action} style={{ display: "grid", gap: 10 }}>
         <label htmlFor="password">Password</label>
         <input id="password" name="password" type="password" required autoComplete="current-password" />
