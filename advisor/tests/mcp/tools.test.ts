@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { attributeCharges, coverage } from "@/lib/domain/attribution";
 import { roiSummary, explainCharge, costPerOutcome, listFindings, prespendEstimate } from "@/lib/mcp/tools";
 import type { DashboardData } from "@/lib/dashboard/data";
-import type { Stat } from "@/lib/domain/types";
+import type { Finding, Stat } from "@/lib/domain/types";
 import { loadDesignInput } from "../helpers/design-fixture";
 
 const charges = attributeCharges(loadDesignInput());
@@ -13,6 +13,10 @@ const orgStat = (period: string, cpm: number): Stat => ({ period, dimension: "or
 const d: DashboardData = { charges, outcomes: [], lists: [], listNames: new Map([["15", "Sales VPs"]]), hasDemoData: true, runs: [], actions: [], coverage: coverage(charges), waste: 115, now: "2026-10-04T00:00:00Z",
   stats: [orgStat("30d", 900), orgStat("8w", 300), { ...segment8w, period: "30d", costPerMeeting: 999, vsAvgPct: 10 }, segment8w],
   findings: [] };
+const finding: Finding = { extId: "w1", kind: "waste", title: "Wasted enrichment", body: "Failed jobs on the Sales VPs list.", evidence: {}, creditsAtStake: 77, confidence: "high",
+  status: "open", snoozedUntil: null, dismissCount: 0, action: null, actionPayload: null, firstSeen: "2026-09-26T00:00:00Z", lastSeen: "2026-09-26T00:00:00Z", lastNotifiedStake: null, inRecap: false, simulated: true };
+const dFinding: DashboardData = { ...d, findings: [finding] };
+const dReal: DashboardData = { ...d, hasDemoData: false };
 
 describe("MCP tools", () => {
   it("summarises spend, coverage and waste", () => expect(roiSummary(d)).toContain("1,260 credits"));
@@ -31,6 +35,16 @@ describe("MCP tools", () => {
     expect(costPerOutcome(d2, { dimension: "list", value: "sales vps" })).toMatch(/^Sales VPs: 124 credits per meeting/);
   });
   it("summarises the last 8 weeks and flags demo data", () => expect(roiSummary(d)).toMatch(/^1,260 credits spent in the last 8 weeks; .* Includes demo data\.$/));
-  it("says so when there are no findings", () => expect(listFindings(d, {})).toBe("No findings match."));
+  it("labels findings and charges as demo data", () => {
+    expect(listFindings(dFinding, {})).toBe("[waste] Wasted enrichment: Failed jobs on the Sales VPs list. (77 credits, high) Includes demo data.");
+    expect(listFindings(d, {})).toBe("No findings match. Includes demo data.");
+    expect(explainCharge(d, charges[0].ledgerId)).toMatch(/Includes demo data\.$/);
+  });
+  it("omits the demo-data note when nothing is simulated", () => {
+    expect(listFindings(dReal, {})).toBe("No findings match.");
+    expect(explainCharge(dReal, "nope")).toBe("No charge with ledger ID nope.");
+    expect(explainCharge(dReal, charges[0].ledgerId)).not.toContain("Includes demo data.");
+  });
+  it("says so when there are no findings", () => expect(listFindings(dReal, {})).toBe("No findings match."));
   it("estimates pre-spend credits", () => expect(prespendEstimate({ listSize: 250, missing: 13, pricePerRecord: 3, calibration: 1 })).toContain("39 credits"));
 });

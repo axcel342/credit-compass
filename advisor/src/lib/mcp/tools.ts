@@ -27,13 +27,14 @@ export function costPerOutcome(d: DashboardData, p: { dimension: "list" | "segme
 
 export function listFindings(d: DashboardData, p: { status?: string; kind?: string }): string {
   const xs = d.findings.filter((f) => (!p.status || f.status === p.status) && (!p.kind || f.kind === p.kind));
-  return xs.length ? xs.map((f) => `[${f.kind}] ${f.title}: ${f.body} (${n(f.creditsAtStake)} credits, ${f.confidence})`).join("\n") : "No findings match.";
+  const body = xs.length ? xs.map((f) => `[${f.kind}] ${f.title}: ${f.body} (${n(f.creditsAtStake)} credits, ${f.confidence})`).join("\n") : "No findings match.";
+  return `${body}${demo(d)}`;
 }
 
 export function explainCharge(d: DashboardData, ledgerId: string): string {
   const c = d.charges.find((x) => x.ledgerId === ledgerId);
-  if (!c) return `No charge with ledger ID ${ledgerId}.`;
-  return `${c.chargedAt}: ${c.credits} credits for ${c.explanation} (service ${c.service}, matched by ${c.method}, result ${c.result}${c.isWaste ? `, waste: ${c.wasteReason}` : ""}).`;
+  if (!c) return `No charge with ledger ID ${ledgerId}.${demo(d)}`;
+  return `${c.chargedAt}: ${c.credits} credits for ${c.explanation} (service ${c.service}, matched by ${c.method}, result ${c.result}${c.isWaste ? `, waste: ${c.wasteReason}` : ""}).${demo(d)}`;
 }
 
 export function prespendEstimate(p: { listSize: number; missing: number; pricePerRecord: number; calibration: number }): string {
