@@ -2,6 +2,7 @@ import { loadDashboardData, periodView } from "@/lib/dashboard/data";
 import { currentCaller } from "@/lib/workspace/current";
 import { parsePeriod, PERIOD_LABEL } from "@/lib/domain/period";
 import { dashboardBuckets } from "@/lib/domain/gate";
+import { rollingCostPerMeeting, firstTouchCohorts } from "@/lib/domain/trend";
 import { overviewHeadline, overviewLede, statStrip, plural } from "@/lib/dashboard/story";
 import { flowData, layoutFlow } from "@/lib/dashboard/flow";
 import { doNextItems } from "@/lib/dashboard/donext";
@@ -10,9 +11,11 @@ import { StatStrip } from "@/components/StatStrip";
 import { FlowDiagram } from "@/components/FlowDiagram";
 import { DoNext } from "@/components/DoNext";
 import { HBarChart } from "@/components/HBarChart";
+import { TrendChart } from "@/components/TrendChart";
 
-export default async function Overview({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
-  const period = parsePeriod((await searchParams).period);
+export default async function Overview({ searchParams }: { searchParams: Promise<{ period?: string; trend?: string }> }) {
+  const sp = await searchParams;
+  const period = parsePeriod(sp.period);
   const d = await loadDashboardData(await currentCaller());
   const v = periodView(d, period);
   const total = v.coverage.total;
@@ -35,6 +38,9 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           {byList.length ? <HBarChart ariaLabel="Credits per meeting by list" unit="credits per meeting" labelW={130} max={Math.max(...byList.map((s) => s.costPerMeeting!)) * 1.05}
             rows={byList.map((s) => ({ label: d.listNames.get(s.value) ?? `List ${s.value}`, value: s.costPerMeeting!, note: plural(s.meetings, "meeting"), color: s.value === best ? "var(--booked)" : "var(--nomeet)" }))} />
             : <p className="small">No meetings in {PERIOD_LABEL[period]} yet.</p>}
+          <TrendChart mode={sp.trend === "cohort" ? "cohort" : "rolling"} points={rollingCostPerMeeting(d.charges, d.outcomes, d.now)}
+            cohorts={firstTouchCohorts(d.charges, d.outcomes, d.now)}
+            hrefFor={(m) => `/?${new URLSearchParams({ ...(m === "cohort" ? { trend: "cohort" } : {}), ...(period === "30d" ? { period: "30d" } : {}) })}`} />
         </section>
       </div>
     </>
