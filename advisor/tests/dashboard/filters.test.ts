@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseChargeFilter, applyChargeFilter, filterHref } from "@/lib/dashboard/filters";
+import { parseChargeFilter, applyChargeFilter, filterHref, listChips } from "@/lib/dashboard/filters";
 import type { AttributedCharge, OutcomeBucket } from "@/lib/domain/types";
 
 const c = (id: string, service: string, credits: number, listId: number | null, b: OutcomeBucket) => ({ ledgerId: id, ledgerType: "usage", service, credits,
@@ -21,4 +21,8 @@ describe("charge filters", () => {
   });
   it("builds links that keep the period and the other filters", () =>
     expect(filterHref({ outcome: null, list: "2", service: null }, { outcome: "waste" }, "period=30d")).toBe("/charges?outcome=waste&list=2&period=30d"));
+  it("shows lists with at least 1% of spend, biggest first, and folds the rest into Other lists", () => {
+    expect(listChips(xs)).toEqual({ ids: [2], hasOther: true });
+    expect(listChips([c("a", "waterfall_enrichment", 100, 2, "booked"), c("b", "waterfall_enrichment", 300, 15, "booked")])).toEqual({ ids: [15, 2], hasOther: false });
+  });
 });

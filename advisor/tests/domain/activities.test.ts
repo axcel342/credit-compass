@@ -8,7 +8,7 @@ const c = (id: string, p: Partial<AttributedCharge>): AttributedCharge => ({
   tokensIn: null, tokensOut: null, description: null, method: "advisor", runExtId: null, listId: null, contactId: null, segmentKey: null,
   explanation: "x", result: "success", isWaste: false, wasteReason: null, simulated: false, ...p });
 const names = new Map([["15", "Sales VPs"], ["2", "Starter list"]]);
-const ctx = { meetingsByContact: new Map([[1, [Date.parse("2026-10-01T00:00:00Z")]]]), onboardingUnused: true };
+const ctx = { meetingsByContact: new Map([[1, [Date.parse("2026-10-01T00:00:00Z")]]]), emailedByContact: new Map<number, number[]>(), onboardingUnused: true };
 const bucketOf = (x: AttributedCharge) => outcomeBucket(x, ctx);
 const runs: Run[] = [
   { extId: "job-a", kind: "ai_enrichment_job", actionName: "AI enrichment", startedAt: null, completedAt: null, status: "failed", source: "poll", recordsOk: 0, recordsFailed: 10 },
@@ -28,7 +28,7 @@ describe("groupActivities", () => {
 
   it("keeps one activity per run across days, named by service and list", () => {
     const sim = acts.find((a) => a.service === "waterfall_enrichment")!;
-    expect(sim).toMatchObject({ title: "Email finding", detail: "Sales VPs", charges: 2, credits: 20, from: "2026-08-02T00:00:00.000Z", how: "Run ID", simulated: true, children: [] });
+    expect(sim).toMatchObject({ title: "Email finding", detail: "Sales VPs", charges: 2, credits: 20, from: "2026-08-02T00:00:00.000Z", match: "exact", matchNote: "Run ID", simulated: true, children: [] });
     expect(sim.buckets.booked).toBe(20);
   });
   it("puts several jobs with the same purpose under one activity with a child per job", () => {
@@ -39,8 +39,12 @@ describe("groupActivities", () => {
   });
   it("groups a day's skill runs together and describes how each was matched", () => {
     const sk = acts.find((a) => a.service === "voice_llm")!;
-    expect(sk).toMatchObject({ title: "Skill runs", credits: 12, how: "Token count, Service only", result: "Can't tell yet" });
+    expect(sk).toMatchObject({ title: "Skill runs", credits: 12, match: "mixed", matchNote: "Token count, Service only", result: "Can't tell yet" });
     expect(sk.detail).toBe("Meeting Prep Brief");
+  });
+  it("calls a time-window match Likely", () => {
+    const [a] = groupActivities([c("t1", { service: "studio_global", method: "time_window", explanation: "Onboarding research" })], [], bucketOf, names);
+    expect(a).toMatchObject({ match: "likely", matchNote: "Time of charge" });
   });
   it("sorts by credits, largest first", () => expect(acts.map((a) => a.credits)).toEqual([72, 20, 12]));
 });

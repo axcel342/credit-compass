@@ -1,16 +1,20 @@
 import type { AttributedCharge, Method, OutcomeBucket, Run, WasteReason } from "./types";
 import { serviceName } from "./names";
+import { EXACT_METHODS } from "./attribution";
 import { toMs } from "./time";
 
 export interface ActivityChild { key: string; label: string; credits: number; charges: number; result: string }
 export interface Activity {
   key: string; title: string; detail: string; service: string; listId: number | null; from: string; to: string;
-  credits: number; charges: number; buckets: Record<OutcomeBucket, number>; how: string; result: string | null; simulated: boolean;
+  credits: number; charges: number; buckets: Record<OutcomeBucket, number>; match: MatchLevel | "mixed"; matchNote: string; result: string | null; simulated: boolean;
   ledgerIds: string[]; children: ActivityChild[];
 }
 
-const HOW: Record<Method, string> = { advisor: "Run ID", pipeline_run: "Run ID", job_window: "Job ID", exact_tokens: "Token count", time_window: "Time window", none: "Service only" };
-const WASTE: Record<WasteReason, string> = { failed_job: "Wasted: the job failed", no_change: "Wasted: the result can't be read back", billing_mismatch: "Wasted: billing mismatch", agent_side_effect: "Wasted: side effect" };
+export type MatchLevel = "exact" | "likely" | "none";
+export const MATCH_LABEL: Record<MatchLevel | "mixed", string> = { exact: "Exact", likely: "Likely", none: "Not matched", mixed: "Mixed" };
+const levelOf = (m: Method): MatchLevel => (EXACT_METHODS.has(m) ? "exact" : m === "time_window" ? "likely" : "none");
+const METHOD_NOTE: Record<Method, string> = { advisor: "Run ID", pipeline_run: "Run ID", job_window: "Job ID", exact_tokens: "Token count", time_window: "Time of charge", none: "Service only" };
+const WASTE: Record<WasteReason, string> = { failed_job: "Wasted: the job failed", no_change: "Wasted: the result can't be read back", billing_mismatch: "Wasted: billing mismatch", agent_side_effect: "Wasted: graph8's agent replied to a post" };
 const day = (iso: string) => new Date(toMs(iso)).toISOString().slice(0, 10);
 const clean = (s: string) => s.replace(/\[sim\]\s*/g, "");
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
@@ -43,7 +47,7 @@ export function groupActivities(charges: AttributedCharge[], runs: Run[], bucket
   const out: Activity[] = [];
   for (const [key, xs] of groups) {
     const sorted = [...xs].sort((a, b) => toMs(a.chargedAt) - toMs(b.chargedAt));
-    const buckets: Record<OutcomeBucket, number> = { booked: 0, nomeet: 0, unused: 0, unknown: 0, waste: 0 };
+    const buckets: Record<OutcomeBucket, number> = { booked: 0, emailed: 0, nomeet: 0, unused: 0, unknown: 0, waste: 0 };
     for (const c of xs) buckets[bucketOf(c)] += c.credits;
     const credits = xs.reduce((s, c) => s + c.credits, 0);
     const kids = new Map<string, AttributedCharge[]>();
@@ -61,7 +65,9 @@ export function groupActivities(charges: AttributedCharge[], runs: Run[], bucket
       : only("unused") ? "Never used" : only("unknown") ? "Can't tell yet" : null;
     out.push({ key, title: serviceName(xs[0].service), detail: detailOf(sorted, listNames), service: xs[0].service, listId: xs[0].listId,
       from: new Date(toMs(sorted[0].chargedAt)).toISOString(), to: new Date(toMs(sorted.at(-1)!.chargedAt)).toISOString(),
-      credits, charges: xs.length, buckets, how: [...new Set(xs.map((c) => HOW[c.method]))].join(", "), result,
+      credits, charges: xs.length, buckets,
+      match: ((ls) => (ls.length === 1 ? ls[0] : "mixed"))([...new Set(xs.map((c) => levelOf(c.method)))]),
+      matchNote: [...new Set(xs.map((c) => METHOD_NOTE[c.method]))].join(", "), result,
       simulated: xs.some((c) => c.simulated), ledgerIds: xs.map((c) => c.ledgerId), children });
   }
   return out.sort((a, b) => b.credits - a.credits);

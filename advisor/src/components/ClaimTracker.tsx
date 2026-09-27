@@ -4,7 +4,7 @@ export function ClaimTracker({ found, requested, refunded }: { found: number; re
   return (
     <ol className="tracker" aria-label="Refund claim progress">
       {[["Found", found], ["Requested", requested], ["Refunded", refunded]].map(([label, v], i) => (
-        <li key={label as string} aria-current={i === step ? "step" : undefined}><span className="small">{label}</span><b>{n(v as number)}</b></li>))}
+        <li key={label as string} className={i < step ? "done" : undefined} aria-current={i === step ? "step" : undefined}><span className="small">{label}</span><b>{n(v as number)}</b></li>))}
     </ol>
   );
 }

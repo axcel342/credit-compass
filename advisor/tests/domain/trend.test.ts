@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rollingCostPerMeeting, trendSentence, firstTouchCohorts } from "@/lib/domain/trend";
+import { rollingCostPerMeeting, trendSentence, trendChange, trendTitle, firstTouchCohorts } from "@/lib/domain/trend";
 import type { AttributedCharge, Outcome } from "@/lib/domain/types";
 
 const NOW = "2026-09-27T00:00:00Z", DAY = 86_400_000, W = 7 * DAY, START = Date.parse(NOW) - 8 * W;
@@ -21,6 +21,13 @@ describe("rollingCostPerMeeting", () => {
     expect(points.at(-1)!.label).toBe("Sep 27");
   });
   it("describes the direction in plain words", () => expect(trendSentence(points)).toBe("Credits per meeting fell from 1,000 to 200 over the last 5 weeks."));
+  it("measures the change from the first to the last point", () => expect(trendChange(points)).toEqual({ from: 1000, to: 200, weeks: 5, pct: -80 }));
+  it("titles the chart with the answer", () => {
+    expect(trendTitle(points)).toBe("Cost per meeting fell 80% in 5 weeks");
+    expect(trendTitle([{ label: "a", value: 300 }, { label: "b", value: 360 }])).toBe("Cost per meeting rose 20% in 2 weeks");
+    expect(trendTitle([{ label: "a", value: 300 }, { label: "b", value: 300 }])).toBe("Cost per meeting held steady for 2 weeks");
+    expect(trendTitle([{ label: "a", value: 300 }])).toBe("Cost per meeting over time");
+  });
   it("has no sentence without two points", () => expect(trendSentence([{ label: "x", value: null }])).toBeNull());
 });
 

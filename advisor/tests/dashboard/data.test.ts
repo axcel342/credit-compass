@@ -46,4 +46,17 @@ describe("loadDashboardData + periodView", () => {
     expect(v8.coverage.total).toBe(200);
     expect(v8.meetings).toBe(1);
   });
+  it("sums won deal value inside the period", async () => {
+    const g = await seeded();
+    const oc = new RecordStore(g, "roi_outcome");
+    const won = (extId: string, at: string, amount: number | null) => outcomeToValues({ extId, type: "deal_won", occurredAt: at, contactId: 1, companyId: null,
+      dealId: extId, amount, listId: null, sequenceId: null, step: null, channel: null, segmentKey: null, source: "poll", simulated: true });
+    await oc.upsert(won("d1", "2026-09-22T00:00:00Z", 12000));
+    await oc.upsert(won("d2", "2026-08-05T00:00:00Z", 6000));
+    await oc.upsert(won("d3", "2026-09-23T00:00:00Z", null));
+    const d = { ...(await loadDashboardData(g)), now: "2026-09-27T00:00:00Z" };
+    expect(periodView(d, "8w").wonValue).toBe(18000);
+    expect(periodView(d, "8w").won).toBe(3);
+    expect(periodView(d, "30d").wonValue).toBe(12000);
+  });
 });

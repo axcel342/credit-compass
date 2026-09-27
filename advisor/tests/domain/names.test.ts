@@ -11,6 +11,11 @@ describe("names", () => {
     expect(listLabel("[sim] Sales VPs")).toBe("Sales VPs");
     expect(listLabel("Starter list (proactive setup)")).toBe("Starter list");
   });
+  it("shows probe lists as test lists", () => {
+    expect(listLabel("[sim] guardrail probe")).toBe("Test list");
+    const m = listNamesFrom([{ id: 13, title: "[sim] guardrail probe" }, { id: 14, title: "[sim] lookalike probe" }]);
+    expect([m.get("13"), m.get("14")]).toEqual(["Test list (13)", "Test list (14)"]);
+  });
   it("adds the id when two lists share a name", () => {
     const m = listNamesFrom([{ id: 5, title: "Revenue-Leads" }, { id: 6, title: "Revenue-Leads" }, { id: 15, title: "[sim] Sales VPs" }]);
     expect(m.get("5")).toBe("Revenue-Leads (5)");

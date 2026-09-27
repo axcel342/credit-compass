@@ -1,7 +1,19 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { PlannedAction } from "@/lib/domain/actions";
 import { applyAction } from "@/app/(dash)/optimize/apply";
+
+type Button = NonNullable<PlannedAction["button"]>;
+function ApplyForm({ button, act, pending }: { button: Button; act: (f: FormData) => void; pending: boolean }) {
+  const [ok, setOk] = useState(false);
+  return (
+    <form action={act}>
+      <input type="hidden" name="action" value={button.action} /><input type="hidden" name="listIds" value={button.listIds.join(",")} />
+      <label className="small confirm"><input type="checkbox" name="confirm" value="yes" checked={ok} onChange={(e) => setOk(e.target.checked)} /> {button.confirm}</label>
+      <button className="btn primary" type="submit" disabled={pending || !ok}>{pending ? "Working…" : button.label}</button>
+      <span className="small">Costs 0 credits</span>
+    </form>);
+}
 
 export function ActionCard({ a }: { a: PlannedAction }) {
   const [state, act, pending] = useActionState(applyAction, undefined);
@@ -19,13 +31,7 @@ export function ActionCard({ a }: { a: PlannedAction }) {
       </div>
       <div className="act-side">
         <span className="small">{a.confidence}</span>
-        {a.button ? (
-          <form action={act}>
-            <input type="hidden" name="action" value={a.button.action} /><input type="hidden" name="listIds" value={a.button.listIds.join(",")} />
-            <label className="small"><input type="checkbox" name="confirm" value="yes" /> Change this in graph8</label>
-            <button className="btn primary" type="submit" disabled={pending}>{pending ? "Working…" : a.button.label}</button>
-            <span className="small">0 credits</span>
-          </form>) : <span className="done-tag">Done</span>}
+        {a.button ? <ApplyForm key={a.button.action} button={a.button} act={act} pending={pending} /> : <span className="done-tag">Done</span>}
         {state && <span className="toast" role="status">{state.ok ? state.message : `Not changed: ${state.message}`}</span>}
       </div>
     </article>

@@ -1,4 +1,4 @@
-import type { Activity } from "@/lib/domain/activities";
+import { MATCH_LABEL, type Activity } from "@/lib/domain/activities";
 import { BUCKETS, BUCKET_LABEL } from "@/lib/domain/buckets";
 import { n } from "@/lib/dashboard/story";
 
@@ -7,13 +7,13 @@ const when = (a: Activity) => {
   const t = new Date(a.from).toISOString().slice(11, 16);
   return a.from.slice(0, 10) === a.to.slice(0, 10) ? `${d(a.from)}, ${t}` : `${d(a.from)} to ${d(a.to)}`;
 };
-const SHORT: Record<string, string> = { booked: "booked", nomeet: "no meeting yet", unused: "never used", unknown: "can't tell yet", waste: "wasted" };
+const SHORT: Record<string, string> = { booked: "booked", emailed: "emailed, no meeting yet", nomeet: "no meeting yet", unused: "never used", unknown: "can't tell yet", waste: "wasted" };
 
 export function ActivityTable({ rows }: { rows: Activity[] }) {
   if (!rows.length) return <p className="small">No charges match this filter.</p>;
   return (
     <div className="table-wrap"><table className="acts-table">
-      <thead><tr><th>When</th><th>What it paid for</th><th className="num">Credits</th><th>What it bought</th><th>How we know</th></tr></thead>
+      <thead><tr><th>When</th><th>What it paid for</th><th className="num">Credits</th><th>What it bought</th><th>Match</th></tr></thead>
       {rows.map((a) => {
         const parts = BUCKETS.filter((b) => a.buckets[b] > 0);
         return (
@@ -31,7 +31,7 @@ export function ActivityTable({ rows }: { rows: Activity[] }) {
               <td>{a.result ? <span><i className="dot" style={{ background: `var(--${parts[0]})` }} /> {a.result}</span>
                 : <ul className="split">{parts.map((b) => <li key={b}><i className="dot" style={{ background: `var(--${b})` }} />{n(a.buckets[b])} {SHORT[b]}</li>)}</ul>}
                 <span className="sr-only">{parts.map((b) => `${BUCKET_LABEL[b]} ${n(a.buckets[b])}`).join("; ")}</span></td>
-              <td>{a.how}</td>
+              <td><span className={`match ${a.match}`} title={a.matchNote}>{MATCH_LABEL[a.match]}</span></td>
             </tr>
           </tbody>);
       })}

@@ -64,7 +64,7 @@ export interface ContactInfo {
   listIds: number[]; sequenceIds: string[]; segmentKey: string; consistency: "ok" | "flagged" | "unknown";
 }
 
-export type OutcomeBucket = "booked" | "nomeet" | "unused" | "unknown" | "waste";
+export type OutcomeBucket = "booked" | "emailed" | "nomeet" | "unused" | "unknown" | "waste";
 export type Period = "8w" | "30d";
 
 export interface ContactCacheRow {

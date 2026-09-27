@@ -27,6 +27,14 @@ export function applyChargeFilter(charges: AttributedCharge[], f: ChargeFilter, 
   return charges.filter((c) => listMatch(c) && (!f.service || c.service === f.service) && (!f.outcome || bucketOf(c) === f.outcome));
 }
 
+export function listChips(charges: AttributedCharge[]): { ids: number[]; hasOther: boolean } {
+  const total = charges.reduce((s, c) => s + c.credits, 0) || 1;
+  const perList = new Map<number, number>();
+  for (const c of charges) if (c.listId !== null) perList.set(c.listId, (perList.get(c.listId) ?? 0) + c.credits);
+  const ids = [...perList].filter(([, v]) => v / total >= SMALL_LIST_SHARE).sort((a, b) => b[1] - a[1]).map(([id]) => id);
+  return { ids, hasOther: ids.length < perList.size };
+}
+
 export function filterHref(f: ChargeFilter, patch: Partial<ChargeFilter>, periodQuery: string): string {
   const m = { ...f, ...patch };
   const q = new URLSearchParams();
