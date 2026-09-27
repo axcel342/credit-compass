@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Cohort, TrendPoint } from "@/lib/domain/trend";
 import { trendSentence } from "@/lib/domain/trend";
+import { plural } from "@/lib/dashboard/story";
 import { LineChart } from "./LineChart";
 
 export function TrendChart({ mode, points, cohorts, hrefFor }: { mode: "rolling" | "cohort"; points: TrendPoint[]; cohorts: Cohort[]; hrefFor: (m: "rolling" | "cohort") => string }) {
@@ -19,7 +20,7 @@ export function TrendChart({ mode, points, cohorts, hrefFor }: { mode: "rolling"
       </>) : (<>
         <p className="small">Credits per meeting for the contacts first enriched each week. Hatched weeks are still maturing: their meetings are still coming in.</p>
         <div className="cohorts" role="list">{cohorts.map((c) => (
-          <div role="listitem" key={c.label} className={c.maturing ? "maturing" : undefined} title={`${c.label}: ${c.contacts} contacts, ${Math.round(c.credits)} credits, ${c.meetings} meetings`}>
+          <div role="listitem" key={c.label} className={c.maturing ? "maturing" : undefined} title={`${c.label}: ${plural(c.contacts, "contact")}, ${plural(c.credits, "credit")}, ${plural(c.meetings, "meeting")}`}>
             <span className="v">{c.costPerMeeting === null ? "—" : Math.round(c.costPerMeeting)}</span>
             <i style={{ height: `${((c.costPerMeeting ?? 0) / max) * 110}px` }} /><span className="small">{c.label}</span></div>))}</div>
       </>)}

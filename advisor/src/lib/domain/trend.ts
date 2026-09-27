@@ -31,12 +31,12 @@ export function trendSentence(points: TrendPoint[]): string | null {
 
 export function firstTouchCohorts(charges: AttributedCharge[], outcomes: Outcome[], now: string, weeks = 8, maturingWeeks = 3): Cohort[] {
   const start = toMs(now) - weeks * W, idx = (t: number) => Math.floor((t - start) / W);
-  const inWin = charges.filter((c) => c.contactId !== null && idx(toMs(c.chargedAt)) >= 0 && idx(toMs(c.chargedAt)) < weeks);
-  const first = new Map<number, number>();
-  for (const c of inWin) first.set(c.contactId!, Math.min(first.get(c.contactId!) ?? Infinity, toMs(c.chargedAt)));
+  const all = new Map<number, number>();
+  for (const c of charges) if (c.contactId !== null) all.set(c.contactId, Math.min(all.get(c.contactId) ?? Infinity, toMs(c.chargedAt)));
+  const first = new Map([...all].filter(([, t]) => idx(t) >= 0 && idx(t) < weeks));
   const cohorts: Cohort[] = Array.from({ length: weeks }, (_, i) => ({ label: label(start + i * W), contacts: 0, credits: 0, meetings: 0, costPerMeeting: null, maturing: i >= weeks - maturingWeeks }));
   for (const [, t] of first) cohorts[idx(t)].contacts++;
-  for (const c of inWin) cohorts[idx(first.get(c.contactId!)!)].credits += c.credits;
+  for (const c of charges) if (c.contactId !== null && first.has(c.contactId)) cohorts[idx(first.get(c.contactId)!)].credits += c.credits;
   for (const o of outcomes) if (o.type === "meeting_booked" && o.contactId !== null && first.has(o.contactId)) cohorts[idx(first.get(o.contactId)!)].meetings++;
   for (const c of cohorts) c.costPerMeeting = c.meetings > 0 ? c.credits / c.meetings : null;
   return cohorts;

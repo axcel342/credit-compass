@@ -35,4 +35,13 @@ describe("firstTouchCohorts", () => {
     expect(cohorts[2]).toMatchObject({ contacts: 0, costPerMeeting: null });
     expect(cohorts.reduce((s, c) => s + c.meetings, 0)).toBe(3);
   });
+  it("excludes contacts first charged before the window even if re-charged inside it", () => {
+    const charges2 = [ch("pre", -1, 500, 9), ch("re", 2, 100, 9), ch("in", 2, 50, 10)];
+    const outcomes2 = [mt(3, 9), mt(3, 10)];
+    const c2 = firstTouchCohorts(charges2, outcomes2, NOW);
+    expect(c2.reduce((s, c) => s + c.contacts, 0)).toBe(1);
+    expect(c2.reduce((s, c) => s + c.credits, 0)).toBe(50);
+    expect(c2.reduce((s, c) => s + c.meetings, 0)).toBe(1);
+    expect(c2[2]).toMatchObject({ contacts: 1, credits: 50, meetings: 1, costPerMeeting: 50 });
+  });
 });
