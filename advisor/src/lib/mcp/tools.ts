@@ -26,7 +26,8 @@ export function costPerOutcome(d: DashboardData, p: { dimension: "list" | "segme
 }
 
 export function listFindings(d: DashboardData, p: { status?: string; kind?: string }): string {
-  const xs = d.findings.filter((f) => (!p.status || f.status === p.status) && (!p.kind || f.kind === p.kind));
+  const status = p.status ?? "open";
+  const xs = d.findings.filter((f) => f.status === status && (!p.kind || f.kind === p.kind));
   const body = xs.length ? xs.map((f) => `[${f.kind}] ${f.title}: ${f.body} (${n(f.creditsAtStake)} credits, ${f.confidence})`).join("\n") : "No findings match.";
   return `${body}${demo(d)}`;
 }
@@ -50,7 +51,7 @@ export function registerTools(server: Server, load: () => Promise<DashboardData>
   server.registerTool("cost_per_outcome", { title: "Cost per outcome", description: "Credits per meeting for a list, segment or service.",
     inputSchema: { dimension: z.enum(["list", "segment", "service"]), value: z.string() } },
     async (a) => text(costPerOutcome(await load(), { dimension: a.dimension as "list" | "segment" | "service", value: String(a.value) })));
-  server.registerTool("list_findings", { title: "List findings", description: "The Advisor's findings, optionally filtered.",
+  server.registerTool("list_findings", { title: "List findings", description: "The Advisor's findings (open by default), optionally filtered by status or kind.",
     inputSchema: { status: z.string().optional(), kind: z.string().optional() } }, async (a) => text(listFindings(await load(), { status: a.status as string | undefined, kind: a.kind as string | undefined })));
   server.registerTool("explain_charge", { title: "Explain a charge", description: "What one credit-ledger line paid for.", inputSchema: { ledger_id: z.string() } },
     async (a) => text(explainCharge(await load(), String(a.ledger_id))));

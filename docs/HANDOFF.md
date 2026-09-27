@@ -16,13 +16,21 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 
 ## v2 build status (2026-09-27)
 
-**Phase 1 complete and integrated** (`main` tip `daf7877`): Tasks 1–9 of `docs/superpowers/plans/2026-09-27-credit-compass-v2.md` — one dataset with 8-week/30-day periods, outcome buckets and activities, the Overview statement with the three-column credit flow, Charges grouped by activity, Recovery with the weekly waste chart and refund draft, the Optimize planner (enrichment types, cost walk, forecast, fit bar) and Optimize actions with apply/undo. **Phase 2 in flight:** Task 10 (rolling cost-per-meeting trend and first-touch cohorts) and Task 11 (MCP/recap demo-data wording, demo script and handoff — this section). Phase 1 was not redeployed from Task 11: the controller deploys once Task 10 has merged too.
+**All three phases complete and deployed** (`main` tip `c2f1d98`): Tasks 1–15 of `docs/superpowers/plans/2026-09-27-credit-compass-v2.md`. **54 test files / 240 tests** (239 at the whole-branch review; +1 for the open-findings default), `tsc --noEmit` clean, `next build` clean, production E2E passed for all three phases. The three phase PRs (**#1**, **#2**, **#3**) are merged to `main`; production is deployed at https://graph8-roi-advisor.vercel.app.
 
-- **Re-seed numbers** (`npm run script -- scripts/check-sim.ts`, re-run 2026-09-27 for this task; detail in §15): `total` **10,766**, `bucketsAddUp` true, buckets booked 2,897.26 / no meeting 6,651.74 / unused 860 / unknown 242 / waste 115; per list Starter 1,232.75 (4 meetings), Sales VPs 124 (17), Founders 433 (6); `repeatShare` 0.121; `cohortWeeks` 8; meetings 27; won 9.
-- **Fit spread:** 255 cached contacts after the 27 Sep 08:14 UTC sync — **high 33 / medium 100 / low 122 / unknown 0**.
+- **Phase 1 (Tasks 1–9):** one dataset with 8-week/30-day periods, outcome buckets and activities, the Overview statement with the three-column credit flow, Charges grouped by activity, Recovery with the weekly waste chart and refund draft, the Optimize planner (enrichment types, cost walk, forecast, fit bar) and Optimize actions with apply/undo.
+- **Phase 2 (Tasks 10–11):** rolling cost-per-meeting trend and first-touch cohorts; MCP/recap demo-data wording, demo script and this handoff.
+- **Phase 3 (Tasks 12–15) — connect your own graph8 account:**
+  - **App-install spike:** the org **is allowlisted**; draft app `dapp_601136e18d90` exists (no install, no cleanup defined) — §16.
+  - **Workspaces:** each connected key is encrypted at rest with AES-256-GCM under `WORKSPACE_KEY_SECRET`, and the `cc_ws` session cookie is HMAC-signed with `SESSION_SECRET`; both were added to Vercel production.
+  - **`/connect`** API-key flow with idempotent bootstrap (objects, fields and the per-workspace webhook are reused on reconnect via the key hash).
+  - **Per-workspace crons, webhooks and MCP:** crons fan out over workspaces, webhooks deliver to `/api/webhooks/graph8/{workspace}`, and MCP resolves the workspace from its bearer token.
+  - **Disconnect fails closed:** if the graph8 webhook cannot be removed, the workspace and cookie stay so the user can retry.
+  - **SSE is demo-token-only by decision** — workspace MCP uses streamable HTTP `POST /api/mcp` with its bearer token; the `/api/sse` session path is gated to `MCP_TOKEN` (SSE isolation between the demo and workspace callers could not be distinguished on this single-org setup).
 - **Live actions applied and undone:** Task 9 ran `applyRepeatSkip` on sim lists 15 and 16 (`{ changed: [15, 16] }`), then `undoAction` on both. Read-back: both pipelines exactly as found (`enabled: false`, `run_condition: null`, both skip flags true); no run, **0 credits**, list 2 never touched. The two `roi_action` rows remain as undo history and show as "Undone Sep 27" in "Changes you've made".
-- **Tests:** 47 files / **203 tests before this task**, 205 after (MCP list-name lookup and demo-data wording, recap suffix); `tsc --noEmit` clean.
-- **Deferred / known minors:** `buildActions` decides `applied` from `roi_action` rows only, so it still offers the repeat-skip action for lists 15/16 that already carry the flags; `appliedSummary` estimates 3 credits/contact when no post-apply runs exist; MCP tool-node argument passing for tools with required inputs is untested; the refund send path is still unexercised. Deploy of this phase is deliberately not done yet.
+- **Re-seed numbers** (`npm run script -- scripts/check-sim.ts`, re-run 2026-09-27; detail in §15): `total` **10,766**, `bucketsAddUp` true, buckets booked 2,897.26 / no meeting 6,651.74 / unused 860 / unknown 242 / waste 115; per list Starter 1,232.75 (4 meetings), Sales VPs 124 (17), Founders 433 (6); `repeatShare` 0.121; `cohortWeeks` 8; meetings 27; won 9. Stats store both the 8-week and 30-day periods; the dashboard reads the 8-week ones.
+- **Fit spread:** 255 cached contacts after the 27 Sep 08:14 UTC sync — **high 33 / medium 100 / low 122 / unknown 0**.
+- **Deferred (not blocking):** Redis workspace index pruning (a rotated key can leave a stale `cc:wskey:*` entry); a removed workspace whose cookie is still present falls back to the demo org instead of returning to `/connect`; a rotated `WORKSPACE_KEY_SECRET` makes decrypt throw 500 (clearing `cc_ws` recovers to demo); the Recovery week filter can contradict the chart when waste spans weeks.
 
 ## Build status (end of Task 20, 2026-09-26)
 
@@ -56,7 +64,7 @@ A final whole-branch review added one fix wave (commit `619c01c` + `5951893`): c
 ### Known gaps
 
 - ~~SSE / graph8-registered MCP pending Redis~~ Resolved 2026-09-26: registered and probed live (§11). MCP tool-node argument passing for tools with required inputs is untested (`ping` takes none).
-- The sim seed spans 8 weeks but stats use the last 30 days, so dashboard cost-per-meeting is a partial sample of the seeded targets.
+- The 30-day stats are a partial sample of the seeded 8-week targets, so the 30-day view's cost-per-meeting differs from the full-window targets (the dashboard defaults to 8 weeks).
 - Dashboard deep links show contact/deal IDs rather than `app.graph8.com` URLs.
 - The refund send path is built and confirm-gated but has not been exercised (0 support requests sent).
 - No Slack/email recap (the org has no mailbox or Slack) and no App Page (graph8's LLM features were down).
@@ -249,7 +257,7 @@ Task 19 seeded deterministic simulated demo data and replayed it as signed webho
 - **Seed** (`scripts/seed-sim.ts`): lists **15** `[sim] Sales VPs` (20 contacts) and **16** `[sim] Founders` (20 contacts), **210** sim charges in `roi_charge` (target totals: 2,108 / 2,598 / 4,800 credits for lists 15 / 16 / 2), **27** `[sim]` deals (one per seeded meeting; New → Discovery then Won/Lost/Proposal), **81** events in `advisor/.sim-plan.json` (gitignored).
 - **Replay** (`scripts/sim-events.ts`): 81/81 delivered, 0 failed. Stored: 81 `roi_outcome` records with `sim-` ext ids and `source: "sim"` (plus 109 polled deal outcomes; `roi_outcome` total 190). Charges verified: 336 total = 126 real + 210 sim.
 - **Sync** (`npm run script -- scripts/sync-once.ts`): `newLedgerRows: 2`, `charges: 126`, coverage exact 216 / window 1033 / none 11 / total 1260, `findings: 7`.
-- **Stats, 30d list dimension** (target cpm is the full 8-week seed target; the stats window is the last 30 days, so only part of each list's meetings fall inside it — full-window targets are asserted in `tests/sim/plan.test.ts`):
+- **Stats, 30d list dimension** (this table is the 30-day view from the first Task 19 seed and is superseded by the v2 re-seed below; stats now carry both 8-week and 30-day periods, and full-window targets are asserted in `tests/sim/plan.test.ts`):
 
   | List | Credits | Meetings | Cost/meeting | Seeded target |
   |---|---|---|---|---|

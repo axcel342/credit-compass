@@ -46,6 +46,6 @@ Rehearsal-ready against production. Two rules for the demo: never present `[sim]
 - Demo dataset, last 8 weeks (includes demo data): **10,766 credits → 27 meetings and 9 won deals**; booked 2,897 / no meeting 6,652 / unused 860 / unknown 242 / waste 115; repeat enrichment 12%; cohorts span all 8 weeks.
 - Credits per meeting by list: **Sales VPs 124** (17 meetings), **Founders 433** (6), **Starter list 1,232.75** (4).
 - Fit spread after the 27 Sep sync (255 contacts): **33 high / 100 medium / 122 low / 0 unknown**.
-- Planner on the Starter list: find emails ≈ 498 credits, verify emails ≈ 117 (read the exact walk off the screen).
+- Planner on the Starter list: the headline contrasts graph8's quote for find emails (≈ 498, what graph8's estimator says) with the Advisor estimate the cost walk shows (≈ 36); verify emails estimates ≈ 126 (no graph8 quote for verify). Read the exact numbers off the screen.
 - If asked which part is real: the graph8 ledger contributed 1,260 credits over 126 charges (216 exact / 1,033 time-window / 11 service-only), 115 waste, 5 free failed attempts; the rest is the demo seed.
 - Recap: 3 items, 0 charges.

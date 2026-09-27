@@ -46,5 +46,11 @@ describe("MCP tools", () => {
     expect(explainCharge(dReal, charges[0].ledgerId)).not.toContain("Includes demo data.");
   });
   it("says so when there are no findings", () => expect(listFindings(dReal, {})).toBe("No findings match."));
+  it("hides applied findings unless their status is requested", () => {
+    const twin: Finding = { ...finding, extId: "w2", title: "Applied twin", status: "applied" };
+    const dBoth: DashboardData = { ...dFinding, findings: [finding, twin] };
+    expect(listFindings(dBoth, {})).toBe("[waste] Wasted enrichment: Failed jobs on the Sales VPs list. (77 credits, high) Includes demo data.");
+    expect(listFindings(dBoth, { status: "applied" })).toBe("[waste] Applied twin: Failed jobs on the Sales VPs list. (77 credits, high) Includes demo data.");
+  });
   it("estimates pre-spend credits", () => expect(prespendEstimate({ listSize: 250, missing: 13, pricePerRecord: 3, calibration: 1 })).toContain("39 credits"));
 });

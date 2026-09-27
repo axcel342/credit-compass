@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Plan } from "@/lib/dashboard/planner-data";
+import { plannerHeadline } from "@/lib/dashboard/story";
 import { CostWalk } from "./CostWalk";
 import { ForecastBar } from "./ForecastBar";
 import { RunPlan } from "@/app/(dash)/optimize/RunPlan";
@@ -20,6 +21,7 @@ export function Planner({ plan, choices, rule, hrefFor }: { plan: Plan; choices:
             : <Link key={t.def.key} href={hrefFor({ list: plan.listId, type: t.def.key })} className={t.def.key === plan.def.key ? "on" : undefined} aria-current={t.def.key === plan.def.key ? "true" : undefined}>{t.def.label}</Link>)}
         </span>
       </form>
+      <p className="lede">{plannerHeadline({ graph8Quote: plan.graph8Quote, estimate: plan.walk.estimate, listLabel: plan.listLabel, def: plan.def })}</p>
       <CostWalk walk={plan.walk} def={plan.def} />
       <ForecastBar {...plan.forecast} basis={`If these contacts do as well as ${plan.listLabel} has so far.`} />
       <h3 className="sub">Who gets skipped</h3>
