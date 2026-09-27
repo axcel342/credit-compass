@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { authorizeMcp, resolveMcpCaller } from "@/lib/mcp/auth";
+import { describe, it, expect, beforeEach } from "vitest";
+import { authorizeMcp, authorizeSse, isSsePath, resolveMcpCaller } from "@/lib/mcp/auth";
 import { MemoryWorkspaceStore } from "@/lib/workspace/store";
 import { encrypt } from "@/lib/workspace/crypto";
 import { createHash } from "node:crypto";
@@ -13,6 +13,28 @@ describe("authorizeMcp", () => {
   it("rejects missing or wrong tokens", () => {
     expect(authorizeMcp(new Request("https://x/api/mcp"), t)).toBe(false);
     expect(authorizeMcp(new Request("https://x/api/sse?key=nope"), t)).toBe(false);
+  });
+});
+
+describe("SSE stays on the demo token", () => {
+  beforeEach(() => { process.env.MCP_TOKEN = "demo-token"; });
+  const req = (url: string, t?: string) => new Request(url, t ? { headers: { authorization: `Bearer ${t}` } } : undefined);
+  it("recognises the SSE transport paths only", () => {
+    expect(isSsePath("/api/sse")).toBe(true);
+    expect(isSsePath("/api/message")).toBe(true);
+    expect(isSsePath("/api/mcp")).toBe(false);
+  });
+  it("accepts the demo token on /sse and /message, by header or ?key=", () => {
+    expect(authorizeSse(req("https://x/api/sse?key=demo-token"))).toBe(true);
+    expect(authorizeSse(req("https://x/api/sse", "demo-token"))).toBe(true);
+    expect(authorizeSse(req("https://x/api/message?sessionId=a&key=demo-token"))).toBe(true);
+    expect(authorizeSse(req("https://x/api/message?sessionId=a", "demo-token"))).toBe(true);
+  });
+  it("rejects a workspace or missing token on the SSE paths", () => {
+    expect(authorizeSse(req("https://x/api/sse?key=ws-token"))).toBe(false);
+    expect(authorizeSse(req("https://x/api/sse", "ws-token"))).toBe(false);
+    expect(authorizeSse(req("https://x/api/message?sessionId=a"))).toBe(false);
+    expect(authorizeSse(req("https://x/api/mcp?key=demo-token"))).toBe(false);
   });
 });
 

@@ -11,10 +11,23 @@ function same(a: string, b: string): boolean {
 export function authorizeMcp(req: Request, token: string): boolean {
   const url = new URL(req.url);
   if (url.pathname.endsWith("/message")) return true;
+  return isDemoMcpToken(req, token);
+}
+
+export function isDemoMcpToken(req: Request, token: string): boolean {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ") && same(auth.slice(7), token)) return true;
-  const key = url.searchParams.get("key");
+  const key = new URL(req.url).searchParams.get("key");
   return !!key && same(key, token);
+}
+
+export function isSsePath(pathname: string): boolean {
+  return pathname.endsWith("/sse") || pathname.endsWith("/message");
+}
+
+export function authorizeSse(req: Request): boolean {
+  const demo = process.env.MCP_TOKEN;
+  return !!demo && isSsePath(new URL(req.url).pathname) && isDemoMcpToken(req, demo);
 }
 
 export async function resolveMcpCaller(req: Request, store: WorkspaceStore): Promise<G8Caller | null> {
