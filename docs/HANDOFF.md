@@ -7,12 +7,22 @@ Read this first if you are picking up the build. It carries the context of the d
 1. This file
 2. `docs/superpowers/specs/2026-09-26-roi-advisor-design.md` (the approved design, with validation evidence)
 3. `docs/superpowers/plans/2026-09-26-roi-advisor.md` (the task-by-task implementation plan)
-4. `docs/design/roi-advisor-ui.html` (the approved UI; open it in a browser). Earlier mockups are in `docs/design/mockups/`.
+4. `docs/design/credit-compass-ui-v2.html` (the approved UI; open it in a browser). Earlier mockups are in `docs/design/mockups/`.
 5. `research/README.md` (fixtures from the real org, reference data, probe scripts)
 
 Background on graph8 itself: `g8-product-overview.md` (what the product offers) and `g8-reference.md` (every CLI command, MCP tool and REST endpoint, generated from the installed package).
 
 ---
+
+## v2 build status (2026-09-27)
+
+**Phase 1 complete and integrated** (`main` tip `daf7877`): Tasks 1–9 of `docs/superpowers/plans/2026-09-27-credit-compass-v2.md` — one dataset with 8-week/30-day periods, outcome buckets and activities, the Overview statement with the three-column credit flow, Charges grouped by activity, Recovery with the weekly waste chart and refund draft, the Optimize planner (enrichment types, cost walk, forecast, fit bar) and Optimize actions with apply/undo. **Phase 2 in flight:** Task 10 (rolling cost-per-meeting trend and first-touch cohorts) and Task 11 (MCP/recap demo-data wording, demo script and handoff — this section). Phase 1 was not redeployed from Task 11: the controller deploys once Task 10 has merged too.
+
+- **Re-seed numbers** (`npm run script -- scripts/check-sim.ts`, re-run 2026-09-27 for this task; detail in §15): `total` **10,766**, `bucketsAddUp` true, buckets booked 2,897.26 / no meeting 6,651.74 / unused 860 / unknown 242 / waste 115; per list Starter 1,232.75 (4 meetings), Sales VPs 124 (17), Founders 433 (6); `repeatShare` 0.121; `cohortWeeks` 8; meetings 27; won 9.
+- **Fit spread:** 255 cached contacts after the 27 Sep 08:14 UTC sync — **high 33 / medium 100 / low 122 / unknown 0**.
+- **Live actions applied and undone:** Task 9 ran `applyRepeatSkip` on sim lists 15 and 16 (`{ changed: [15, 16] }`), then `undoAction` on both. Read-back: both pipelines exactly as found (`enabled: false`, `run_condition: null`, both skip flags true); no run, **0 credits**, list 2 never touched. The two `roi_action` rows remain as undo history and show as "Undone Sep 27" in "Changes you've made".
+- **Tests:** 47 files / **203 tests before this task**, 205 after (MCP list-name lookup and demo-data wording, recap suffix); `tsc --noEmit` clean.
+- **Deferred / known minors:** `buildActions` decides `applied` from `roi_action` rows only, so it still offers the repeat-skip action for lists 15/16 that already carry the flags; `appliedSummary` estimates 3 credits/contact when no post-apply runs exist; MCP tool-node argument passing for tools with required inputs is untested; the refund send path is still unexercised. Deploy of this phase is deliberately not done yet.
 
 ## Build status (end of Task 20, 2026-09-26)
 

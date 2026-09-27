@@ -1,33 +1,40 @@
 import { z } from "zod";
+import { periodView } from "../dashboard/data";
 import type { DashboardData } from "../dashboard/data";
 import { estimateCredits } from "../domain/prespend";
 
 const n = (x: number) => Math.round(x).toLocaleString("en-US");
+const demo = (d: DashboardData) => (d.hasDemoData ? " Includes demo data." : "");
 
 export function roiSummary(d: DashboardData): string {
-  const pct = d.coverage.total ? Math.round((d.coverage.exact / d.coverage.total) * 100) : 0;
-  const org = d.stats.find((s) => s.dimension === "org" && s.period === "8w");
-  const cpm = org?.costPerMeeting != null ? `${n(org.costPerMeeting)} credits per meeting` : "no meetings recorded yet";
-  return `${n(d.coverage.total)} credits spent; ${pct}% traced exactly; ${n(d.waste)} wasted; ${cpm}.`;
+  const v = periodView(d, "8w");
+  const pct = v.coverage.total ? Math.round((v.coverage.exact / v.coverage.total) * 100) : 0;
+  const cpm = v.meetings > 0 ? `${n(v.coverage.total / v.meetings)} credits per meeting` : "no meetings recorded yet";
+  return `${n(v.coverage.total)} credits spent in the last 8 weeks; ${pct}% traced to a contact, list or run; ${n(v.waste)} wasted; ${cpm}.${demo(d)}`;
 }
 
 export function costPerOutcome(d: DashboardData, p: { dimension: "list" | "segment" | "service"; value: string }): string {
-  const s = d.stats.find((x) => x.dimension === p.dimension && x.value === p.value && x.period === "8w");
+  const byName = p.dimension === "list" && !/^\d+$/.test(p.value)
+    ? [...d.listNames].find(([, name]) => name.toLowerCase() === p.value.trim().toLowerCase())?.[0] : undefined;
+  const key = byName ?? p.value;
+  const s = d.stats.find((x) => x.period === "8w" && x.dimension === p.dimension && x.value === key);
+  const label = p.dimension === "list" ? d.listNames.get(key) ?? p.value : p.value;
   if (!s) return `No data for ${p.dimension} "${p.value}".`;
-  if (s.costPerMeeting === null) return `${p.value}: ${n(s.credits)} credits, no meetings yet.`;
+  if (s.costPerMeeting === null) return `${label}: ${n(s.credits)} credits, no meetings yet.${demo(d)}`;
   const vs = s.vsAvgPct === null ? "" : `${Math.abs(Math.round(s.vsAvgPct))}% ${s.vsAvgPct < 0 ? "below" : "above"} average, `;
-  return `${p.value}: ${n(s.costPerMeeting)} credits per meeting across ${n(s.meetings)} meetings (${vs}${s.confidence} confidence).${s.simulated ? " Includes simulated data." : ""}`;
+  return `${label}: ${n(s.costPerMeeting)} credits per meeting across ${n(s.meetings)} meetings (${vs}${s.confidence} confidence).${demo(d)}`;
 }
 
 export function listFindings(d: DashboardData, p: { status?: string; kind?: string }): string {
   const xs = d.findings.filter((f) => (!p.status || f.status === p.status) && (!p.kind || f.kind === p.kind));
-  return xs.length ? xs.map((f) => `[${f.kind}] ${f.title}: ${f.body} (${n(f.creditsAtStake)} credits, ${f.confidence})`).join("\n") : "No findings match.";
+  const body = xs.length ? xs.map((f) => `[${f.kind}] ${f.title}: ${f.body} (${n(f.creditsAtStake)} credits, ${f.confidence})`).join("\n") : "No findings match.";
+  return `${body}${demo(d)}`;
 }
 
 export function explainCharge(d: DashboardData, ledgerId: string): string {
   const c = d.charges.find((x) => x.ledgerId === ledgerId);
-  if (!c) return `No charge with ledger ID ${ledgerId}.`;
-  return `${c.chargedAt}: ${c.credits} credits for ${c.explanation} (service ${c.service}, matched by ${c.method}, result ${c.result}${c.isWaste ? `, waste: ${c.wasteReason}` : ""}).`;
+  if (!c) return `No charge with ledger ID ${ledgerId}.${demo(d)}`;
+  return `${c.chargedAt}: ${c.credits} credits for ${c.explanation} (service ${c.service}, matched by ${c.method}, result ${c.result}${c.isWaste ? `, waste: ${c.wasteReason}` : ""}).${demo(d)}`;
 }
 
 export function prespendEstimate(p: { listSize: number; missing: number; pricePerRecord: number; calibration: number }): string {

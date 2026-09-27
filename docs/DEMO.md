@@ -20,27 +20,32 @@ Rehearsal-ready against production. Two rules for the demo: never present `[sim]
    `curl -s -H "Authorization: Bearer $(grep '^CRON_SECRET=' advisor/.env.local | cut -d= -f2-)" https://graph8-roi-advisor.vercel.app/api/cron/poll`
    Expected: `coverage.total` 1,260 (or higher if new spend happened) and `findings` ≥ 7. The Vercel plan is Hobby, so crons run daily (poll 06:00 UTC) — **Sync now** is what keeps the demo fresh.
 2. **Check the balance:** `curl -s https://be.graph8.com/api/v1/usage -H "Authorization: Bearer <G8_API_KEY>"` → `data.available_credits`. Expected ~8,740 before the demo; the demo itself should spend 0.
-3. **Confirm the SIM tags are visible:** "SIM" on the KPI tiles and findings, `[sim] List <id>` labels on the "Credits per meeting by list" chart (e.g. `[sim] List 15`), and `[sim]` names on lists 15/16 and their deals inside graph8. Every tile and finding shows a SIM or REAL label; data comes from the same stats either way. Everything simulated carries `[sim]` or a SIM tag.
+3. **Confirm the demo-data note.** The header pill says **Includes demo data** (hover or focus it for the one-sentence popover); lists 15/16 and their deals still carry `[sim]` names inside graph8. The dashboard shows no per-number SIM/REAL tags.
 4. **Log in once** and leave the dashboard open on **Overview**.
 5. **Cleanup plan (after the demo, never during):** `npm run script -- scripts/cleanup-sim.ts` prints a dry run (sim deals + records + lists to review); re-run with `--apply` **only after the user approves**. The script never deletes lists, so lists 13–16 stay behind for review.
 
-## Click steps (spec §9.2)
+## Click steps
 
-1. **The problem, REAL — graph8's ledger.** In graph8, open the usage/transactions view and show the wallet charges (`studio_global −20` × 43 and friends). Point out that analytics show what ran but never what it cost or whether it worked.
-2. **Overview, REAL.** Open https://graph8-roi-advisor.vercel.app → log in. Read the KPI row: **1,260 credits, 126 charges, 115 wasted, 17% traced exactly**; show the "Credits by service" bars and the Advisor's open finding cards. Click **Recovery** to show the refund draft that is ready to send (do **not** tick the confirmation box).
-3. **SIM outcomes and findings.** Back on **Overview**, scroll to "Credits per meeting by list": `[sim] List 15` (Sales VPs) ≈ **78**, `[sim] List 16` (Founders) ≈ **294**, Starter list ≈ **1,239** credits per meeting — last **30 days**. Say "SIM" out loud and note the window is a partial sample of the 8-week seed. The Advisor's "scale / cut" finding cards say what to do next.
-4. **Guardrail live on list 13.** Open **Before you spend** → pick list 13 `[sim] guardrail probe` → **Check**. Show graph8's quote vs the Advisor estimate, the fit counts and the run condition `NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))`. To run it live: tick **Run it (about N credits)** and press **Apply guardrail and enrich** (this spends credits — only run it if it is in the demo budget). Otherwise show the earlier live run record: one low-fit contact skipped, **0 credits**.
-5. **Recap in `#roi-advisor`.** In graph8 → Work → `#roi-advisor`: the recap posted by the app's cron route (3 items). It lands in an agent-free channel: **0 credits**. Optionally re-post through `/api/cron/recap` with the `CRON_SECRET` bearer (also 0 credits, still only `#roi-advisor`) — mention it, don't do it unless rehearsing.
-6. **Ask via MCP.** Add this entry under `mcpServers` in Claude Desktop (`claude_desktop_config.json`) or Cursor (`.cursor/mcp.json`) — replacing `<ADVISOR_URL>` with the dashboard URL and `<MCP_TOKEN>` with the Vercel env value:
-   ```json
-   { "graph8-roi": { "url": "<ADVISOR_URL>/api/mcp", "headers": { "Authorization": "Bearer <MCP_TOKEN>" } } }
-   ```
-   Then ask: *"Cost per meeting for fintech VPs?"* — `cost_per_outcome` answers from the same stats the dashboard shows. Tools: `roi_summary`, `cost_per_outcome`, `list_findings`, `explain_charge`, `prespend_estimate`.
-   **Note:** outside agents (Claude, Cursor) work over streamable HTTP today. graph8 itself cannot call the server yet: its MCP registration only accepts SSE and the SSE transport still needs the Redis session store, so that item is **pending**. Spec §6.4 fallback applies — inside graph8, the answers live in `#roi-advisor` and the `roi_*` custom objects.
+1. **Overview.** Read the headline aloud; say once that meetings, deals and the email-finding spend are simulated (the pill says so). Hover a flow band, then click "Booked a meeting".
+2. **Charges** opens filtered. Clear the filter; expand the AI enrichment row ("3 jobs").
+3. **Recovery.** Click the Sep 26 week; show the owner columns and the refund draft. **Do not send.**
+4. **Optimize spend.** Walk the three action cards; show "Changes you've made"; in the planner switch Find emails ↔ Verify emails to show the cost walk and forecast. **Do not run.**
+5. **Weekly recap in `#roi-advisor`** and **MCP** as before (`cost_per_outcome` now accepts "Sales VPs").
+   - Recap: graph8 → Work → `#roi-advisor` holds the cron-posted recap (3 items, 0 credits). Optionally re-post through `/api/cron/recap` with the `CRON_SECRET` bearer (also 0 credits, still only `#roi-advisor`) — mention it, don't do it unless rehearsing.
+   - MCP: add this entry under `mcpServers` in Claude Desktop (`claude_desktop_config.json`) or Cursor (`.cursor/mcp.json`) — replacing `<ADVISOR_URL>` with the dashboard URL and `<MCP_TOKEN>` with the Vercel env value:
+
+     ```json
+     { "graph8-roi": { "url": "<ADVISOR_URL>/api/mcp", "headers": { "Authorization": "Bearer <MCP_TOKEN>" } } }
+     ```
+
+     Then ask: *"Cost per meeting for fintech VPs?"* — `cost_per_outcome` answers from the same stats the dashboard shows and also takes a list name ("Sales VPs"). Tools: `roi_summary`, `cost_per_outcome`, `list_findings`, `explain_charge`, `prespend_estimate`.
+   - graph8 itself **can** call the server over SSE: registered as MCP server `d96d0ab1-84ff-46e9-a80f-3361c07c8765` and proven by the `[sim] ROI Advisor MCP test` workflow (0 credits; HANDOFF §11). Outside agents use streamable HTTP. Argument passing for tool nodes with required inputs is still untested.
 
 ## Known numbers to say out loud
 
-- REAL: 1,260 credits over 126 charges; 216 exact / 1,033 time-window / 11 service-only; 115 waste; 5 free failed attempts.
-- SIM (30-day window): list 15 ≈ 78, list 16 ≈ 294, Starter ≈ 1,239 credits per meeting.
-- Guardrail: row 66 low, rows 81 and 249 unknown; the live run skipped 1 record and spent 0 credits.
+- Demo dataset, last 8 weeks (includes demo data): **10,766 credits → 27 meetings and 9 won deals**; booked 2,897 / no meeting 6,652 / unused 860 / unknown 242 / waste 115; repeat enrichment 12%; cohorts span all 8 weeks.
+- Credits per meeting by list: **Sales VPs 124** (17 meetings), **Founders 433** (6), **Starter list 1,232.75** (4).
+- Fit spread after the 27 Sep sync (255 contacts): **33 high / 100 medium / 122 low / 0 unknown**.
+- Planner on the Starter list: find emails ≈ 498 credits, verify emails ≈ 117 (read the exact walk off the screen).
+- If asked which part is real: the graph8 ledger contributed 1,260 credits over 126 charges (216 exact / 1,033 time-window / 11 service-only), 115 waste, 5 free failed attempts; the rest is the demo seed.
 - Recap: 3 items, 0 charges.
