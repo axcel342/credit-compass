@@ -92,3 +92,16 @@ export function valueChain(p: { total: number; meetings: number; won: number; wo
     links: [cpm, plural(p.won, "deal won", "deals won")],
     aria: `${bought} ${plural(p.won, "won deal")} worth ${usd(p.wonValue)}, ${each} per credit.` };
 }
+
+export interface ListRow { label: string; value: number; color: string; note: string | null; tone: "good" | "bad" | null }
+
+export function listRows(rows: { label: string; value: number }[], avg: number | null): ListRow[] {
+  const sorted = [...rows].sort((a, b) => a.value - b.value);
+  const min = sorted[0]?.value;
+  const compare = sorted.length >= 2 && sorted.some((r) => r.value !== min);
+  return sorted.map((r) => {
+    if (compare && r.value === min) return { ...r, color: "var(--booked)", note: "cheapest", tone: "good" };
+    if (compare && avg !== null && avg > 0 && r.value >= 2 * avg) return { ...r, color: "var(--waste)", note: `${Math.floor(r.value / avg)}× average`, tone: "bad" };
+    return { ...r, color: "var(--series-weak)", note: null, tone: null };
+  });
+}

@@ -87,3 +87,21 @@ describe("valueChain", () => {
       nodes: [{ figure: "500" }, { figure: "1", label: "meeting booked" }, { figure: "$2,000", label: "won, $4.00 per credit" }], links: ["500 per meeting", "1 deal won"] }));
   it("shows whole dollars per credit from $10 and cents below", () => { expect(perCredit(10.118)).toBe("$10"); expect(perCredit(4.504)).toBe("$4.50"); });
 });
+
+import { listRows } from "@/lib/dashboard/story";
+describe("listRows", () => {
+  const rows = [{ label: "Starter list", value: 1232.75 }, { label: "Sales VPs", value: 118.61 }, { label: "Founders", value: 433 }];
+  it("sorts cheapest first and labels the cheapest and anything at twice the average", () =>
+    expect(listRows(rows, 395.35)).toEqual([
+      { label: "Sales VPs", value: 118.61, color: "var(--booked)", note: "cheapest", tone: "good" },
+      { label: "Founders", value: 433, color: "var(--series-weak)", note: null, tone: null },
+      { label: "Starter list", value: 1232.75, color: "var(--waste)", note: "3× average", tone: "bad" }]));
+  it("adds no notes to a single list", () =>
+    expect(listRows([{ label: "Sales VPs", value: 118 }], 118)).toEqual([{ label: "Sales VPs", value: 118, color: "var(--series-weak)", note: null, tone: null }]));
+  it("skips the average note when there is no org average", () =>
+    expect(listRows(rows, null).map((r) => r.note)).toEqual(["cheapest", null, null]));
+  it("calls every tied lowest list cheapest, and none when all are equal", () => {
+    expect(listRows([{ label: "A", value: 100 }, { label: "B", value: 100 }, { label: "C", value: 500 }], 150).map((r) => r.note)).toEqual(["cheapest", "cheapest", "3× average"]);
+    expect(listRows([{ label: "A", value: 100 }, { label: "B", value: 100 }], 100).map((r) => r.note)).toEqual([null, null]);
+  });
+});
