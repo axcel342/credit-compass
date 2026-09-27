@@ -1,0 +1,793 @@
+<title>Credit Compass redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#FFFFFF; --bg:#F3F5F8; --panel:#FFFFFF; --panel-2:#EDF1F5;
+  --ink:#131B23; --ink-2:#435060; --muted:#667382; --line:#D6DDE5; --line-2:#E6EBF0;
+  --accent:#2350C8; --accent-ink:#FFFFFF; --accent-soft:#E2E9FB;
+  --series:#2a78d6; --series-weak:#86b6ef;
+  --booked:#1f8a5b; --emailed:#7fbf9f; --nomeet:#8fa3b8; --unused:#d99a1e; --unknown:#b9c2cc; --waste:#d03b3b; --flow:#9db8d9; --maybe:#7fbf9f;
+  --good-ink:#16704a; --bad-ink:#b3261e; --good-bg:#E4F3E4; --crit-bg:#FAE8E8;
+  --shadow:0 1px 2px rgba(19,27,35,.06),0 22px 44px -24px rgba(19,27,35,.28);
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#080B0F; --bg:#0D1318; --panel:#141C24; --panel-2:#1A242E;
+    --ink:#E5EBF1; --ink-2:#B3BFCA; --muted:#8894A1; --line:#29343F; --line-2:#212B35;
+    --accent:#86A4F4; --accent-ink:#0D1318; --accent-soft:#1D2944;
+    --series:#3987e5; --series-weak:#1c5cab;
+    --booked:#3fb27f; --emailed:#4f9a78; --nomeet:#6f8298; --unused:#e0a93a; --unknown:#5d6873; --waste:#e0605f; --flow:#35557a; --maybe:#4f9a78;
+    --good-ink:#6fd3a3; --bad-ink:#f08a88; --good-bg:#132C17; --crit-bg:#361B1B;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 22px 44px -24px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#080B0F; --bg:#0D1318; --panel:#141C24; --panel-2:#1A242E;
+  --ink:#E5EBF1; --ink-2:#B3BFCA; --muted:#8894A1; --line:#29343F; --line-2:#212B35;
+  --accent:#86A4F4; --accent-ink:#0D1318; --accent-soft:#1D2944;
+  --series:#3987e5; --series-weak:#1c5cab;
+  --booked:#3fb27f; --emailed:#4f9a78; --nomeet:#6f8298; --unused:#e0a93a; --unknown:#5d6873; --waste:#e0605f; --flow:#35557a; --maybe:#4f9a78;
+  --good-ink:#6fd3a3; --bad-ink:#f08a88; --good-bg:#132C17; --crit-bg:#361B1B;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 22px 44px -24px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,h5{font-family:var(--f-display);margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* document */
+.doc{max-width:1240px;margin:0 auto;padding-inline:max(16px,3.5vw);padding-block:56px 104px;display:grid;gap:80px}
+.doc-title{font-size:clamp(36px,5.6vw,58px);font-weight:820;font-stretch:104%;letter-spacing:-.035em;line-height:1}
+.stand{font-size:clamp(16px,1.6vw,18px);color:var(--ink-2);max-width:60ch;margin-top:16px}
+.jump{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14.5px;font-weight:500}
+.jump a{text-decoration:none}
+.jump a:hover{text-decoration:underline}
+.brief{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px 56px;margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
+.bl{font:600 14px/1.3 var(--f-body);color:var(--muted)}
+.asked{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px;font:600 clamp(17px,1.8vw,20px)/1.25 var(--f-display);letter-spacing:-.01em}
+.wchart{display:grid;gap:11px;margin-top:14px}
+.wr{display:grid;grid-template-columns:76px minmax(0,1fr) 92px;gap:14px;align-items:center;font-size:14px}
+.wr .t{position:relative;height:12px}
+.wr .t i{position:absolute;left:0;top:0;bottom:0;border-radius:0 3px 3px 0}
+.wr .t .now{background:var(--line)}
+.wr .t .aft{background:var(--accent)}
+.wr .v{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.wr .v b{color:var(--ink);font:700 15px var(--f-display)}
+.wlegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.wlegend span{display:inline-flex;align-items:center;gap:7px}
+.wlegend i{width:14px;height:8px;border-radius:2px;display:inline-block}
+.sec{display:grid;gap:34px;border-top:1px solid var(--line);padding-top:30px;scroll-margin-top:16px}
+.sec-head{display:grid;gap:10px;max-width:70ch}
+.sec-head h2{font-size:clamp(26px,3.2vw,34px);font-weight:780;letter-spacing:-.025em;line-height:1.08}
+.sec-head p{color:var(--ink-2);font-size:16px}
+.rec{display:inline-block;font:600 12.5px/1 var(--f-body);color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.wc{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.wc b{color:var(--ink);font:700 15px var(--f-display)}
+
+/* comparison */
+.cmp-t{overflow-x:auto}
+table.compare{border-collapse:collapse;width:100%;min-width:680px;font-size:14.5px}
+.compare th,.compare td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.compare thead th{font:700 16px/1.25 var(--f-display);letter-spacing:-.01em;border-bottom-color:var(--ink-2)}
+.compare thead th .rec{margin-left:8px;vertical-align:2px}
+.compare tbody th{font-weight:500;color:var(--muted);width:170px}
+.compare .hl{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+/* direction + screen blocks */
+.dir,.sblock{display:grid;gap:18px;scroll-margin-top:16px}
+.dir-head,.sb-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
+.dir-head h3,.sb-head h3{font-size:clamp(22px,2.4vw,26px);font-weight:760;letter-spacing:-.02em}
+.dir-head .wc,.sb-head .wc{margin-left:auto}
+.dir-sum{max-width:68ch;color:var(--ink-2);font-size:16px}
+.dir-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 40px;font-size:15px;max-width:1040px}
+.dir-notes h4{font:600 13.5px var(--f-body);color:var(--muted);margin-bottom:4px}
+.dir + .dir{margin-top:34px}
+.sblock + .sblock{margin-top:34px}
+.sb-notes{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:28px 48px;align-items:start}
+.changes{list-style:none;margin:0;padding:0;display:grid;gap:12px;max-width:74ch}
+.changes li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;align-items:baseline;font-size:15px}
+.tag{justify-self:start;font:600 12px/1.5 var(--f-body);border-radius:5px;padding:1px 7px;background:var(--panel-2);color:var(--ink-2)}
+.tag.cut{background:var(--crit-bg);color:var(--bad-ink)}
+.tag.new{background:var(--good-bg);color:var(--good-ink)}
+.before{margin:0;display:grid;gap:8px}
+.before img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}
+.before figcaption{font-size:13px;color:var(--muted)}
+.plain{margin:0;padding-left:20px;display:grid;gap:10px;font-size:16px;max-width:74ch}
+.calls{margin:0;padding-left:22px;display:grid;gap:12px;font:600 clamp(17px,1.9vw,20px)/1.35 var(--f-display);letter-spacing:-.01em;max-width:64ch}
+.calls span{display:block;font:400 15px/1.5 var(--f-body);color:var(--ink-2);letter-spacing:0;margin-top:2px}
+.sign{font-size:16px;color:var(--ink-2)}
+
+/* mock frame */
+.frame{background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;color:var(--ink);font-size:15px}
+.stb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px clamp(14px,2.4vw,24px);border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 78%,transparent);-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%)}
+.stb .brand{font:700 15px/1 var(--f-display);letter-spacing:-.01em}
+.stb .demo{font-size:11.5px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:1px 9px;color:var(--ink-2);white-space:nowrap}
+.stb .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.stb .tabs span{font-size:13px;font-weight:500;color:var(--ink-2);padding:5px 9px;border-radius:6px;white-space:nowrap}
+.stb .tabs .on{color:var(--ink);background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+.stb .sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--panel);font-size:12.5px;font-weight:500}
+.seg span{padding:4px 10px;color:var(--ink-2);white-space:nowrap}
+.seg .on{background:var(--ink);color:var(--bg)}
+.seg .off{opacity:.5}
+.stb .sync{font-size:12.5px;font-weight:600;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:7px;padding:4px 10px;background:var(--panel);white-space:nowrap}
+.sbody{padding:clamp(22px,3vw,34px) clamp(14px,2.6vw,30px) clamp(24px,3vw,34px);display:grid;gap:22px}
+
+/* mock primitives */
+.fig{font-family:var(--f-display);font-stretch:112%;font-weight:780;letter-spacing:-.03em;line-height:1;font-variant-numeric:lining-nums}
+.tnum{font-variant-numeric:lining-nums tabular-nums}
+.good{color:var(--good-ink)}
+.bad{color:var(--bad-ink)}
+.muted{color:var(--muted)}
+.lab{font-size:13.5px;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ph h4,.act h5,.planner h5{font:650 15px/1.3 var(--f-display);letter-spacing:-.005em}
+.h-scr{font:720 clamp(21px,2.4vw,27px)/1.15 var(--f-display);letter-spacing:-.02em}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--f-body);border-radius:7px;padding:8px 12px;white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.btn.off{opacity:.45}
+.confirm{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink-2);line-height:1.4}
+.confirm input{margin:2px 0 0;accent-color:var(--accent)}
+
+/* A: chain */
+.chain{--fs:clamp(40px,5.4vw,66px);display:flex;align-items:flex-start;gap:0 18px;padding-top:4px}
+.cn{display:grid;gap:10px;flex:none}
+.cn .fig{font-size:var(--fs)}
+.cn .fig.in{color:var(--ink-2)}
+.cn .fig.out{color:var(--good-ink)}
+.cn .lab{font-size:14px}
+.cl{flex:1 1 48px;min-width:48px;max-width:200px;margin-top:calc(var(--fs) * .5);position:relative;border-top:1.5px solid var(--nomeet)}
+.cl::after{content:"";position:absolute;right:-2px;top:-6px;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent var(--nomeet)}
+.cl span{position:absolute;left:0;right:8px;bottom:8px;text-align:center;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.trendline{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--ink-2)}
+.trendline b{font-weight:600}
+.spark{width:120px;height:32px;flex:none;display:block}
+.dn-list{padding-block:6px}
+.dn-list .ph{margin:10px 0 2px}
+.dn{display:grid;grid-template-columns:minmax(118px,160px) minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:13px 0;border-top:1px solid var(--line-2)}
+.ph + .dn{border-top:0}
+.dn-fig{display:grid;gap:5px}
+.dn-fig .fig{font-size:30px}
+.dn-fig .u{font-size:12.5px;color:var(--muted)}
+.dn p{font-size:15px}
+.duo{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.obar{display:flex;gap:2px;height:26px;margin:2px 0 14px}
+.obar span{min-width:3px}
+.obar span:first-child{border-radius:5px 0 0 5px}
+.obar span:last-child{border-radius:0 5px 5px 0}
+.obar.big{height:40px;margin:0}
+.okey{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px;font-size:14px;color:var(--ink-2)}
+.okey li{display:flex;align-items:center;gap:8px}
+.okey li b{margin-left:auto;font:700 14.5px var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.okey li.lead{color:var(--ink);font-weight:600}
+.okey li.bad,.okey li.bad b{color:var(--bad-ink)}
+.okey i,.chip i,.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.lbars{display:grid;gap:12px}
+.lb{display:grid;grid-template-columns:84px minmax(0,1fr) 50px 84px;align-items:center;gap:10px;font-size:14px}
+.lb .nm{color:var(--ink-2);text-align:right}
+.lb .tr{position:relative;height:14px}
+.lb .tr i{display:block;height:100%;border-radius:0 4px 4px 0}
+.lb .avg{position:absolute;top:-6px;bottom:-6px;width:0;border-left:1.5px dashed var(--ink-2)}
+.lb b{font:700 15px var(--f-display);font-variant-numeric:tabular-nums;text-align:right}
+.lb .note{font-size:12.5px;font-weight:600}
+.lb.foot .tr{height:16px}
+.lb .avg-l{position:absolute;top:0;transform:translateX(-50%);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.lbars.plain .lb{grid-template-columns:84px minmax(0,1fr) 50px}
+
+/* B */
+.b-head{font:700 clamp(24px,3vw,32px)/1.12 var(--f-display);letter-spacing:-.02em;max-width:32ch}
+.b-strip{display:flex;flex-wrap:wrap;gap:12px 44px;margin:0}
+.b-strip div{display:flex;flex-direction:column-reverse}
+.b-strip dt{font-size:13.5px;color:var(--muted)}
+.b-strip dt .good{font-weight:600}
+.b-strip dd{margin:0;font:760 32px/1.1 var(--f-display);font-stretch:108%;letter-spacing:-.02em}
+.flow-wrap{overflow-x:auto}
+.flow{display:block;width:100%;height:auto;min-width:640px;font:12px var(--f-body);fill:var(--ink)}
+.flow .flow-heads text{font-size:11px;fill:var(--muted)}
+.flow .flow-label{paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.flow .band{fill-opacity:.35}
+.flow .band.outcome{fill-opacity:.5}
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.brow{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--line-2);font-size:14.5px}
+.ph + .brow{border-top:0;padding-top:2px}
+.b-trend{font:650 15px var(--f-display);margin:20px 0 6px}
+.bspark{display:block;width:100%;height:auto}
+.bspark text{font:11.5px var(--f-body);fill:var(--muted)}
+
+/* C */
+.vboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--line)}
+.vb{display:grid;gap:9px;align-content:start;padding:28px 26px 26px;border-left:1px solid var(--line)}
+.vb:first-child{border-left:0;padding-left:0}
+.vb .fig{font-size:clamp(38px,4.6vw,58px)}
+.vb .l{font-size:16px;font-weight:500}
+.vb .s{font-size:13.5px;color:var(--muted)}
+.vb .btn{justify-self:start;margin-top:8px}
+
+/* Charges */
+.c-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.chip i{border-radius:50%;width:9px;height:9px}
+.chip b{font:700 13.5px var(--f-display);font-variant-numeric:tabular-nums}
+.chip.on{box-shadow:inset 0 0 0 1.5px var(--ink);border-color:var(--ink)}
+.lists{display:flex;flex-wrap:wrap;gap:4px;font-size:13px;margin-top:-8px}
+.lists span{padding:3px 9px;border-radius:6px;color:var(--ink-2)}
+.lists .on{background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.tw table{width:100%;border-collapse:collapse;min-width:760px;font-size:14px}
+.tw th{text-align:left;font-weight:500;font-size:13px;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line)}
+.tw td{padding:12px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.tw tr:last-child td{border-bottom:0}
+.tw .num{text-align:right;font:650 14.5px var(--f-display);font-variant-numeric:tabular-nums}
+.tw th.num{font:500 13px var(--f-body)}
+.tw .when{color:var(--muted);white-space:nowrap}
+.tw .what b{font-weight:600}
+.jobs{font-size:12.5px;color:var(--muted);margin-left:6px;white-space:nowrap}
+.jobs::before{content:"";display:inline-block;margin-right:5px;border-style:solid;border-width:4px 0 4px 6px;border-color:transparent transparent transparent var(--muted)}
+.bought{display:flex;align-items:center;gap:10px}
+.mini{display:flex;width:92px;height:8px;border-radius:3px;overflow:hidden;flex:none}
+.share{font:700 15px var(--f-display);font-variant-numeric:tabular-nums}
+.res{display:inline-flex;align-items:center;gap:8px}
+.res .dot{border-radius:50%;width:8px;height:8px}
+.res.bad{color:var(--bad-ink)}
+.match{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;white-space:nowrap}
+.match::before{content:"";width:8px;height:8px;border-radius:50%;border:1.5px solid var(--muted)}
+.match.exact::before{background:var(--muted)}
+.match.likely::before,.match.mixed::before{background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)}
+.fold td{background:var(--panel-2)}
+.fold button{font:600 13.5px var(--f-body);color:var(--accent);background:none;border:0;padding:0;cursor:pointer}
+.fold button:hover{text-decoration:underline}
+
+/* Recovery */
+.r-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px 40px;align-items:start}
+.r-fig{display:flex;align-items:baseline;gap:12px}
+.r-fig .fig{font-size:clamp(60px,7.4vw,92px)}
+.r-fig .u{font:700 clamp(18px,2vw,24px) var(--f-display);color:var(--ink-2)}
+.r-lab{font-size:18px;margin-top:8px}
+.r-items{list-style:none;margin:18px 0 0;padding:0;display:grid;max-width:580px}
+.r-items li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line);font-size:14.5px}
+.r-items b{font:700 15.5px var(--f-display);font-variant-numeric:tabular-nums}
+.steps{list-style:none;margin:20px 0 0;padding:0;display:flex;align-items:center;max-width:580px;font-size:13px;color:var(--muted)}
+.steps li{display:flex;align-items:center;gap:8px;flex:1;white-space:nowrap}
+.steps li:last-child{flex:none}
+.steps li::before{content:"";width:12px;height:12px;border-radius:50%;border:1.5px solid var(--nomeet);flex:none;background:var(--bg)}
+.steps li.done{color:var(--ink);font-weight:600}
+.steps li.done::before{background:var(--ink);border-color:var(--ink)}
+.steps li:not(:last-child)::after{content:"";flex:1;height:1.5px;background:var(--line);margin-right:8px}
+.claim{justify-self:end;display:grid;justify-items:end;gap:12px;max-width:380px}
+.claim > summary{list-style:none;cursor:pointer;padding:11px 16px;font-size:14px}
+.claim > summary::-webkit-details-marker{display:none}
+.claim-body{padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel);display:grid;gap:10px;font-size:13.5px;justify-items:start;text-align:left}
+.claim-body .msg{background:var(--panel-2);border-radius:7px;padding:10px 12px;color:var(--ink-2);line-height:1.5}
+.claim-body .row{display:flex;flex-wrap:wrap;gap:8px}
+.also{display:grid;border-top:1px solid var(--line)}
+.also .row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:18px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line-2);font-size:14.5px}
+.also .fig{font-size:24px;color:var(--ink-2)}
+
+/* Optimize */
+.o-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.acts{display:grid;gap:14px}
+.act{display:grid;grid-template-columns:140px minmax(0,1fr) 210px;gap:18px 26px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.act-fig{display:grid;gap:6px;align-content:start}
+.act-fig .fig{font-size:42px;color:var(--good-ink)}
+.act-fig .u{font-size:12.5px;color:var(--muted)}
+.act-main{display:grid;gap:10px;align-content:start;min-width:0}
+.act .ev{font-size:13.5px;color:var(--ink-2)}
+.evbar{display:flex;height:14px;border-radius:4px;overflow:hidden;gap:2px;max-width:560px}
+.evkey{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-2);max-width:560px;margin-top:-4px}
+.evkey .bad{font-weight:600}
+.cmp{display:grid;gap:6px;max-width:560px}
+.cmp div{display:grid;grid-template-columns:80px minmax(0,1fr) 30px;gap:10px;align-items:center;font-size:13.5px}
+.cmp span{color:var(--ink-2);text-align:right}
+.cmp i{height:12px;border-radius:0 3px 3px 0;display:block}
+.cmp b{font:700 14px var(--f-display);font-variant-numeric:tabular-nums}
+.cap{font-size:12.5px;color:var(--muted);margin-top:-4px}
+.steps2{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13.5px}
+.steps2 li{display:flex;align-items:center;gap:8px}
+.steps2 .n{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink-2);display:grid;place-items:center;font:600 11px var(--f-display);color:var(--ink-2)}
+.fit{display:flex;height:12px;border-radius:4px;overflow:hidden;gap:2px;max-width:560px}
+.fitkey{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:12.5px;color:var(--ink-2);margin-top:-4px}
+.fitkey .bad{font-weight:600}
+.more{font-size:13px}
+.more summary{cursor:pointer;color:var(--accent);font-weight:500;width:max-content;max-width:100%}
+.more p{margin-top:6px;color:var(--ink-2);max-width:62ch}
+.act-side{display:grid;gap:10px;align-content:center;border-left:1px solid var(--line-2);padding-left:22px}
+.act-side .btn{justify-self:start}
+.pl-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.pl-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.select{font-size:13.5px;border:1px solid var(--line);border-radius:7px;padding:5px 30px 5px 10px;background:var(--panel);position:relative;white-space:nowrap}
+.select::after{content:"";position:absolute;right:11px;top:50%;margin-top:-2px;border-style:solid;border-width:5px 4px 0 4px;border-color:var(--ink-2) transparent transparent transparent}
+.pl-figs{display:flex;flex-wrap:wrap;gap:16px 56px;margin:22px 0 8px}
+.pl-figs .fig{font-size:44px}
+.pl-figs .u{display:block;font-size:13.5px;color:var(--muted);margin-top:8px}
+.walk{display:grid;gap:9px;margin-top:14px}
+.walk .r{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr) 54px;gap:12px;align-items:center;font-size:13.5px;color:var(--ink-2)}
+.walk .r.est{color:var(--ink);font-weight:600}
+.walk .track{position:relative;height:16px}
+.walk .track span{position:absolute;top:0;bottom:0;border-radius:3px}
+.walk .cut{border:1px dashed var(--nomeet);background:repeating-linear-gradient(135deg,var(--line-2) 0 5px,transparent 5px 10px)}
+.walk .skip{border:1px dashed var(--waste);background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--waste) 20%,transparent) 0 5px,transparent 5px 10px)}
+.walk b{text-align:right;font:700 14px var(--f-display);font-variant-numeric:tabular-nums}
+.planner .lab{margin-top:14px}
+.undone{padding-left:2px}
+
+/* responsive */
+@media (max-width:980px){
+  .act{grid-template-columns:120px minmax(0,1fr)}
+  .act-side{grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid var(--line-2);padding-top:14px;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+}
+@media (max-width:900px){
+  .duo,.grid2{grid-template-columns:1fr}
+  .sb-notes{grid-template-columns:1fr}
+  .before{max-width:280px}
+}
+@media (max-width:760px){
+  .brief,.dir-notes{grid-template-columns:1fr}
+  .stb .sp{display:none}
+  .vboard{grid-template-columns:1fr}
+  .vb,.vb:first-child{border-left:0;padding-inline:0;border-top:1px solid var(--line)}
+  .vb:first-child{border-top:0}
+  .r-hero{grid-template-columns:1fr}
+  .claim{justify-self:start;justify-items:start}
+  .dir-head .wc,.sb-head .wc{margin-left:0}
+}
+@media (max-width:700px){
+  .chain{flex-direction:column;gap:0}
+  .cl{flex:none;max-width:none;min-width:0;height:36px;margin:8px 0 8px 14px;border-top:0;border-left:1.5px solid var(--nomeet)}
+  .cl::after{right:auto;left:-6px;top:auto;bottom:-3px;border-width:8px 5px 0 5px;border-color:var(--nomeet) transparent transparent transparent}
+  .cl span{left:16px;right:auto;bottom:auto;top:50%;transform:translateY(-50%);text-align:left}
+}
+@media (max-width:620px){
+  .dn{grid-template-columns:minmax(0,1fr) auto}
+  .dn p{grid-column:1/-1;grid-row:2}
+  .dn .btn{grid-column:2;grid-row:1}
+  .okey{grid-template-columns:1fr}
+  .lb,.lbars.plain .lb{grid-template-columns:72px minmax(0,1fr) 44px}
+  .lb .note{grid-column:2/-1;margin-top:-8px}
+  .lb.foot > span:nth-child(n+3){display:none}
+  .act{grid-template-columns:1fr}
+  .act-side{grid-template-columns:1fr}
+  .walk .r{grid-template-columns:minmax(0,1fr) 48px}
+  .walk .track{grid-column:1/-1;grid-row:2}
+  .also .row{grid-template-columns:64px minmax(0,1fr)}
+  .changes li{grid-template-columns:1fr;gap:4px}
+  .wr{grid-template-columns:66px minmax(0,1fr) 82px;gap:10px}
+  .brow{flex-wrap:wrap}
+}
+</style>
+
+<main class="doc">
+  <header>
+    <h1 class="doc-title">Credit Compass redesign</h1>
+    <p class="stand">Three ways to make the value readable at a glance, and every change each one makes. The mocks use today's live numbers from the demo org for the last 8 weeks, which include simulated meetings and deals.</p>
+    <nav aria-label="On this page">
+      <ul class="jump">
+        <li><a href="#directions">Three directions</a></li>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#charges">Charges</a></li>
+        <li><a href="#recovery">Recovery</a></li>
+        <li><a href="#optimize">Optimize spend</a></li>
+        <li><a href="#call">Your call</a></li>
+      </ul>
+    </nav>
+    <div class="brief">
+      <div>
+        <h2 class="bl">You asked for</h2>
+        <ul class="asked">
+          <li>Less text</li>
+          <li>The important numbers stand out</li>
+          <li>Only what's highly relevant</li>
+          <li>Value you see without reading a chart</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="bl">Words on each screen</h2>
+        <div class="wchart">
+          <div class="wr"><span>Overview</span><span class="t" aria-hidden="true"><i class="now" style="width:48.2%"></i><i class="aft" style="width:20.3%"></i></span><span class="v">237 to <b>~100</b></span></div>
+          <div class="wr"><span>Charges</span><span class="t" aria-hidden="true"><i class="now" style="width:62.6%"></i><i class="aft" style="width:26.4%"></i></span><span class="v">308 to <b>~130</b></span></div>
+          <div class="wr"><span>Recovery</span><span class="t" aria-hidden="true"><i class="now" style="width:46.3%"></i><i class="aft" style="width:10.2%"></i></span><span class="v">228 to <b>~50</b></span></div>
+          <div class="wr"><span>Optimize</span><span class="t" aria-hidden="true"><i class="now" style="width:100%"></i><i class="aft" style="width:35.6%"></i></span><span class="v">492 to <b>~175</b></span></div>
+        </div>
+        <p class="wlegend"><span><i style="background:var(--line)"></i>Today, measured on the live app</span><span><i style="background:var(--accent)"></i>Number first, counted from the mocks below</span></p>
+      </div>
+    </div>
+  </header>
+
+  <section class="sec" id="directions">
+    <div class="sec-head">
+      <h2>Three directions</h2>
+      <p>Each one is shown on the Overview. The same idea carries to Charges, Recovery and Optimize spend.</p>
+    </div>
+
+    <div class="cmp-t">
+      <table class="compare">
+        <thead><tr><th scope="col"><span class="sr-only">Compare</span></th><th scope="col" class="hl">Number first<span class="rec">Recommended</span></th><th scope="col">Trim in place</th><th scope="col">Value board</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">What you see first</th><td class="hl">What you spent, booked and won, as three figures</td><td>A sentence with the same numbers</td><td>What you won, are owed and can save</td></tr>
+          <tr><th scope="row">Flow diagram</th><td class="hl">Replaced by one bar</td><td>Kept</td><td>Moved off the Overview</td></tr>
+          <tr><th scope="row">Overview words</th><td class="hl">~100, from 237</td><td>~130</td><td>~50</td></tr>
+          <tr><th scope="row">Main risk</th><td class="hl">Reverses two v2 choices, the flow diagram and Recovery's weekly chart</td><td>The flow diagram still has to be traced to find the answer</td><td>The Overview no longer shows where credits went</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <article class="dir" id="dir-a">
+      <div class="dir-head"><h3>Number first</h3><span class="rec">Recommended</span><span class="wc"><b>~100</b> words on the Overview</span></div>
+      <p class="dir-sum">Each screen opens with its value as one large figure and a short label, then one simple chart, then what to do. Anything that repeats or needs explaining goes, or folds one click deeper.</p>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span class="on">Overview</span><span>Charges</span><span>Recovery</span><span>Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="a-overview">
+          <div class="chain" role="img" aria-label="10,674 credits spent at 395 per meeting bought 27 meetings. 9 deals won are worth $108,000, $10 per credit.">
+            <div class="cn"><span class="fig tnum in">10,674</span><span class="lab">credits spent</span></div>
+            <div class="cl"><span>395 per meeting</span></div>
+            <div class="cn"><span class="fig tnum">27</span><span class="lab">meetings booked</span></div>
+            <div class="cl"><span>9 deals won</span></div>
+            <div class="cn"><span class="fig tnum out">$108,000</span><span class="lab">won, $10 per credit</span></div>
+          </div>
+          <p class="trendline"><svg class="spark" viewBox="0 0 120 32" aria-hidden="true"><path d="M4,4 L32,21.7 L60,26.7 L88,21.3 L116,28 L116,32 L4,32 Z" fill="var(--good-bg)"/><path d="M4,4 L32,21.7 L60,26.7 L88,21.3 L116,28" fill="none" stroke="var(--booked)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="116" cy="28" r="3" fill="var(--booked)"/></svg><span>Cost per meeting is <b class="good">down 35%</b> since Aug 30</span></p>
+          <section class="panel dn-list" aria-labelledby="a-dn">
+            <div class="ph"><h4 id="a-dn">Do next</h4></div>
+            <div class="dn"><div class="dn-fig"><span class="fig tnum">+2</span><span class="u">meetings a week</span></div><p>Move Starter list spend to people like your Sales VPs</p><span class="btn ghost">Move spend</span></div>
+            <div class="dn"><div class="dn-fig"><span class="fig tnum">696</span><span class="u">credits a month</span></div><p>Stop paying twice for the same contacts</p><span class="btn ghost">Stop paying twice</span></div>
+            <div class="dn"><div class="dn-fig"><span class="fig tnum">860</span><span class="u">credits unused</span></div><p>Onboarding research nobody has opened</p><span class="btn ghost">See it</span></div>
+            <div class="dn"><div class="dn-fig"><span class="fig tnum">91</span><span class="u">credits back</span></div><p>graph8 owes you for work that produced nothing</p><span class="btn ghost">Claim refund</span></div>
+          </section>
+          <div class="duo">
+            <section class="panel" aria-labelledby="a-ob">
+              <div class="ph"><h4 id="a-ob">What the credits bought</h4></div>
+              <div class="obar" aria-hidden="true"><span style="flex:2806;background:var(--booked)"></span><span style="flex:3327;background:var(--emailed)"></span><span style="flex:3325;background:var(--nomeet)"></span><span style="flex:860;background:var(--unused)"></span><span style="flex:242;background:var(--unknown)"></span><span style="flex:115;background:var(--waste)"></span></div>
+              <ul class="okey">
+                <li class="lead"><i style="background:var(--booked)"></i>Booked a meeting<b>2,806</b></li>
+                <li><i style="background:var(--emailed)"></i>Emailed, no meeting yet<b>3,327</b></li>
+                <li><i style="background:var(--nomeet)"></i>No meeting yet<b>3,325</b></li>
+                <li><i style="background:var(--unused)"></i>Never used<b>860</b></li>
+                <li><i style="background:var(--unknown)"></i>Can't tell yet<b>242</b></li>
+                <li class="bad"><i style="background:var(--waste)"></i>Wasted<b>115</b></li>
+              </ul>
+            </section>
+            <section class="panel" aria-labelledby="a-lb">
+              <div class="ph"><h4 id="a-lb">Credits per meeting</h4></div>
+              <div class="lbars">
+                <div class="lb"><span class="nm">Sales VPs</span><span class="tr"><i style="width:9.6%;background:var(--booked)"></i><span class="avg" style="left:32%"></span></span><b>119</b><span class="note good">cheapest</span></div>
+                <div class="lb"><span class="nm">Founders</span><span class="tr"><i style="width:35.1%;background:var(--series-weak)"></i><span class="avg" style="left:32%"></span></span><b>433</b><span class="note"></span></div>
+                <div class="lb"><span class="nm">Starter list</span><span class="tr"><i style="width:100%;background:var(--waste)"></i><span class="avg" style="left:32%"></span></span><b>1,233</b><span class="note bad">3× average</span></div>
+                <div class="lb foot" aria-hidden="true"><span></span><span class="tr"><span class="avg-l" style="left:32%">average 395</span></span><span></span><span></span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="dir-notes">
+        <div><h4>Why this one</h4><p>The first line reads left to right as the whole story, from what you spent to what it booked and what it won. Every Do next row starts with what you get.</p></div>
+        <div><h4>Trade-off</h4><p>It replaces the flow diagram you chose in v2, and Recovery loses its weekly chart.</p></div>
+      </div>
+    </article>
+
+    <article class="dir" id="dir-b">
+      <div class="dir-head"><h3>Trim in place</h3><span class="wc"><b>~130</b> words on the Overview</span></div>
+      <p class="dir-sum">The same sections and charts as today, with a one-line headline, no lede, three bigger numbers and one-line Do next rows.</p>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span class="on">Overview</span><span>Charges</span><span>Recovery</span><span>Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="b-overview">
+          <h4 class="b-head">10,674 credits bought 27 meetings and $108,000 in won deals.</h4>
+          <dl class="b-strip">
+            <div><dt>credits per meeting, <span class="good">down 35%</span></dt><dd>395</dd></div>
+            <div><dt>won per credit</dt><dd>$10</dd></div>
+            <div><dt>wasted</dt><dd class="bad">115</dd></div>
+          </dl>
+          <section class="panel" aria-labelledby="b-fl">
+            <div class="ph"><h4 id="b-fl">Where every credit went</h4></div>
+            <div class="flow-wrap"><svg class="flow" aria-hidden="true" viewBox="-10 -30 1020 420" role="img" aria-label="Where 10,674 credits went, from what you paid for to who it was spent on to what it bought"><g class="flow-heads"><text x="185" y="-12" text-anchor="end">What you paid for</text><text x="538" y="-12">Who it was spent on</text><text x="838" y="-12">What it bought</text></g><g><path d="M200 0C360 0 360 0 520 0L520 131.7C360 131.7 360 131.7 200 131.7Z" fill="var(--flow)" class="band"><title>Email finding → Starter list: 4,814 credits</title></path></g><g><path d="M200 131.7C360 131.7 360 148.9 520 148.9L520 220C360 220 360 202.8 200 202.8Z" fill="var(--flow)" class="band"><title>Email finding → Founders: 2,598 credits</title></path></g><g><path d="M200 202.8C360 202.8 360 234 520 234L520 289.1C360 289.1 360 257.9 200 257.9Z" fill="var(--flow)" class="band"><title>Email finding → Sales VPs: 2,016 credits</title></path></g><g><path d="M200 257.9C360 257.9 360 303.1 520 303.1L520 304.6C360 304.6 360 259.4 200 259.4Z" fill="var(--flow)" class="band"><title>Email finding → Other lists: 3 credits</title></path></g><g><path d="M200 272C360 272 360 320.1 520 320.1L520 343.6C360 343.6 360 295.5 200 295.5Z" fill="var(--flow)" class="band"><title>Onboarding research → Not tied to a list: 860 credits</title></path></g><g><path d="M200 309.5C360 309.5 360 343.6 520 343.6L520 346.4C360 346.4 360 312.3 200 312.3Z" fill="var(--flow)" class="band"><title>Landing page → Not tied to a list: 100 credits</title></path></g><g><path d="M200 326.5C360 326.5 360 346.4 520 346.4L520 348.9C360 348.9 360 329.1 200 329.1Z" fill="var(--flow)" class="band"><title>Skill runs → Not tied to a list: 93 credits</title></path></g><g><path d="M200 343.5C360 343.5 360 131.7 520 131.7L520 133.8C360 133.8 360 345.6 200 345.6Z" fill="var(--flow)" class="band"><title>AI enrichment → Starter list: 77 credits</title></path></g><g><path d="M200 360.5C360 360.5 360 133.8 520 133.8L520 135.3C360 135.3 360 362 200 362Z" fill="var(--flow)" class="band"><title>Other services → Starter list: 40 credits</title></path></g><g><path d="M200 362C360 362 360 348.9 520 348.9L520 350.9C360 350.9 360 364 200 364Z" fill="var(--flow)" class="band"><title>Other services → Not tied to a list: 73 credits</title></path></g><g><path d="M530 0C675 0 675 0 820 0L820 15C675 15 675 15 530 15Z" fill="var(--booked)" class="band outcome"><title>Starter list → Booked a meeting: 549 credits</title></path></g><g><path d="M530 15C675 15 675 90.7 820 90.7L820 154.5C675 154.5 675 78.8 530 78.8Z" fill="var(--emailed)" class="band outcome"><title>Starter list → Emailed, no meeting yet: 2,331 credits</title></path></g><g><path d="M530 78.8C675 78.8 675 195.8 820 195.8L820 249.4C675 249.4 675 132.4 530 132.4Z" fill="var(--nomeet)" class="band outcome"><title>Starter list → No meeting yet: 1,960 credits</title></path></g><g><path d="M530 132.4C675 132.4 675 358.9 820 358.9L820 361.3C675 361.3 675 134.9 530 134.9Z" fill="var(--waste)" class="band outcome"><title>Starter list → Wasted: 91 credits</title></path></g><g><path d="M530 148.9C675 148.9 675 15 820 15L820 36.6C675 36.6 675 170.5 530 170.5Z" fill="var(--booked)" class="band outcome"><title>Founders → Booked a meeting: 791 credits</title></path></g><g><path d="M530 170.5C675 170.5 675 154.5 820 154.5L820 179.2C675 179.2 675 195.2 530 195.2Z" fill="var(--emailed)" class="band outcome"><title>Founders → Emailed, no meeting yet: 904 credits</title></path></g><g><path d="M530 195.2C675 195.2 675 249.4 820 249.4L820 274.1C675 274.1 675 220 530 220Z" fill="var(--nomeet)" class="band outcome"><title>Founders → No meeting yet: 904 credits</title></path></g><g><path d="M530 234C675 234 675 36.6 820 36.6L820 76.7C675 76.7 675 274.1 530 274.1Z" fill="var(--booked)" class="band outcome"><title>Sales VPs → Booked a meeting: 1,466 credits</title></path></g><g><path d="M530 274.1C675 274.1 675 179.2 820 179.2L820 181.8C675 181.8 675 276.6 530 276.6Z" fill="var(--emailed)" class="band outcome"><title>Sales VPs → Emailed, no meeting yet: 92 credits</title></path></g><g><path d="M530 276.6C675 276.6 675 274.1 820 274.1L820 286.6C675 286.6 675 289.1 530 289.1Z" fill="var(--nomeet)" class="band outcome"><title>Sales VPs → No meeting yet: 458 credits</title></path></g><g><path d="M530 303.1C675 303.1 675 286.6 820 286.6L820 288.1C675 288.1 675 304.6 530 304.6Z" fill="var(--nomeet)" class="band outcome"><title>Other lists → No meeting yet: 3 credits</title></path></g><g><path d="M530 320.1C675 320.1 675 300.7 820 300.7L820 324.2C675 324.2 675 343.6 530 343.6Z" fill="var(--unused)" class="band outcome"><title>Not tied to a list → Never used: 860 credits</title></path></g><g><path d="M530 343.6C675 343.6 675 338.2 820 338.2L820 344.9C675 344.9 675 350.3 530 350.3Z" fill="var(--unknown)" class="band outcome"><title>Not tied to a list → Can't tell yet: 242 credits</title></path></g><g><path d="M530 350.3C675 350.3 675 361.3 820 361.3L820 362.8C675 362.8 675 351.8 530 351.8Z" fill="var(--waste)" class="band outcome"><title>Not tied to a list → Wasted: 24 credits</title></path></g><g><rect x="190" y="0" width="10" height="257.99736752120737" rx="1" fill="var(--ink-2)"><title>Email finding: 9,431 credits</title></rect><text class="flow-label" x="182" y="132.99868376060368" text-anchor="end">Email finding <tspan font-weight="600">9,431</tspan></text></g><g><rect x="190" y="271.99736752120737" width="10" height="23.52555424920487" rx="1" fill="var(--ink-2)"><title>Onboarding research: 860 credits</title></rect><text class="flow-label" x="182" y="287.7601446458098" text-anchor="end">Onboarding research <tspan font-weight="600">860</tspan></text></g><g><rect x="190" y="309.52292177041227" width="10" height="3" rx="1" fill="var(--ink-2)"><title>Landing page: 100 credits</title></rect><text class="flow-label" x="182" y="315.02292177041227" text-anchor="end">Landing page <tspan font-weight="600">100</tspan></text></g><g><rect x="190" y="326.52292177041227" width="10" height="3" rx="1" fill="var(--ink-2)"><title>Skill runs: 93 credits</title></rect><text class="flow-label" x="182" y="332.02292177041227" text-anchor="end">Skill runs <tspan font-weight="600">93</tspan></text></g><g><rect x="190" y="343.52292177041227" width="10" height="3" rx="1" fill="var(--ink-2)"><title>AI enrichment: 77 credits</title></rect><text class="flow-label" x="182" y="349.02292177041227" text-anchor="end">AI enrichment <tspan font-weight="600">77</tspan></text></g><g><rect x="190" y="360.52292177041227" width="10" height="3.091148407162965" rx="1" fill="var(--ink-2)"><title>Other services: 113 credits</title></rect><text class="flow-label" x="182" y="366.0684959739938" text-anchor="end">Other services <tspan font-weight="600">113</tspan></text></g><g><rect x="520" y="0" width="10" height="134.88896279398742" rx="1" fill="var(--ink-2)"><title>Starter list: 4,931 credits</title></rect><text class="flow-label" x="538" y="71.44448139699371" text-anchor="start">Starter list <tspan font-weight="600">4,931</tspan></text></g><g><rect x="520" y="148.88896279398742" width="10" height="71.06905806910959" rx="1" fill="var(--ink-2)"><title>Founders: 2,598 credits</title></rect><text class="flow-label" x="538" y="188.4234918285422" text-anchor="start">Founders <tspan font-weight="600">2,598</tspan></text></g><g><rect x="520" y="233.958020863097" width="10" height="55.15785036091192" rx="1" fill="var(--ink-2)"><title>Sales VPs: 2,016 credits</title></rect><text class="flow-label" x="538" y="265.536946043553" text-anchor="start">Sales VPs <tspan font-weight="600">2,016</tspan></text></g><g><rect x="520" y="303.1158712240089" width="10" height="3" rx="1" fill="var(--ink-2)"><title>Other lists: 3 credits</title></rect><text class="flow-label" x="538" y="308.6158712240089" text-anchor="start">Other lists <tspan font-weight="600">3</tspan></text></g><g><rect x="520" y="320.1158712240089" width="10" height="30.802062889075213" rx="1" fill="var(--ink-2)"><title>Not tied to a list: 1,126 credits</title></rect><text class="flow-label" x="538" y="339.5169026685465" text-anchor="start">Not tied to a list <tspan font-weight="600">1,126</tspan></text></g><g><rect x="820" y="0" width="10" height="76.74829099664147" rx="1" fill="var(--booked)"><title>Booked a meeting: 2,806 credits</title></rect><text class="flow-label" x="838" y="42.374145498320736" text-anchor="start">Booked a meeting <tspan font-weight="600">2,806</tspan></text></g><g><rect x="820" y="90.74829099664147" width="10" height="91.00778595417982" rx="1" fill="var(--emailed)"><title>Emailed, no meeting yet: 3,327 credits</title></rect><text class="flow-label" x="838" y="140.25218397373138" text-anchor="start">Emailed, no meeting yet <tspan font-weight="600">3,327</tspan></text></g><g><rect x="820" y="195.7560769508213" width="10" height="90.95252825698985" rx="1" fill="var(--nomeet)"><title>No meeting yet: 3,325 credits</title></rect><text class="flow-label" x="838" y="245.23234107931623" text-anchor="start">No meeting yet <tspan font-weight="600">3,325</tspan></text></g><g><rect x="820" y="300.70860520781116" width="10" height="23.52555424920487" rx="1" fill="var(--unused)"><title>Never used: 860 credits</title></rect><text class="flow-label" x="838" y="316.4713823324136" text-anchor="start">Never used <tspan font-weight="600">860</tspan></text></g><g><rect x="820" y="338.23415945701606" width="10" height="6.619981544543696" rx="1" fill="var(--unknown)"><title>Can't tell yet: 242 credits</title></rect><text class="flow-label" x="838" y="345.54415022928794" text-anchor="start">Can't tell yet <tspan font-weight="600">242</tspan></text></g><g><rect x="820" y="358.85414100155975" width="10" height="3.1458589984401857" rx="1" fill="var(--waste)"><title>Wasted: 115 credits</title></rect><text class="flow-label" x="838" y="364.42707050077985" text-anchor="start">Wasted <tspan font-weight="600">115</tspan></text></g></svg></div>
+          </section>
+          <div class="grid2">
+            <section class="panel" aria-labelledby="b-dn">
+              <div class="ph"><h4 id="b-dn">Do next</h4></div>
+              <div class="brow"><span>Starter list costs 3× your average</span><span class="btn primary">See how to cut it</span></div>
+              <div class="brow"><span>Sales VPs book at 119 credits a meeting</span><span class="btn primary">Build a lookalike list</span></div>
+              <div class="brow"><span>1,300 credits paid for contacts twice</span><span class="btn primary">Stop paying twice</span></div>
+              <div class="brow"><span>23 onboarding documents never opened</span><span class="btn primary">See it in Recovery</span></div>
+            </section>
+            <section class="panel" aria-labelledby="b-lb">
+              <div class="ph"><h4 id="b-lb">Credits per meeting, by list</h4></div>
+              <div class="lbars plain">
+                <div class="lb"><span class="nm">Sales VPs</span><span class="tr"><i style="width:9.6%;background:var(--booked)"></i><span class="avg" style="left:32%"></span></span><b>119</b></div>
+                <div class="lb"><span class="nm">Founders</span><span class="tr"><i style="width:35.1%;background:var(--series-weak)"></i><span class="avg" style="left:32%"></span></span><b>433</b></div>
+                <div class="lb"><span class="nm">Starter list</span><span class="tr"><i style="width:100%;background:var(--waste)"></i><span class="avg" style="left:32%"></span></span><b>1,233</b></div>
+              </div>
+              <p class="b-trend">Cost per meeting fell 35% in 5 weeks</p>
+              <svg class="bspark" viewBox="0 0 300 96" aria-hidden="true">
+                <line x1="6" x2="294" y1="74" y2="74" stroke="var(--line-2)" stroke-width="1"/>
+                <path d="M6,6 L78,53.2 L150,66.4 L222,52.1 L294,70" fill="none" stroke="var(--series)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="294" cy="70" r="4" fill="var(--series)" stroke="var(--panel)" stroke-width="2"/>
+                <text x="14" y="12">508</text><text x="286" y="58" text-anchor="end">329</text>
+                <text x="6" y="91">Aug 30</text><text x="294" y="91" text-anchor="end">Sep 27</text>
+              </svg>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="dir-notes">
+        <div><h4>Why it could work</h4><p>Lowest risk. Nothing you chose in v2 goes away, and the words still drop by almost half.</p></div>
+        <div><h4>Trade-off</h4><p>The flow diagram is still the biggest thing on the page, and it only gives its answer to someone who traces the bands.</p></div>
+      </div>
+    </article>
+
+    <article class="dir" id="dir-c">
+      <div class="dir-head"><h3>Value board</h3><span class="wc"><b>~50</b> words on the Overview</span></div>
+      <p class="dir-sum">The Overview shrinks to three answers: what you won, what you're owed and what you can save. Each figure opens the screen that explains it.</p>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span class="on">Overview</span><span>Charges</span><span>Recovery</span><span>Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="c-overview">
+          <div class="vboard">
+            <div class="vb"><span class="fig tnum good">$108,000</span><span class="l">won from 10,674 credits</span><span class="s">27 meetings at 395 credits each</span><span class="btn ghost">See what bought it</span></div>
+            <div class="vb"><span class="fig tnum">91</span><span class="l">credits graph8 owes you</span><span class="s">For work that produced nothing on Sep 26</span><span class="btn ghost">Claim refund</span></div>
+            <div class="vb"><span class="fig tnum">696</span><span class="l">credits a month you can stop paying</span><span class="s">Plus 2 more meetings a week if you move spend</span><span class="btn ghost">See 3 changes</span></div>
+          </div>
+          <p class="trendline"><svg class="spark" viewBox="0 0 120 32" aria-hidden="true"><path d="M4,4 L32,21.7 L60,26.7 L88,21.3 L116,28 L116,32 L4,32 Z" fill="var(--good-bg)"/><path d="M4,4 L32,21.7 L60,26.7 L88,21.3 L116,28" fill="none" stroke="var(--booked)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="116" cy="28" r="3" fill="var(--booked)"/></svg><span>Cost per meeting is <b class="good">down 35%</b> since Aug 30</span></p>
+        </div>
+      </div>
+      <div class="dir-notes">
+        <div><h4>Why it could work</h4><p>The fastest possible read. Someone glancing at the screen for two seconds leaves with the three numbers that matter.</p></div>
+        <div><h4>Trade-off</h4><p>The Overview stops telling the story of where credits went. That moves to Charges, and the list comparison moves to Optimize spend.</p></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="sec" id="screens">
+    <div class="sec-head">
+      <h2>Number first, screen by screen</h2>
+      <p>Every change is tagged by what it does. Anything tagged <span class="tag cut">Cut</span> removes something, so check those first.</p>
+    </div>
+
+    <article class="sblock" id="overview">
+      <div class="sb-head"><h3>Overview</h3><span class="wc">237 to <b>~100</b> words</span></div>
+      <p class="dir-sum">The mock is the first one above, under <a href="#dir-a">Number first</a>.</p>
+      <div class="sb-notes">
+        <ul class="changes">
+          <li><span class="tag new">New</span><span>The first line becomes a chain of three figures, 10,674 credits, 27 meetings and $108,000 won, with the rates on the arrows.</span></li>
+          <li><span class="tag cut">Cut</span><span>The lede sentence. Its numbers already appear in Do next and in the bar.</span></li>
+          <li><span class="tag cut">Cut</span><span>The five-number strip. Credits per meeting moves onto the first arrow, dollars per credit sits under the won figure, and the traced share moves to Charges.</span></li>
+          <li><span class="tag">Swap</span><span>The flow diagram becomes one bar of what the credits bought. Clicking a segment opens Charges, filtered.</span></li>
+          <li><span class="tag">Shorter</span><span>The trend chart and its toggle become one line with a sparkline.</span></li>
+          <li><span class="tag">Merged</span><span>Do next leads each row with its payoff. The two rows that lead to the same Move spend change become one, which brings the refund into the top four.</span></li>
+          <li><span class="tag">Clearer</span><span>The list chart labels its answer, cheapest and 3× average, so nobody has to read the axis.</span></li>
+        </ul>
+        <figure class="before"><img src="before-overview.jpg" alt="The Overview today, with a sentence headline, a five-number strip, the flow diagram, Do next and two charts" width="576" height="609"><figcaption>Today</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="sblock" id="charges">
+      <div class="sb-head"><h3>Charges</h3><span class="wc">308 to <b>~130</b> words</span></div>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span>Overview</span><span class="on">Charges</span><span>Recovery</span><span>Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="a-charges">
+          <div class="c-head"><h4 class="h-scr">What 10,674 credits bought</h4><span class="lab">90% matched to a contact, list or run</span></div>
+          <div class="obar big" aria-hidden="true"><span style="flex:2806;background:var(--booked)"></span><span style="flex:3327;background:var(--emailed)"></span><span style="flex:3325;background:var(--nomeet)"></span><span style="flex:860;background:var(--unused)"></span><span style="flex:242;background:var(--unknown)"></span><span style="flex:115;background:var(--waste)"></span></div>
+          <div class="chips">
+            <span class="chip on">All <b>10,674</b></span>
+            <span class="chip"><i style="background:var(--booked)"></i>Booked a meeting <b>2,806</b></span>
+            <span class="chip"><i style="background:var(--emailed)"></i>Emailed, no meeting yet <b>3,327</b></span>
+            <span class="chip"><i style="background:var(--nomeet)"></i>No meeting yet <b>3,325</b></span>
+            <span class="chip"><i style="background:var(--unused)"></i>Never used <b>860</b></span>
+            <span class="chip"><i style="background:var(--unknown)"></i>Can't tell yet <b>242</b></span>
+            <span class="chip"><i style="background:var(--waste)"></i>Wasted <b>115</b></span>
+          </div>
+          <div class="lists"><span class="on">All lists</span><span>Starter list</span><span>Founders</span><span>Sales VPs</span><span>Other lists</span></div>
+          <div class="tw">
+            <table>
+              <thead><tr><th scope="col">When</th><th scope="col">What it paid for</th><th scope="col" class="num">Credits</th><th scope="col">What it bought</th><th scope="col" title="How sure we are that the charge paid for this">Match</th></tr></thead>
+              <tbody>
+                <tr><td class="when">Aug 4 to Sep 25</td><td class="what"><b>Email finding</b>, Starter list</td><td class="num">4,800</td><td><span class="bought"><span class="mini" aria-hidden="true"><i style="flex:549;background:var(--booked)"></i><i style="flex:2331;background:var(--emailed)"></i><i style="flex:1920;background:var(--nomeet)"></i></span><span><span class="share">11%</span> booked</span></span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr><td class="when">Aug 3 to Sep 23</td><td class="what"><b>Email finding</b>, Founders</td><td class="num">2,598</td><td><span class="bought"><span class="mini" aria-hidden="true"><i style="flex:791;background:var(--booked)"></i><i style="flex:904;background:var(--emailed)"></i><i style="flex:904;background:var(--nomeet)"></i></span><span><span class="share">30%</span> booked</span></span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr><td class="when">Aug 4 to Sep 25</td><td class="what"><b>Email finding</b>, Sales VPs</td><td class="num">2,016</td><td><span class="bought"><span class="mini" aria-hidden="true"><i style="flex:1466;background:var(--booked)"></i><i style="flex:92;background:var(--emailed)"></i><i style="flex:458;background:var(--nomeet)"></i></span><span><span class="share good">73%</span> booked</span></span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr><td class="when">Sep 26</td><td class="what"><b>Onboarding research</b><span class="jobs">43 jobs</span></td><td class="num">860</td><td><span class="res"><i class="dot" style="background:var(--unused)"></i>Never used</span></td><td><span class="match likely">Likely</span></td></tr>
+                <tr><td class="when">Sep 26</td><td class="what"><b>AI enrichment</b>, Starter list<span class="jobs">2 jobs</span></td><td class="num">55</td><td><span class="res bad"><i class="dot" style="background:var(--waste)"></i>Wasted, failed on 11 of 11</span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr><td class="when">Sep 26</td><td class="what"><b>Agent replies</b><span class="jobs">2 jobs</span></td><td class="num">24</td><td><span class="res bad"><i class="dot" style="background:var(--waste)"></i>Wasted, the agent replied to a post</span></td><td><span class="match likely">Likely</span></td></tr>
+                <tr><td class="when">Sep 26</td><td class="what"><b>AI enrichment</b>, Starter list</td><td class="num">22</td><td><span class="res bad"><i class="dot" style="background:var(--waste)"></i>Wasted, failed on 1 of 1</span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr><td class="when">Sep 26</td><td class="what"><b>Email finding</b>, Starter list</td><td class="num">14</td><td><span class="res bad"><i class="dot" style="background:var(--waste)"></i>Wasted, result can't be read back</span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr class="fold"><td></td><td><button type="button" id="fold-small" data-fold="small-a" aria-expanded="false">Show 6 smaller charges</button></td><td class="num">285</td><td class="lab">Each under 1% of spend</td><td></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Landing page</b></td><td class="num">100</td><td><span class="res"><i class="dot" style="background:var(--unknown)"></i>Can't tell yet</span></td><td><span class="match likely">Likely</span></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Skill runs</b><span class="jobs">15 jobs</span></td><td class="num">93</td><td><span class="res"><i class="dot" style="background:var(--unknown)"></i>Can't tell yet</span></td><td><span class="match mixed">Mixed</span></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Email verification</b>, Starter list</td><td class="num">40</td><td><span class="res"><i class="dot" style="background:var(--nomeet)"></i>No meeting yet</span></td><td><span class="match exact">Exact</span></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Image generation</b><span class="jobs">5 jobs</span></td><td class="num">25</td><td><span class="res"><i class="dot" style="background:var(--unknown)"></i>Can't tell yet</span></td><td><span class="match likely">Likely</span></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Brand classifier</b><span class="jobs">2 jobs</span></td><td class="num">24</td><td><span class="res"><i class="dot" style="background:var(--unknown)"></i>Can't tell yet</span></td><td><span class="match likely">Likely</span></td></tr>
+                <tr class="small-a" hidden><td class="when">Sep 26</td><td class="what"><b>Email finding</b>, Test list</td><td class="num">3</td><td><span class="res"><i class="dot" style="background:var(--nomeet)"></i>No meeting yet</span></td><td><span class="match exact">Exact</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="sb-notes">
+        <ul class="changes">
+          <li><span class="tag new">New</span><span>One bar of what the credits bought sits above the filters, so the proportions show before any reading.</span></li>
+          <li><span class="tag cut">Cut</span><span>The three-sentence explanation under the headline. The Match column gets a tooltip instead.</span></li>
+          <li><span class="tag">Swap</span><span>The headline sentence becomes a plain heading, and "90% matched" sits beside it in small type.</span></li>
+          <li><span class="tag">Shorter</span><span>What it bought shows one figure per row, the share that booked (11%, 30%, 73%), with its mini bar. The full split moves to the tooltip.</span></li>
+          <li><span class="tag">Folded</span><span>Charges under 1% of spend collapse into one row. Wasted charges always stay visible. Try the "Show 6 smaller charges" row.</span></li>
+          <li><span class="tag cut">Cut</span><span>The charge count under each title, and the time of day.</span></li>
+        </ul>
+        <figure class="before"><img src="before-charges.jpg" alt="Charges today, with a sentence headline, a three-sentence explanation, chips and a 14-row table" width="576" height="701"><figcaption>Today</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="sblock" id="recovery">
+      <div class="sb-head"><h3>Recovery</h3><span class="wc">228 to <b>~50</b> words</span></div>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span>Overview</span><span>Charges</span><span class="on">Recovery</span><span>Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="a-recovery">
+          <div class="r-hero">
+            <div>
+              <div class="r-fig"><span class="fig tnum">91</span><span class="u">credits</span></div>
+              <p class="r-lab">graph8 owes you for work that produced nothing</p>
+              <ul class="r-items">
+                <li><span>AI enrichment failed on 12 of 12 records</span><b>77</b></li>
+                <li><span>Email finding returned a result graph8 can't read back</span><b>14</b></li>
+              </ul>
+              <ol class="steps" aria-label="Refund claim"><li class="done">Found 91</li><li>Requested</li><li>Refunded</li></ol>
+            </div>
+            <details class="claim">
+              <summary class="btn primary">Request a refund of 91</summary>
+              <div class="claim-body">
+                <label class="confirm" for="m-r1"><input id="m-r1" type="checkbox" checked> AI enrichment failed on 12 of 12 records (77)</label>
+                <label class="confirm" for="m-r2"><input id="m-r2" type="checkbox" checked> Email finding result can't be read back (14)</label>
+                <p class="msg">Hello graph8 support, we were charged 91 credits for work that produced nothing usable. The jobs and dates are listed below. Please refund the 91 credits.</p>
+                <label class="confirm" for="m-r3"><input id="m-r3" type="checkbox"> I've read this and want to send it</label>
+                <div class="row"><span class="btn ghost">Copy text</span><span class="btn primary off">Send to graph8 support</span></div>
+              </div>
+            </details>
+          </div>
+          <div class="also">
+            <div class="row"><span class="fig tnum">24</span><span><b>Already stopped.</b> <span class="lab">graph8's agent replied to automated posts. No charges since.</span></span></div>
+            <div class="row"><span class="fig tnum">860</span><span><b>Still yours to use.</b> <span class="lab">23 onboarding documents nobody has opened.</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sb-notes">
+        <ul class="changes">
+          <li><span class="tag new">New</span><span>"91 credits graph8 owes you" leads the page, with its two items and the refund button beside it. Press the button in the mock to see the fold.</span></li>
+          <li><span class="tag">Merged</span><span>The claim steps (Found, Requested, Refunded) sit under that figure instead of in their own panel.</span></li>
+          <li><span class="tag">Folded</span><span>The item checkboxes and the message draft open when you press Request a refund. The send confirmation stays.</span></li>
+          <li><span class="tag cut">Cut</span><span>The weekly chart. All the waste is from Sep 26, and the other seven weeks had nothing to recover.</span></li>
+          <li><span class="tag cut">Cut</span><span>The "What happened" timeline, which listed the same four items again.</span></li>
+          <li><span class="tag">Shorter</span><span>"Already stopped" and "Still usable" become two quiet lines, since neither needs you to act.</span></li>
+        </ul>
+        <figure class="before"><img src="before-recovery.jpg" alt="Recovery today, with a two-line headline, a weekly chart, three owner cards, a timeline and the refund form" width="576" height="582"><figcaption>Today</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="sblock" id="optimize">
+      <div class="sb-head"><h3>Optimize spend</h3><span class="wc">492 to <b>~175</b> words</span></div>
+      <div class="frame">
+        <div class="stb" aria-hidden="true"><span class="brand">Credit Compass</span><span class="demo">Includes demo data</span><span class="tabs"><span>Overview</span><span>Charges</span><span>Recovery</span><span class="on">Optimize spend</span></span><span class="sp"></span><span class="seg"><span class="on">Last 8 weeks</span><span>Last 30 days</span></span><span class="sync">Sync now</span></div>
+        <div class="sbody" data-count="a-optimize">
+          <div class="o-top"><h4 class="h-scr">3 changes you can make</h4><span class="lab">Each costs 0 credits and can be undone</span></div>
+          <div class="acts">
+            <article class="act">
+              <div class="act-fig"><span class="fig tnum">696</span><span class="u">credits a month</span></div>
+              <div class="act-main">
+                <h5>Stop paying twice for the same contacts</h5>
+                <div class="evbar" aria-hidden="true"><span style="flex:8129;background:var(--flow)"></span><span style="flex:1300;background:var(--waste)"></span></div>
+                <div class="evkey"><span>First time 8,129</span><span class="bad">Again within 30 days 1,300</span></div>
+                <details class="more"><summary>What changes in graph8</summary><p>Turns on Skip recently enriched and Skip existing values for the Starter list, Founders and Sales VPs pipelines.</p></details>
+              </div>
+              <div class="act-side"><label class="confirm" for="m-o1"><input id="m-o1" type="checkbox"> Yes, change 3 pipelines in graph8</label><span class="btn primary off">Turn on for 3 pipelines</span></div>
+            </article>
+            <article class="act">
+              <div class="act-fig"><span class="fig tnum">+2</span><span class="u">meetings a week</span></div>
+              <div class="act-main">
+                <h5>Move spend from the Starter list to people like your Sales VPs</h5>
+                <div class="cmp"><div><span>Starter list</span><i style="width:9.6%;background:var(--nomeet)"></i><b>0.8</b></div><div><span>Sales VPs</span><i style="width:100%;background:var(--booked)"></i><b>8.4</b></div></div>
+                <p class="cap">Meetings per 1,000 credits</p>
+                <ol class="steps2"><li><span class="n">1</span>Build a lookalike list, free</li><li><span class="n">2</span>Pause the Starter list</li></ol>
+                <details class="more"><summary>What changes in graph8</summary><p>Builds a lookalike list from graph8's free prospect search, then switches the Starter list's pipeline off so it stops running on its own. Existing data stays.</p></details>
+              </div>
+              <div class="act-side"><label class="confirm" for="m-o2"><input id="m-o2" type="checkbox"> Yes, create a new list in graph8</label><span class="btn primary off">Build lookalike list</span></div>
+            </article>
+            <article class="act">
+              <div class="act-fig"><span class="fig tnum">121</span><span class="u">credits a run</span></div>
+              <div class="act-main">
+                <h5>Skip contacts unlikely to book</h5>
+                <div class="fit" aria-hidden="true"><span style="flex:29;background:var(--booked)"></span><span style="flex:100;background:var(--maybe)"></span><span style="flex:121;background:var(--waste)"></span></div>
+                <div class="fitkey"><span>Likely 29</span><span>Maybe 100</span><span class="bad">Unlikely 121, skipped</span></div>
+                <p class="ev">Emails that don't match the company bounced 45% of the time, against 20% for the rest.</p>
+                <details class="more"><summary>What changes in graph8</summary><p>Writes a fit score to each contact and adds a run condition to the Starter list's pipeline, so graph8 skips anyone unlikely on every run.</p></details>
+              </div>
+              <div class="act-side"><label class="confirm" for="m-o3"><input id="m-o3" type="checkbox"> Yes, add the rule to the Starter list in graph8</label><span class="btn primary off">Apply to the Starter list</span></div>
+            </article>
+          </div>
+          <section class="panel planner" aria-labelledby="a-pl">
+            <div class="pl-head"><h5 id="a-pl">Plan your next enrichment</h5><div class="pl-controls"><span class="select">Starter list, 250 contacts</span><span class="seg"><span>Find emails</span><span class="on">Verify emails</span><span class="off">Find phones</span></span></div></div>
+            <div class="pl-figs">
+              <div><span class="fig tnum">~117</span><span class="u">credits, instead of 250 for every contact</span></div>
+              <div><span class="fig tnum">~19</span><span class="u">meetings, likely 14 to 25</span></div>
+            </div>
+            <div class="walk">
+              <div class="r"><span>Every contact</span><span class="track"><span style="left:0;width:100%;background:var(--nomeet)"></span></span><b>250</b></div>
+              <div class="r"><span>No email to verify</span><span class="track"><span class="cut" style="left:95.2%;width:4.8%"></span></span><b class="muted">−12</b></div>
+              <div class="r"><span>Unlikely to book, skipped</span><span class="track"><span class="skip" style="left:46.8%;width:48.4%"></span></span><b class="muted">−121</b></div>
+              <div class="r est"><span>Estimate</span><span class="track"><span style="left:0;width:46.8%;background:var(--accent)"></span></span><b>~117</b></div>
+            </div>
+            <p class="lab">Estimate only. graph8 has no email-verification template for this list.</p>
+          </section>
+          <details class="more undone"><summary>Changes you've made: 2 undone</summary><p>Skip recently enriched on Sales VPs and on Founders, both undone Sep 27. No runs since.</p></details>
+        </div>
+      </div>
+      <div class="sb-notes">
+        <ul class="changes">
+          <li><span class="tag">Swap</span><span>The headline sentence becomes "3 changes you can make". The first card's figure carries the saving.</span></li>
+          <li><span class="tag">Bigger</span><span>Each change leads with its payoff (696 a month, +2 a week, 121 a run) in the largest type on the card.</span></li>
+          <li><span class="tag">Shorter</span><span>One line of evidence per card at most. The chart carries the rest.</span></li>
+          <li><span class="tag">Folded</span><span>"In graph8: …" moves into "What changes in graph8". The checkbox still names the exact change.</span></li>
+          <li><span class="tag cut">Cut</span><span>"High confidence" on every card. It shows only when confidence is lower.</span></li>
+          <li><span class="tag">Shorter</span><span>The planner's sentence becomes two figures, about 117 credits and about 19 meetings.</span></li>
+          <li><span class="tag cut">Cut</span><span>"Who gets skipped" in the planner, which repeats the Skip unlikely card.</span></li>
+          <li><span class="tag">Folded</span><span>"Changes you've made" shows active changes. Undone ones collapse into one line.</span></li>
+        </ul>
+        <figure class="before"><img src="before-optimize.jpg" alt="Optimize spend today, with a two-line headline, three long action cards, a changes list and the planner" width="576" height="854"><figcaption>Today</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="sblock" id="across">
+      <div class="sb-head"><h3>Across every screen</h3></div>
+      <ul class="changes">
+        <li><span class="tag new">New</span><span>One figure style for every number that matters. It is Archivo, the font you already load, set wider and heavier.</span></li>
+        <li><span class="tag">Clearer</span><span>Colour carries meaning and nothing else. Green is gained, red is wasted, amber is unused and blue is clickable.</span></li>
+        <li><span class="tag">Clearer</span><span>Fewer boxes. The lead figure sits on the page, and panels only hold lists and charts.</span></li>
+        <li><span class="tag">Swap</span><span>Numbers in tables and charts drop the monospace face for tabular Archivo.</span></li>
+        <li><span class="tag">Shorter</span><span>Labels stay under six words. Anything longer moves into a tooltip or a fold.</span></li>
+        <li><span class="tag new">New</span><span>The header turns translucent, so the page scrolls under it.</span></li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="sec" id="same">
+    <div class="sec-head"><h2>What stays the same</h2></div>
+    <ul class="plain">
+      <li>The light and dark colours you just restored.</li>
+      <li>Archivo and IBM Plex Sans.</li>
+      <li>Every number, and the rules that produce it.</li>
+      <li>Every change to graph8, with its confirmation and undo.</li>
+      <li>The period switch, Sync now, the demo-data pill and the phone layout.</li>
+    </ul>
+  </section>
+
+  <section class="sec" id="check">
+    <div class="sec-head"><h2>Worth checking before the demo</h2></div>
+    <ul class="plain">
+      <li>The planner forecasts about 19 meetings from verifying 117 Starter list contacts, roughly 6 credits a meeting. The same page calls the Starter list your costliest at 1,233 a meeting. The forecast uses a per-contact rate from the simulated contacts, so a judge may ask about the gap.</li>
+      <li>The trend figure moves during the day because its weeks count back from now. It read down 32% at 13:26 and down 35% at 14:31 UTC. Quote it from the screen, not from the script.</li>
+    </ul>
+  </section>
+
+  <section class="sec" id="call">
+    <div class="sec-head"><h2>Your call</h2></div>
+    <ol class="calls">
+      <li>Which direction?<span>Number first, Trim in place or Value board.</span></li>
+      <li>Any cut you want to keep?<span>The flow diagram, Recovery's weekly chart and timeline, the trend toggle, or the small charges on Charges.</span></li>
+      <li>Wider, heavier figures?<span>Yes or no.</span></li>
+    </ol>
+    <p class="sign">Reply in the terminal. Your answers become the spec, then the plan.</p>
+  </section>
+</main>
+
+<script>
+document.querySelectorAll("[data-fold]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var open = b.getAttribute("aria-expanded") === "true";
+    document.querySelectorAll("." + b.dataset.fold).forEach(function (r) { r.hidden = open; });
+    b.setAttribute("aria-expanded", String(!open));
+    b.textContent = open ? "Show 6 smaller charges" : "Hide 6 smaller charges";
+  });
+});
+</script>
