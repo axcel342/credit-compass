@@ -3,26 +3,27 @@ import type { G8Caller } from "../g8/client";
 import { g8Caller } from "../g8/client";
 import { OPS } from "../g8/ops";
 import { RecordStore } from "../store/records";
-import { valuesToCharge, valuesToFinding, valuesToOutcome, valuesToRun, valuesToStat } from "../store/mappers";
+import { valuesToAction, valuesToCharge, valuesToFinding, valuesToOutcome, valuesToRun, valuesToStat } from "../store/mappers";
 import { coverage } from "../domain/attribution";
 import { bucketTotals, meetingsByContact, outcomeBucket, type BucketContext } from "../domain/buckets";
 import { listNamesFrom } from "../domain/names";
 import { inWindow, periodWindow } from "../domain/period";
-import type { AttributedCharge, Finding, Outcome, OutcomeBucket, Period, Run, Stat } from "../domain/types";
+import type { ActionRecord, AttributedCharge, Finding, Outcome, OutcomeBucket, Period, Run, Stat } from "../domain/types";
 
 export interface ListInfo { id: number; title: string; total: number }
 export interface DashboardData {
-  charges: AttributedCharge[]; outcomes: Outcome[]; stats: Stat[]; findings: Finding[]; runs: Run[]; lists: ListInfo[];
+  charges: AttributedCharge[]; outcomes: Outcome[]; stats: Stat[]; findings: Finding[]; runs: Run[]; actions: ActionRecord[]; lists: ListInfo[];
   listNames: Map<string, string>; hasDemoData: boolean; now: string;
   /** All-time coverage and waste, kept for the MCP tools and the recap. */
   coverage: ReturnType<typeof coverage>; waste: number;
 }
 
 export const loadDashboardData = cache(async (c: G8Caller = g8Caller): Promise<DashboardData> => {
-  const [ch, oc, st, fi, ru] = await Promise.all(["roi_charge", "roi_outcome", "roi_stat", "roi_finding", "roi_run"].map((slug) => new RecordStore(c, slug).list()));
+  const [ch, oc, st, fi, ru, ac] = await Promise.all(["roi_charge", "roi_outcome", "roi_stat", "roi_finding", "roi_run", "roi_action"].map((slug) => new RecordStore(c, slug).list()));
   const lists = await c.call<ListInfo[]>(OPS.listLists);
   const charges = ch.map((r) => valuesToCharge(r.values)), outcomes = oc.map((r) => valuesToOutcome(r.values));
   return { charges, outcomes, stats: st.map((r) => valuesToStat(r.values)), findings: fi.map((r) => valuesToFinding(r.values)), runs: ru.map((r) => valuesToRun(r.values)),
+    actions: ac.map((r) => valuesToAction(r.values)),
     lists, listNames: listNamesFrom(lists), hasDemoData: charges.some((x) => x.simulated) || outcomes.some((o) => o.simulated), now: new Date().toISOString(),
     coverage: coverage(charges), waste: charges.filter((x) => x.isWaste).reduce((s, x) => s + x.credits, 0) };
 });

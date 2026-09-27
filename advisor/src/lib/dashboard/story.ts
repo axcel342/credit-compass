@@ -30,3 +30,17 @@ export function chargesHeadline(p: { traced: number; total: number; periodLabel:
   if (p.total <= 0) return `No charges in ${p.periodLabel}.`;
   return `${Math.round((p.traced / p.total) * 100)}% of your credits trace back to a contact, list or run.`;
 }
+
+export function recoveryHeadline(p: { waste: number; refundable: number; periodLabel: string }): string {
+  if (p.waste <= 0) return `Nothing was wasted in ${p.periodLabel}.`;
+  return p.refundable > 0 ? `${n(p.waste)} credits bought nothing. graph8 owes you ${n(p.refundable)} of them.` : `${n(p.waste)} credits bought nothing.`;
+}
+
+export function recoveryLede(wasteTimes: string[]): string | null {
+  if (!wasteTimes.length) return null;
+  const day = (iso: string) => iso.slice(0, 10);
+  const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  const days = [...new Set(wasteTimes.map(day))].sort();
+  const when = days.length === 1 ? `All of it on ${fmt(days[0])}.` : `Spread over ${days.length} days, ${fmt(days[0])} to ${fmt(days.at(-1)!)}.`;
+  return `${when} Click a week to see what happened in it.`;
+}

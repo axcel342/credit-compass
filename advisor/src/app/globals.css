@@ -146,15 +146,6 @@ td.num,th.num{text-align:right}
 .result{font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
 
-/* recovery */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.rcard{border:1px solid var(--line-2);border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start}
-.rcard .amt{font-family:var(--f-display);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
-.rcard p{font-size:13.5px;color:var(--ink-2)}
-.draft{border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.draft-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--panel-2);border-bottom:1px solid var(--line-2);font-size:13px}
-.draft textarea{display:block;width:100%;min-height:190px;border:0;resize:vertical;padding:14px;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;background:var(--panel);color:var(--ink)}
-.draft-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line-2)}
 .toast{font-size:12.5px;color:var(--ink-2)}
 
 /* pre-spend dialog */
@@ -176,7 +167,6 @@ code,.code{font-family:var(--f-mono);font-size:12.5px;background:var(--panel-2);
 pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.6}
 .dialog-foot{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--line-2);background:var(--panel-2)}
 .side-note{display:grid;gap:10px;align-content:start}
-.side-note .rcard{background:var(--panel)}
 
 /* recap */
 .chat{max-width:680px;display:grid;gap:12px}
@@ -275,3 +265,28 @@ a.btn{text-decoration:none;display:inline-block}
 .acts-table details li b{text-align:right;font-variant-numeric:tabular-nums}
 .acts-table td{position:relative}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* recovery */
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px;padding:24px 4px 0}
+.bars .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;position:relative;text-decoration:none;border-radius:4px 4px 0 0}
+.bars .b{display:block;background:var(--flow);border-radius:3px 3px 0 0}.bars .b.waste{background:var(--waste);border-radius:3px 3px 0 0}
+.bars .bar[aria-current="true"]{outline:2px solid var(--ink);outline-offset:3px}
+.bars .bar.dim{opacity:.4}
+.bars .wl{position:absolute;top:-20px;left:-10px;right:-10px;text-align:center;font-size:12px;font-weight:600;color:var(--waste)}
+.xl{display:flex;gap:10px;padding:6px 4px 0;font-size:12px;color:var(--muted)}.xl span{flex:1;text-align:center}
+.owners{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){.owners{grid-template-columns:1fr}}
+.owner{background:var(--panel);border:1px solid var(--line);border-top:4px solid;border-radius:10px;padding:16px 18px;display:grid;gap:6px;align-content:start}
+.owner .big{font:700 30px var(--f-display);font-variant-numeric:tabular-nums}
+.owner .item{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line-2);padding:8px 0;font-size:14px}
+.owner .item small{display:block;color:var(--muted);font-size:12.5px}
+.owner .item.dim{opacity:.35}
+.tl{display:grid;grid-template-columns:52px 1fr 56px;gap:12px;border-top:1px solid var(--line-2);padding:10px 0;font-size:14px}
+.tl:first-of-type{border-top:0}.tl b{text-align:right;font-variant-numeric:tabular-nums}.tl b.bad{color:var(--waste)}
+.tracker{list-style:none;margin:0 0 12px;padding:0;display:flex;gap:10px}
+.tracker li{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.tracker li[aria-current="step"]{box-shadow:inset 0 0 0 1.5px var(--ink);border-color:var(--ink)}
+.tracker b{display:block;font:700 20px var(--f-display)}
+.refund{display:grid;gap:10px}.refund fieldset{border:0;padding:0;margin:0;display:grid;gap:4px;font-size:14px}
+.refund textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:8px;padding:12px;font:13.5px/1.55 var(--f-body);background:var(--panel);color:var(--ink);resize:vertical}
+.refund .foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center}

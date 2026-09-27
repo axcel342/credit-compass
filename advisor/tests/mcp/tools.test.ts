@@ -10,7 +10,7 @@ const segment8w: Stat = { period: "8w", dimension: "segment", value: "Vice Presi
   contactsReached: 212, costPerMeeting: 124, costPerDeal: null, vsAvgPct: -62, evidenceN: 17, confidence: "high", simulated: true, computedAt: "2026-10-04T00:00:00Z" };
 const orgStat = (period: string, cpm: number): Stat => ({ period, dimension: "org", value: "all", credits: 3000, creditsExact: 3000, meetings: 10, deals: 0, wonValue: 0,
   contactsReached: 120, costPerMeeting: cpm, costPerDeal: null, vsAvgPct: 0, evidenceN: 10, confidence: "high", simulated: true, computedAt: "2026-10-04T00:00:00Z" });
-const d: DashboardData = { charges, outcomes: [], lists: [], listNames: new Map(), hasDemoData: true, runs: [], coverage: coverage(charges), waste: 115, now: "2026-10-04T00:00:00Z",
+const d: DashboardData = { charges, outcomes: [], lists: [], listNames: new Map(), hasDemoData: true, runs: [], actions: [], coverage: coverage(charges), waste: 115, now: "2026-10-04T00:00:00Z",
   stats: [orgStat("30d", 900), orgStat("8w", 300), { ...segment8w, period: "30d", costPerMeeting: 999, vsAvgPct: 10 }, segment8w],
   findings: [] };
 

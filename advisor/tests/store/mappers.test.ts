@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { attributeCharges } from "@/lib/domain/attribution";
-import { chargeToValues, valuesToCharge, findingToValues, valuesToFinding, runToValues, valuesToRun, ledgerFromCharge, contactToValues, valuesToContact } from "@/lib/store/mappers";
-import type { ContactCacheRow } from "@/lib/domain/types";
+import { chargeToValues, valuesToCharge, findingToValues, valuesToFinding, runToValues, valuesToRun, ledgerFromCharge, contactToValues, valuesToContact, actionToValues, valuesToAction } from "@/lib/store/mappers";
+import type { ActionRecord, ContactCacheRow } from "@/lib/domain/types";
 import { loadDesignInput } from "../helpers/design-fixture";
 
 const input = loadDesignInput();
@@ -30,5 +30,13 @@ describe("contact cache mappers", () => {
     const r: ContactCacheRow = { contactId: 66, listIds: [2, 13], hasEmail: true, consistency: "flagged", segmentKey: "a|b|c|d", fit: "low", fitLevel: null, syncedAt: "2026-09-27T00:00:00Z" };
     expect(valuesToContact(contactToValues(r))).toEqual(r);
     expect(contactToValues(r).ext_id).toBe("66");
+  });
+});
+
+describe("action mappers", () => {
+  it("round-trips an action record", () => {
+    const a: ActionRecord = { extId: "repeat_skip:15", kind: "repeat_skip", listId: 15, pipelineId: "p1", appliedAt: "2026-09-27T10:00:00Z", status: "applied",
+      previous: { enabled: true, steps: [] }, detail: { credits: 300 }, simulated: false };
+    expect(valuesToAction(actionToValues(a))).toEqual(a);
   });
 });

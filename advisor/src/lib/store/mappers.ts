@@ -1,4 +1,4 @@
-import type { AttributedCharge, ContactCacheRow, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
+import type { ActionRecord, AttributedCharge, ContactCacheRow, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
 
 type V = Record<string, unknown>;
 const s = (v: unknown): string | null => (v === null || v === undefined || v === "" ? null : String(v));
@@ -78,4 +78,13 @@ export function contactToValues(r: ContactCacheRow): V {
 export function valuesToContact(v: V): ContactCacheRow {
   return { contactId: Number(v.contact_id), listIds: json<number[]>(v.list_ids, []), hasEmail: bool(v.has_email), consistency: v.consistency as ContactCacheRow["consistency"],
     segmentKey: String(v.segment_key ?? ""), fit: v.fit as ContactCacheRow["fit"], fitLevel: (s(v.fit_level) as ContactCacheRow["fitLevel"]), syncedAt: String(v.synced_at) };
+}
+
+export function actionToValues(a: ActionRecord): V {
+  return { ext_id: a.extId, simulated: a.simulated, kind: a.kind, list_id: a.listId, pipeline_id: a.pipelineId, applied_at: a.appliedAt, status: a.status,
+    previous: JSON.stringify(a.previous ?? null), detail: JSON.stringify(a.detail ?? {}) };
+}
+export function valuesToAction(v: V): ActionRecord {
+  return { extId: String(v.ext_id), kind: v.kind as ActionRecord["kind"], listId: num(v.list_id), pipelineId: s(v.pipeline_id), appliedAt: String(v.applied_at),
+    status: v.status as ActionRecord["status"], previous: json<unknown>(v.previous, null), detail: json<Record<string, unknown>>(v.detail, {}), simulated: bool(v.simulated) };
 }

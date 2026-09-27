@@ -71,3 +71,9 @@ export interface ContactCacheRow {
   contactId: number; listIds: number[]; hasEmail: boolean; consistency: "ok" | "flagged" | "unknown"; segmentKey: string;
   fit: "high" | "medium" | "low" | "unknown"; fitLevel: "segment" | "role" | "seniority" | "list" | "org" | null; syncedAt: string;
 }
+
+export type ActionKind = "repeat_skip" | "lookalike" | "pause_list" | "guardrail" | "refund_request";
+export interface ActionRecord {
+  extId: string; kind: ActionKind; listId: number | null; pipelineId: string | null; appliedAt: string;
+  status: "applied" | "undone" | "requested" | "refunded"; previous: unknown; detail: Record<string, unknown>; simulated: boolean;
+}
