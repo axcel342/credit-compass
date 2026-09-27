@@ -1,4 +1,4 @@
-import type { AttributedCharge, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
+import type { AttributedCharge, ContactCacheRow, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
 
 type V = Record<string, unknown>;
 const s = (v: unknown): string | null => (v === null || v === undefined || v === "" ? null : String(v));
@@ -69,4 +69,13 @@ export function valuesToFinding(v: V): Finding {
     creditsAtStake: Number(v.credits_at_stake), confidence: v.confidence as Finding["confidence"], status: v.status as Finding["status"],
     snoozedUntil: s(v.snoozed_until), dismissCount: Number(v.dismiss_count ?? 0), action: s(v.action), actionPayload: json(v.action_payload, null),
     firstSeen: String(v.first_seen), lastSeen: String(v.last_seen), lastNotifiedStake: num(v.last_notified_stake), inRecap: bool(v.in_recap), simulated: bool(v.simulated) };
+}
+
+export function contactToValues(r: ContactCacheRow): V {
+  return { ext_id: String(r.contactId), simulated: false, contact_id: r.contactId, list_ids: JSON.stringify(r.listIds), has_email: r.hasEmail, consistency: r.consistency,
+    segment_key: r.segmentKey, fit: r.fit, fit_level: r.fitLevel, synced_at: r.syncedAt };
+}
+export function valuesToContact(v: V): ContactCacheRow {
+  return { contactId: Number(v.contact_id), listIds: json<number[]>(v.list_ids, []), hasEmail: bool(v.has_email), consistency: v.consistency as ContactCacheRow["consistency"],
+    segmentKey: String(v.segment_key ?? ""), fit: v.fit as ContactCacheRow["fit"], fitLevel: (s(v.fit_level) as ContactCacheRow["fitLevel"]), syncedAt: String(v.synced_at) };
 }

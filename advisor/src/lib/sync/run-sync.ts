@@ -4,11 +4,12 @@ import type { ContactInfo, Run, Stat } from "../domain/types";
 import { attributeCharges, coverage } from "../domain/attribution";
 import { onboardingWindow } from "../domain/runs";
 import { computeStats } from "../domain/metrics";
+import { classifyWithBackoff, rateTables } from "../domain/fit";
 import { listNamesFrom } from "../domain/names";
 import { generateFindings, mergeFindings } from "../domain/findings";
 import { toIso, toMs } from "../domain/time";
 import { RecordStore } from "../store/records";
-import { chargeToValues, findingToValues, ledgerFromCharge, outcomeToValues, runToValues, statToValues, valuesToCharge, valuesToFinding, valuesToOutcome, valuesToRun } from "../store/mappers";
+import { chargeToValues, contactToValues, findingToValues, ledgerFromCharge, outcomeToValues, runToValues, statToValues, valuesToCharge, valuesToContact, valuesToFinding, valuesToOutcome, valuesToRun } from "../store/mappers";
 import { fetchLedgerSince } from "./ledger";
 import { fetchOnboardingAnchors, fetchUnusedDocs, pollPipelineRuns } from "./capture";
 import { loadContactIndex } from "./contacts";
@@ -59,6 +60,17 @@ export async function runSync(deps: { c: G8Caller; now?: string; contacts?: Map<
       const byService = computeStats({ ...base, dimension: "service" });
       for (const st of [...byList, ...bySegment.slice(1), ...byService.slice(1)]) await s.stats.upsert(statToValues(st));
       if (period === "8w") { byList8w = byList; bySegment8w = bySegment; }
+    }
+
+    const tables = rateTables(charges, outcomes, contacts);
+    const cache = new RecordStore(deps.c, "roi_contact");
+    const cached = new Map((await cache.list()).map((r) => [String(r.values.ext_id), valuesToContact(r.values)]));
+    for (const info of contacts.values()) {
+      const { fit, level } = classifyWithBackoff(info, tables);
+      const row = { contactId: info.contactId, listIds: info.listIds, hasEmail: !!info.email, consistency: info.consistency, segmentKey: info.segmentKey, fit, fitLevel: level, syncedAt: now };
+      const prev = cached.get(String(info.contactId));
+      const same = prev && JSON.stringify({ ...prev, syncedAt: "" }) === JSON.stringify({ ...row, syncedAt: "" });
+      if (!same) await cache.upsert(contactToValues(row));
     }
 
     const onboardingCredits = real.filter((ch) => ch.method === "time_window" && ch.service === "studio_global").reduce((a, ch) => a + ch.credits, 0);

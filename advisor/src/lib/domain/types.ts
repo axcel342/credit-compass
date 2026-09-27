@@ -66,3 +66,8 @@ export interface ContactInfo {
 
 export type OutcomeBucket = "booked" | "nomeet" | "unused" | "unknown" | "waste";
 export type Period = "8w" | "30d";
+
+export interface ContactCacheRow {
+  contactId: number; listIds: number[]; hasEmail: boolean; consistency: "ok" | "flagged" | "unknown"; segmentKey: string;
+  fit: "high" | "medium" | "low" | "unknown"; fitLevel: "segment" | "role" | "seniority" | "list" | "org" | null; syncedAt: string;
+}
