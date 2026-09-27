@@ -2,9 +2,9 @@
 import { useActionState, useState } from "react";
 import type { PlannedAction } from "@/lib/domain/actions";
 import { applyAction } from "@/app/(dash)/optimize/apply";
+import { n } from "@/lib/dashboard/story";
 
 type Button = NonNullable<PlannedAction["button"]>;
-const fmt = (v: number) => Math.round(v).toLocaleString("en-US");
 
 function ApplyForm({ button, act, pending }: { button: Button; act: (f: FormData) => void; pending: boolean }) {
   const [ok, setOk] = useState(false);
@@ -20,7 +20,7 @@ function Chart({ a }: { a: PlannedAction }) {
   if (a.id === "repeat" && a.chart.length === 2) return (
     <>
       <div className="oc-bar" aria-hidden="true">{a.chart.map((x) => <span key={x.label} style={{ flex: x.value, background: x.tone }} />)}</div>
-      <div className="oc-key"><span>First time {fmt(a.chart[0].value)}</span><span className="bad-ink">Again within 30 days {fmt(a.chart[1].value)}</span></div>
+      <div className="oc-key"><span>First time {n(a.chart[0].value)}</span><span className="bad-ink">Again within 30 days {n(a.chart[1].value)}</span></div>
     </>);
   if (a.id === "move-spend") {
     const max = Math.max(1, ...a.chart.map((x) => x.value));
@@ -33,7 +33,7 @@ function Chart({ a }: { a: PlannedAction }) {
   if (a.id === "skip-unlikely") return (
     <>
       <div className="oc-bar" aria-hidden="true">{a.chart.map((x) => <span key={x.label} style={{ flex: x.value, background: x.tone }} />)}</div>
-      <div className="oc-key">{a.chart.map((x) => <span key={x.label} className={x.label === "Unlikely" ? "bad-ink" : undefined}>{x.label} {fmt(x.value)}{x.label === "Unlikely" ? ", skipped" : ""}</span>)}</div>
+      <div className="oc-key">{a.chart.map((x) => <span key={x.label} className={x.label === "Unlikely" ? "bad-ink" : undefined}>{x.label} {n(x.value)}{x.label === "Unlikely" ? ", skipped" : ""}</span>)}</div>
     </>);
   return null;
 }
