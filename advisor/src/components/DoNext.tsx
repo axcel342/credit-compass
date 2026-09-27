@@ -6,7 +6,7 @@ export function DoNext({ items }: { items: DoNextItem[] }) {
       <div className="ph"><h2 id="donext-h">Do next</h2><span className="small">Biggest first</span></div>
       {items.length === 0 && <p className="small">Nothing needs doing right now.</p>}
       {items.map((x) => (
-        <div className="todo" key={x.id}><div><p>{x.text}</p><span className="small">{x.sub}</span></div><Link className="btn primary" href={x.href}>{x.label}</Link></div>))}
+        <div className="todo" key={x.id}><div><p>{x.text}</p><span className="small">{x.figure} {x.unit}</span></div><Link className="btn primary" href={x.href}>{x.label}</Link></div>))}
     </section>
   );
 }
