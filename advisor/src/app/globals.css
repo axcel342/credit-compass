@@ -5,7 +5,7 @@
   --accent:#7d2df3; --accent-ink:#ffffff; --accent-soft:#241539; --accent-fg:#b794f6;
   --series:#a6abb2; --series-soft:rgba(166,171,178,.10); --series-strong:#d4d7db; --series-weak:#5c6169;
   --good:#1faa76; --warn:#f0a431; --crit:#f25555;
-  --booked:#1faa76; --nomeet:#80868f; --unused:#f0a431; --unknown:#4b4f56; --waste:#f25555; --flow:#6b7079; --maybe:#6ee7b7;
+  --booked:#1faa76; --emailed:#6ee7b7; --nomeet:#80868f; --unused:#f0a431; --unknown:#4b4f56; --waste:#f25555; --flow:#6b7079; --maybe:#6ee7b7;
   --good-bg:#11281f; --warn-bg:#2c2210; --crit-bg:#321a1a;
   --good-ink:#6ee7b7; --bad-ink:#f87171;
   --hatch:rgba(166,171,178,.18);

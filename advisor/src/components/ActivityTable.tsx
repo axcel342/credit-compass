@@ -7,7 +7,7 @@ const when = (a: Activity) => {
   const t = new Date(a.from).toISOString().slice(11, 16);
   return a.from.slice(0, 10) === a.to.slice(0, 10) ? `${d(a.from)}, ${t}` : `${d(a.from)} to ${d(a.to)}`;
 };
-const SHORT: Record<string, string> = { booked: "booked", nomeet: "no meeting yet", unused: "never used", unknown: "can't tell yet", waste: "wasted" };
+const SHORT: Record<string, string> = { booked: "booked", emailed: "emailed, no meeting yet", nomeet: "no meeting yet", unused: "never used", unknown: "can't tell yet", waste: "wasted" };
 
 export function ActivityTable({ rows }: { rows: Activity[] }) {
   if (!rows.length) return <p className="small">No charges match this filter.</p>;

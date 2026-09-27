@@ -47,7 +47,7 @@ export function groupActivities(charges: AttributedCharge[], runs: Run[], bucket
   const out: Activity[] = [];
   for (const [key, xs] of groups) {
     const sorted = [...xs].sort((a, b) => toMs(a.chargedAt) - toMs(b.chargedAt));
-    const buckets: Record<OutcomeBucket, number> = { booked: 0, nomeet: 0, unused: 0, unknown: 0, waste: 0 };
+    const buckets: Record<OutcomeBucket, number> = { booked: 0, emailed: 0, nomeet: 0, unused: 0, unknown: 0, waste: 0 };
     for (const c of xs) buckets[bucketOf(c)] += c.credits;
     const credits = xs.reduce((s, c) => s + c.credits, 0);
     const kids = new Map<string, AttributedCharge[]>();

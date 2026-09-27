@@ -5,7 +5,7 @@ import { OPS } from "../g8/ops";
 import { RecordStore } from "../store/records";
 import { valuesToAction, valuesToCharge, valuesToFinding, valuesToOutcome, valuesToRun, valuesToStat } from "../store/mappers";
 import { coverage } from "../domain/attribution";
-import { bucketTotals, meetingsByContact, outcomeBucket, type BucketContext } from "../domain/buckets";
+import { bucketTotals, emailsByContact, meetingsByContact, outcomeBucket, type BucketContext } from "../domain/buckets";
 import { listNamesFrom } from "../domain/names";
 import { inWindow, periodWindow } from "../domain/period";
 import type { ActionRecord, AttributedCharge, Finding, Outcome, OutcomeBucket, Period, Run, Stat } from "../domain/types";
@@ -38,7 +38,7 @@ export function periodView(d: DashboardData, period: Period): PeriodView {
   const window = periodWindow(period, d.now);
   const charges = d.charges.filter((c) => inWindow(c.chargedAt, window));
   const outcomes = d.outcomes.filter((o) => inWindow(o.occurredAt, window));
-  const bucketCtx: BucketContext = { meetingsByContact: meetingsByContact(d.outcomes),
+  const bucketCtx: BucketContext = { meetingsByContact: meetingsByContact(d.outcomes), emailedByContact: emailsByContact(d.outcomes),
     onboardingUnused: d.findings.some((f) => f.kind === "unused" && f.extId.startsWith("unused|studio_docs") && f.status !== "applied") };
   const stats = d.stats.filter((s) => s.period === period);
   return { period, window, charges, outcomes, stats, org: stats.find((s) => s.dimension === "org"), coverage: coverage(charges),

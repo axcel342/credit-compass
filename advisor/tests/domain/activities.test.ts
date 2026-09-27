@@ -8,7 +8,7 @@ const c = (id: string, p: Partial<AttributedCharge>): AttributedCharge => ({
   tokensIn: null, tokensOut: null, description: null, method: "advisor", runExtId: null, listId: null, contactId: null, segmentKey: null,
   explanation: "x", result: "success", isWaste: false, wasteReason: null, simulated: false, ...p });
 const names = new Map([["15", "Sales VPs"], ["2", "Starter list"]]);
-const ctx = { meetingsByContact: new Map([[1, [Date.parse("2026-10-01T00:00:00Z")]]]), onboardingUnused: true };
+const ctx = { meetingsByContact: new Map([[1, [Date.parse("2026-10-01T00:00:00Z")]]]), emailedByContact: new Map<number, number[]>(), onboardingUnused: true };
 const bucketOf = (x: AttributedCharge) => outcomeBucket(x, ctx);
 const runs: Run[] = [
   { extId: "job-a", kind: "ai_enrichment_job", actionName: "AI enrichment", startedAt: null, completedAt: null, status: "failed", source: "poll", recordsOk: 0, recordsFailed: 10 },
