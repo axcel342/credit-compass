@@ -228,3 +228,32 @@ html{scroll-behavior:smooth}
 .ph h2{font:600 15px var(--f-display)}
 .small{font-size:12.5px;color:var(--muted)}
 @media (max-width:760px){.topbar{gap:8px 12px}.topbar .spacer{display:none}}
+
+/* overview */
+main{display:grid;gap:16px}
+.strip{display:flex;flex-wrap:wrap;gap:12px 40px;margin:10px 0 0}
+.strip div{display:flex;flex-direction:column-reverse}
+.strip dt{font-size:13px;color:var(--muted)}
+.strip dd{margin:0;font:700 24px var(--f-display);font-variant-numeric:tabular-nums}
+.strip dd.bad{color:var(--waste)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.flow{display:block;width:100%;height:auto;font:12px var(--f-body);fill:var(--ink)}
+.flow .flow-heads text{font-size:11px;fill:var(--muted)}
+.flow .flow-label{paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.flow .band{fill-opacity:.35;transition:fill-opacity .15s}.flow .band.outcome{fill-opacity:.5}
+.flow a:hover .band,.flow a:focus .band{fill-opacity:.85}
+.flow a:focus-visible .band{stroke:var(--ink);stroke-width:1}
+.flow a:focus-visible rect{stroke:var(--ink);stroke-width:2}
+.flow a:focus-visible .flow-label{text-decoration:underline}
+.flow-mobile{display:none}
+@media (max-width:700px){.flow{display:none}.flow-mobile{display:block}}
+.stack-bar{display:flex;height:18px;border-radius:5px;overflow:hidden;margin-bottom:10px}
+.flow-mobile ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.flow-mobile li{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.flow-mobile a{color:var(--ink);text-decoration:none}
+.todo{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;border-top:1px solid var(--line-2);padding:12px 0}
+.todo:first-of-type{border-top:0;padding-top:2px}
+.todo p{margin:0}
+a.btn{text-decoration:none;display:inline-block}
+@media (prefers-reduced-motion: reduce){.flow .band{transition:none}}
