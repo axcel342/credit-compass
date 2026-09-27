@@ -65,3 +65,25 @@ describe("cost per meeting bar colour", () => {
     expect(cpmBarColor(900, 124, null)).toBe("var(--series-weak)");
   });
 });
+
+import { valueChain, perCredit } from "@/lib/dashboard/story";
+describe("valueChain", () => {
+  const base = { total: 10674.35, meetings: 27, won: 9, wonValue: 108000, periodLabel: "the last 8 weeks" };
+  it("links credits to meetings to won value, with the rates on the arrows", () =>
+    expect(valueChain(base)).toEqual({
+      nodes: [{ figure: "10,674", label: "credits spent", tone: "in" }, { figure: "27", label: "meetings booked", tone: "mid" }, { figure: "$108,000", label: "won, $10 per credit", tone: "out" }],
+      links: ["395 per meeting", "9 deals won"],
+      aria: "10,674 credits bought 27 meetings, 395 per meeting. 9 won deals worth $108,000, $10 per credit." }));
+  it("stops at meetings when no deal was won or deals have no amounts", () => {
+    expect(valueChain({ ...base, won: 0, wonValue: 0 })).toMatchObject({ links: ["395 per meeting"], nodes: [{ tone: "in" }, { tone: "mid" }] });
+    expect(valueChain({ ...base, won: 3, wonValue: 0 })).toMatchObject({ links: ["395 per meeting"] });
+  });
+  it("shows only the spend when nothing was booked", () =>
+    expect(valueChain({ ...base, meetings: 0, won: 0, wonValue: 0 })).toEqual({ nodes: [{ figure: "10,674", label: "credits spent", tone: "in" }], links: [],
+      aria: "10,674 credits spent in the last 8 weeks, and no meetings booked yet." }));
+  it("says so when nothing was spent", () => expect(valueChain({ ...base, total: 0 })).toEqual({ empty: "No credits spent in the last 8 weeks." }));
+  it("uses the singular for one meeting and one deal", () =>
+    expect(valueChain({ total: 500, meetings: 1, won: 1, wonValue: 2000, periodLabel: "the last 30 days" })).toMatchObject({
+      nodes: [{ figure: "500" }, { figure: "1", label: "meeting booked" }, { figure: "$2,000", label: "won, $4.00 per credit" }], links: ["500 per meeting", "1 deal won"] }));
+  it("shows whole dollars per credit from $10 and cents below", () => { expect(perCredit(10.118)).toBe("$10"); expect(perCredit(4.504)).toBe("$4.50"); });
+});

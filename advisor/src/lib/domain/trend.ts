@@ -56,3 +56,12 @@ export function firstTouchCohorts(charges: AttributedCharge[], outcomes: Outcome
   for (const c of cohorts) c.costPerMeeting = c.meetings > 0 ? c.credits / c.meetings : null;
   return cohorts;
 }
+
+export interface TrendLineData { pct: number; direction: "down" | "up"; since: string; values: number[] }
+
+export function trendLine(points: TrendPoint[]): TrendLineData | null {
+  const c = trendChange(points);
+  if (!c || c.pct === 0) return null;
+  const v = points.filter((p): p is { label: string; value: number } => p.value !== null);
+  return { pct: Math.abs(c.pct), direction: c.pct < 0 ? "down" : "up", since: v[0].label, values: v.map((p) => p.value) };
+}

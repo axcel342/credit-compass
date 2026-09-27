@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rollingCostPerMeeting, trendSentence, trendChange, trendTitle, firstTouchCohorts } from "@/lib/domain/trend";
+import { rollingCostPerMeeting, trendSentence, trendChange, trendTitle, firstTouchCohorts, trendLine } from "@/lib/domain/trend";
 import type { AttributedCharge, Outcome } from "@/lib/domain/types";
 
 const NOW = "2026-09-27T00:00:00Z", DAY = 86_400_000, W = 7 * DAY, START = Date.parse(NOW) - 8 * W;
@@ -29,6 +29,15 @@ describe("rollingCostPerMeeting", () => {
     expect(trendTitle([{ label: "a", value: 300 }])).toBe("Cost per meeting over time");
   });
   it("has no sentence without two points", () => expect(trendSentence([{ label: "x", value: null }])).toBeNull());
+  it("gives the trend line its direction, size and start", () =>
+    expect(trendLine(points)).toMatchObject({ pct: 80, direction: "down", since: "Aug 30", values: [1000, 400, expect.any(Number), expect.any(Number), 200] }));
+  it("says up when cost per meeting rose, and nothing when flat or too short", () => {
+    expect(trendLine([{ label: "a", value: 300 }, { label: "b", value: 360 }])).toEqual({ pct: 20, direction: "up", since: "a", values: [300, 360] });
+    expect(trendLine([{ label: "a", value: 300 }, { label: "b", value: 300 }])).toBeNull();
+    expect(trendLine([{ label: "a", value: null }, { label: "b", value: 300 }])).toBeNull();
+  });
+  it("starts from the first week that has a value", () =>
+    expect(trendLine([{ label: "a", value: null }, { label: "b", value: 500 }, { label: "c", value: 250 }])).toMatchObject({ since: "b", pct: 50 }));
 });
 
 describe("firstTouchCohorts", () => {

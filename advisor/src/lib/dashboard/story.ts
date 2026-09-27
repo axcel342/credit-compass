@@ -73,3 +73,22 @@ export function cpmBarColor(cpm: number, best: number, avg: number | null): stri
   if (avg !== null && cpm >= 2 * avg) return "var(--waste)";
   return "var(--series-weak)";
 }
+
+export interface ChainNode { figure: string; label: string; tone: "in" | "mid" | "out" }
+export type ValueChain = { nodes: ChainNode[]; links: string[]; aria: string } | { empty: string };
+
+export const perCredit = (x: number) => (x >= 10 ? usd(x) : `$${x.toFixed(2)}`);
+
+export function valueChain(p: { total: number; meetings: number; won: number; wonValue: number; periodLabel: string }): ValueChain {
+  if (p.total <= 0) return { empty: `No credits spent in ${p.periodLabel}.` };
+  const spent: ChainNode = { figure: n(p.total), label: "credits spent", tone: "in" };
+  if (p.meetings <= 0) return { nodes: [spent], links: [], aria: `${n(p.total)} credits spent in ${p.periodLabel}, and no meetings booked yet.` };
+  const cpm = `${n(p.total / p.meetings)} per meeting`;
+  const booked: ChainNode = { figure: n(p.meetings), label: Math.round(p.meetings) === 1 ? "meeting booked" : "meetings booked", tone: "mid" };
+  const bought = `${n(p.total)} credits bought ${plural(p.meetings, "meeting")}, ${cpm}.`;
+  if (p.won <= 0 || p.wonValue <= 0) return { nodes: [spent, booked], links: [cpm], aria: bought };
+  const each = perCredit(p.wonValue / p.total);
+  return { nodes: [spent, booked, { figure: usd(p.wonValue), label: `won, ${each} per credit`, tone: "out" }],
+    links: [cpm, plural(p.won, "deal won", "deals won")],
+    aria: `${bought} ${plural(p.won, "won deal")} worth ${usd(p.wonValue)}, ${each} per credit.` };
+}
