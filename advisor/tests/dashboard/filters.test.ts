@@ -10,8 +10,8 @@ const bucketOf = (x: AttributedCharge) => (x as (typeof xs)[number]).b;
 
 describe("charge filters", () => {
   it("parses only known values", () => {
-    expect(parseChargeFilter({ outcome: "waste", list: "2", service: "ai_enrichment" })).toEqual({ outcome: "waste", list: "2", service: "ai_enrichment" });
-    expect(parseChargeFilter({ outcome: "bogus", list: "2; drop", service: "x y" })).toEqual({ outcome: null, list: null, service: null });
+    expect(parseChargeFilter({ outcome: "waste", list: "2", service: "ai_enrichment" })).toEqual({ outcome: "waste", list: "2", service: "ai_enrichment", small: false });
+    expect(parseChargeFilter({ outcome: "bogus", list: "2; drop", service: "x y" })).toEqual({ outcome: null, list: null, service: null, small: false });
   });
   it("filters by outcome, list (including none and other) and service", () => {
     expect(applyChargeFilter(xs, { outcome: "waste", list: null, service: null }, bucketOf).map((x) => x.ledgerId)).toEqual(["4"]);
@@ -24,5 +24,12 @@ describe("charge filters", () => {
   it("shows lists with at least 1% of spend, biggest first, and folds the rest into Other lists", () => {
     expect(listChips(xs)).toEqual({ ids: [2], hasOther: true });
     expect(listChips([c("a", "waterfall_enrichment", 100, 2, "booked"), c("b", "waterfall_enrichment", 300, 15, "booked")])).toEqual({ ids: [15, 2], hasOther: false });
+  });
+  it("reads the small-charges switch and keeps it only when a link sets it", () => {
+    expect(parseChargeFilter({ small: "1" }).small).toBe(true);
+    const f = { outcome: null, list: "2", service: null, small: true };
+    expect(filterHref(f, { outcome: "waste" }, "")).toBe("/charges?outcome=waste&list=2");
+    expect(filterHref({ ...f, small: false }, { small: true }, "period=30d")).toBe("/charges?list=2&small=1&period=30d");
+    expect(filterHref(f, { small: false }, "")).toBe("/charges?list=2");
   });
 });

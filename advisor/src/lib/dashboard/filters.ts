@@ -1,7 +1,7 @@
 import type { AttributedCharge, OutcomeBucket } from "../domain/types";
 import { BUCKETS } from "../domain/buckets";
 
-export interface ChargeFilter { outcome: OutcomeBucket | null; list: string | null; service: string | null }
+export interface ChargeFilter { outcome: OutcomeBucket | null; list: string | null; service: string | null; small?: boolean }
 const SMALL_LIST_SHARE = 0.01; // same rule as the flow diagram's "Other lists"
 
 export function parseChargeFilter(sp: Record<string, string | string[] | undefined>): ChargeFilter {
@@ -11,6 +11,7 @@ export function parseChargeFilter(sp: Record<string, string | string[] | undefin
     outcome: outcome && (BUCKETS as string[]).includes(outcome) ? (outcome as OutcomeBucket) : null,
     list: list && /^(\d+|none|other)$/.test(list) ? list : null,
     service: service && /^[a-z_]+$/.test(service) ? service : null,
+    small: one("small") === "1",
   };
 }
 
@@ -36,11 +37,12 @@ export function listChips(charges: AttributedCharge[]): { ids: number[]; hasOthe
 }
 
 export function filterHref(f: ChargeFilter, patch: Partial<ChargeFilter>, periodQuery: string): string {
-  const m = { ...f, ...patch };
+  const m = { ...f, ...patch, small: "small" in patch ? patch.small : false };
   const q = new URLSearchParams();
   if (m.outcome) q.set("outcome", m.outcome);
   if (m.list) q.set("list", m.list);
   if (m.service) q.set("service", m.service);
+  if (m.small) q.set("small", "1");
   const s = [q.toString(), periodQuery].filter(Boolean).join("&");
   return s ? `/charges?${s}` : "/charges";
 }
