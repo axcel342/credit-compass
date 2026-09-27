@@ -16,7 +16,7 @@ Background on graph8 itself: `g8-product-overview.md` (what the product offers) 
 
 ## v2 build status (2026-09-27)
 
-**All three phases complete and deployed** (`main` tip `c2f1d98`): Tasks 1–15 of `docs/superpowers/plans/2026-09-27-credit-compass-v2.md`. **54 test files / 240 tests** (239 at the whole-branch review; +1 for the open-findings default), `tsc --noEmit` clean, `next build` clean, production E2E passed for all three phases. The three phase PRs (**#1**, **#2**, **#3**) are merged to `main`; production is deployed at https://graph8-roi-advisor.vercel.app.
+**All three phases complete and deployed** (`main` tip `c2f1d98` + final-review fix wave `16b0a4e`): Tasks 1–15 of `docs/superpowers/plans/2026-09-27-credit-compass-v2.md`. **54 test files / 240 tests** (239 at the whole-branch review; +1 for the open-findings default), `tsc --noEmit` clean, `next build` clean, production E2E passed for all three phases. The three phase PRs (**#1**, **#2**, **#3**) are merged to `main`; production is deployed at https://graph8-roi-advisor.vercel.app.
 
 - **Phase 1 (Tasks 1–9):** one dataset with 8-week/30-day periods, outcome buckets and activities, the Overview statement with the three-column credit flow, Charges grouped by activity, Recovery with the weekly waste chart and refund draft, the Optimize planner (enrichment types, cost walk, forecast, fit bar) and Optimize actions with apply/undo.
 - **Phase 2 (Tasks 10–11):** rolling cost-per-meeting trend and first-touch cohorts; MCP/recap demo-data wording, demo script and this handoff.
