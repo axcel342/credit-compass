@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { isAuthed } from "@/lib/auth";
 import { currentCaller } from "@/lib/workspace/current";
 import { loadDashboardData } from "@/lib/dashboard/data";
+import { plural } from "@/lib/dashboard/story";
 import { RecordStore } from "@/lib/store/records";
 import { valuesToContact } from "@/lib/store/mappers";
 import { lookalikeFilters } from "@/lib/domain/actions";
@@ -22,7 +23,7 @@ export async function applyAction(_: unknown, form: FormData): Promise<Result> {
     if (action === "repeat") {
       const r = await applyRepeatSkip(c, listIds, now);
       revalidatePath("/optimize");
-      return { ok: true, message: `${DONE.repeat} for ${r.changed.length} ${r.changed.length === 1 ? "pipeline" : "pipelines"}${r.skipped.length ? `; ${r.skipped.length} list(s) have no pipeline` : ""}.` };
+      return { ok: true, message: `${DONE.repeat} for ${r.changed.length} ${r.changed.length === 1 ? "pipeline" : "pipelines"}${r.skipped.length ? `; ${plural(r.skipped.length, "list")} ${r.skipped.length === 1 ? "has" : "have"} no pipeline` : ""}.` };
     }
     const listId = listIds[0];
     if (action === "lookalike") {

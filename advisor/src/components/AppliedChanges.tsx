@@ -1,5 +1,6 @@
 import type { ActionRecord, Run } from "@/lib/domain/types";
 import { toMs } from "@/lib/domain/time";
+import { plural } from "@/lib/dashboard/story";
 import { undo } from "@/app/(dash)/optimize/apply";
 
 const LABEL: Record<string, string> = { repeat_skip: "Skip recently enriched", pause_list: "Paused enrichment", guardrail: "Skip unlikely contacts", lookalike: "Lookalike list" };
@@ -10,8 +11,8 @@ export function appliedSummary(a: ActionRecord, runs: Run[], listName: string): 
   const after = runs.filter((r) => r.kind === "pipeline_run" && r.listId === a.listId && r.startedAt && toMs(r.startedAt) > toMs(a.appliedAt));
   const skipped = after.reduce((s, r) => s + (r.recordsSkipped ?? 0), 0);
   const base = `${a.status === "undone" ? "Undone" : "Applied"} ${when} on ${listName}.`;
-  if (a.kind === "pause_list") return `${base} ${after.length === 0 ? "No runs since." : `${after.length} manual runs since.`}`;
-  return `${base} ${after.length === 0 ? "No runs since." : `${skipped} contacts skipped since, about ${skipped * 3} credits saved.`}`;
+  if (a.kind === "pause_list") return `${base} ${after.length === 0 ? "No runs since." : `${plural(after.length, "manual run")} since.`}`;
+  return `${base} ${after.length === 0 ? "No runs since." : `${plural(skipped, "contact")} skipped since, about ${skipped * 3} credits saved.`}`;
 }
 
 export function AppliedChanges({ actions, runs, listNames }: { actions: ActionRecord[]; runs: Run[]; listNames: Map<string, string> }) {
