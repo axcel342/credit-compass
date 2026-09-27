@@ -105,3 +105,22 @@ describe("listRows", () => {
     expect(listRows([{ label: "A", value: 100 }, { label: "B", value: 100 }], 100).map((r) => r.note)).toEqual([null, null]);
   });
 });
+
+import { optimizeTitle, plannerUnit, forecastFigure } from "@/lib/dashboard/story";
+describe("Optimize wording", () => {
+  it("counts the changes left to make", () => {
+    expect(optimizeTitle(3)).toEqual({ title: "3 changes you can make", sub: "Each costs 0 credits and can be undone" });
+    expect(optimizeTitle(1).title).toBe("1 change you can make");
+    expect(optimizeTitle(0)).toEqual({ title: "Your spend looks efficient right now.", sub: null });
+  });
+  it("says what the planner estimate compares with", () => {
+    expect(plannerUnit({ estimate: 36, every: 750, graph8Quote: 498 })).toBe("credits, graph8 quotes 498");
+    expect(plannerUnit({ estimate: 117, every: 250, graph8Quote: null })).toBe("credits, instead of 250 for every contact");
+    expect(plannerUnit({ estimate: 250, every: 250, graph8Quote: 200 })).toBe("credits");
+    expect(plannerUnit({ estimate: 0, every: 250, graph8Quote: null })).toBe("credits. Every contact is done or skipped");
+  });
+  it("turns the forecast into one figure", () => {
+    expect(forecastFigure({ expected: 18.7, lo: 14, hi: 25, lowConfidence: true })).toEqual({ figure: "~19", unit: "meetings, likely 14 to 25", note: "Low confidence, fewer than 5 meetings so far" });
+    expect(forecastFigure({ expected: 0.4, lo: 0, hi: 1, lowConfidence: false })).toEqual({ figure: "<1", unit: "meetings, likely 0 to 1", note: null });
+  });
+});

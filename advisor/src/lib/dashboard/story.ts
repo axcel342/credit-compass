@@ -105,3 +105,20 @@ export function listRows(rows: { label: string; value: number }[], avg: number |
     return { ...r, color: "var(--series-weak)", note: null, tone: null };
   });
 }
+
+export function optimizeTitle(open: number): { title: string; sub: string | null } {
+  if (open <= 0) return { title: "Your spend looks efficient right now.", sub: null };
+  return { title: `${plural(open, "change")} you can make`, sub: "Each costs 0 credits and can be undone" };
+}
+
+export function plannerUnit(p: { estimate: number; every: number; graph8Quote: number | null }): string {
+  if (p.estimate <= 0) return "credits. Every contact is done or skipped";
+  if (p.graph8Quote !== null && p.graph8Quote > p.estimate) return `credits, graph8 quotes ${n(p.graph8Quote)}`;
+  if (p.every > p.estimate) return `credits, instead of ${n(p.every)} for every contact`;
+  return "credits";
+}
+
+export function forecastFigure(f: { expected: number; lo: number; hi: number; lowConfidence: boolean }): { figure: string; unit: string; note: string | null } {
+  return { figure: f.expected < 1 ? "<1" : `~${n(f.expected)}`, unit: `meetings, likely ${f.lo} to ${f.hi}`,
+    note: f.lowConfidence ? "Low confidence, fewer than 5 meetings so far" : null };
+}

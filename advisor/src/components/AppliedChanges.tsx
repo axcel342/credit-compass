@@ -15,6 +15,11 @@ export function appliedSummary(a: ActionRecord, runs: Run[], listName: string): 
   return `${base} ${after.length === 0 ? "No runs since." : `${plural(skipped, "contact")} skipped since, about ${skipped * 3} credits saved.`}`;
 }
 
+export function splitApplied(actions: ActionRecord[]): { active: ActionRecord[]; undone: ActionRecord[] } {
+  const xs = actions.filter((a) => a.kind !== "refund_request").sort((a, b) => toMs(b.appliedAt) - toMs(a.appliedAt));
+  return { active: xs.filter((a) => a.status !== "undone"), undone: xs.filter((a) => a.status === "undone") };
+}
+
 export function AppliedChanges({ actions, runs, listNames }: { actions: ActionRecord[]; runs: Run[]; listNames: Map<string, string> }) {
   const xs = actions.filter((a) => a.kind !== "refund_request").sort((a, b) => toMs(b.appliedAt) - toMs(a.appliedAt));
   return (
