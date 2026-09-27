@@ -1,4 +1,4 @@
-import { g8, G8Error } from "@graph8/sdk";
+import { createApiClient, g8, G8Error } from "@graph8/sdk";
 import { RateLimiter } from "./rate-limit";
 
 export interface CallInput { path?: Record<string, string | number>; query?: Record<string, unknown>; body?: unknown }
@@ -34,6 +34,20 @@ export const g8Caller: G8Caller = {
     return unwrap<T>(await this.callRaw(op, input));
   },
 };
+
+const perKey = new Map<string, G8Caller>();
+export function callerFor(apiKey: string): G8Caller {
+  const hit = perKey.get(apiKey);
+  if (hit) return hit;
+  const api = createApiClient(apiKey);
+  const own = new RateLimiter({ perSecond: 40, perMinute: 900 });
+  const c: G8Caller = {
+    async callRaw<T>(op: string, input: CallInput = {}) { await own.take(); return (await (api.call as (id: string, i: CallInput) => Promise<unknown>)(op, input)) as T; },
+    async call<T>(op: string, input: CallInput = {}) { return unwrap<T>(await this.callRaw(op, input)); },
+  };
+  perKey.set(apiKey, c);
+  return c;
+}
 
 export function isConflict(e: unknown): boolean { return e instanceof G8Error && e.status === 409; }
 export function isNotFound(e: unknown): boolean { return e instanceof G8Error && e.status === 404; }

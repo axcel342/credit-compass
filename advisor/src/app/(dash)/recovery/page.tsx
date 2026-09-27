@@ -1,5 +1,5 @@
 import { loadDashboardData, periodView } from "@/lib/dashboard/data";
-import { currentCaller } from "@/lib/workspace/current";
+import { currentCaller, currentWorkspace } from "@/lib/workspace/current";
 import { parsePeriod, PERIOD_LABEL } from "@/lib/domain/period";
 import { toMs } from "@/lib/domain/time";
 import { weeklySpend, recoveryItems, claimState, refundDraftFor, shortDate } from "@/lib/dashboard/recovery";
@@ -43,7 +43,7 @@ export default async function RecoveryPage({ searchParams }: { searchParams: Pro
           {claim.open && claim.open.status === "requested" && (
             <form action={markRefunded}><input type="hidden" name="extId" value={claim.open.extId} /><button className="btn ghost" type="submit">Mark as refunded</button></form>)}
           {refundable.length > 0 && !claim.open && (
-            <RefundForm orgId={process.env.G8_ORG_ID ?? ""} draftFor={refundable.map((x) => x.id).join(",")}
+            <RefundForm orgId={(await currentWorkspace()).orgId} draftFor={refundable.map((x) => x.id).join(",")}
               items={refundable.map((x) => ({ id: x.id, title: x.title, credits: Math.round(x.credits), line: refundDraftFor([x], "").split("\n")[3] }))} />)}
         </section>
       </div>

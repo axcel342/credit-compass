@@ -4,8 +4,9 @@ import { OPS } from "@/lib/g8/ops";
 import { ensureSchema } from "@/lib/store/schema";
 import { RecordStore } from "@/lib/store/records";
 import { valuesToAction } from "@/lib/store/mappers";
-import { applyRepeatSkip, applyPause, applyLookalike, undoAction } from "@/lib/actions/apply";
+import { applyRepeatSkip, applyPause, applyLookalike, applyGuardrailRule, undoAction } from "@/lib/actions/apply";
 import type { ListPipeline } from "@/lib/guardrail/pipeline";
+import type { ContactCacheRow } from "@/lib/domain/types";
 
 async function setup() {
   const g = new FakeG8(); await ensureSchema(g);
@@ -59,5 +60,18 @@ describe("apply and undo", () => {
   it("skips a list with no enrichment pipeline and says so", async () => {
     const t = await setup();
     await expect(applyRepeatSkip(t.g, [42], NOW)).resolves.toEqual({ changed: [], skipped: [42] });
+  });
+  it("writes the fit and run condition for the workspace's own field", async () => {
+    const t = await setup();
+    t.g.handlers.set(OPS.validateFormula, () => ({ valid: true, errors: [] }));
+    t.g.handlers.set(OPS.previewRoutingRule, () => ({ matching_count: 1 }));
+    t.g.handlers.set(OPS.setFieldValue, () => ({}));
+    const row = (contactId: number, fit: ContactCacheRow["fit"]): ContactCacheRow => ({ contactId, listIds: [15], hasEmail: true, consistency: "ok", segmentKey: "s",
+      fit, fitLevel: "role", syncedAt: NOW });
+    await applyGuardrailRule(t.g, 15, [row(1, "low"), row(2, "high")], NOW, { columnId: 999, name: "udo_fit_custom" });
+    expect(t.g.calls.filter((c) => c.op === OPS.setFieldValue).map((c) => c.input.path?.column_id)).toEqual([999, 999]);
+    expect(t.g.calls.find((c) => c.op === OPS.validateFormula)!.input.body).toEqual({ formula: 'NOT(EQ({{udo_fit_custom}}, "low"))' });
+    expect(t.g.calls.find((c) => c.op === OPS.previewRoutingRule)!.input.body).toMatchObject({ conditions: [{ field: "udo_fit_custom", operator: "equals", value: "low" }] });
+    expect(t.pipes()[15][0].steps![0].run_condition).toBe('NOT(EQ({{udo_fit_custom}}, "low"))');
   });
 });
