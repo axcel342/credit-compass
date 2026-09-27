@@ -28,8 +28,8 @@ describe("doNextItems", () => {
       "Saves ~696 credits a month", "91 credits to claim back"]);
     expect(doNextItems([f("unused", 860, "D"), f("side_effect", 24, "S")]).map((x) => x.sub)).toEqual(["860 credits of research ready to use", "Stops 24 credits of agent charges"]);
   });
-  const act = (id: PlannedAction["id"], p: Partial<PlannedAction> = {}): PlannedAction => ({ id, title: "", impact: "", evidence: "", confidence: "High confidence",
-    inGraph8: "", chart: [], steps: [], button: null, applied: false, monthlyCredits: 0, ...p });
+  const act = (id: PlannedAction["id"], p: Partial<PlannedAction> = {}): PlannedAction => ({ id, title: "", impact: "", evidence: null, confidence: "High confidence",
+    inGraph8: "", chart: [], steps: [], button: null, applied: false, monthlyCredits: 0, payoff: { figure: "", unit: "" }, ...p });
   it("takes payoffs only from changes not yet applied", () => {
     expect(doNextImpact([act("repeat", { monthlyCredits: 696 }), act("move-spend", { impact: "~2 more meetings a week" })])).toEqual({ repeatMonthly: 696, moveSpend: "~2 more meetings a week" });
     expect(doNextImpact([act("repeat", { monthlyCredits: 696, applied: true }), act("move-spend", { impact: "~2 more meetings a week", applied: true })])).toEqual({ repeatMonthly: null, moveSpend: null });

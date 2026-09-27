@@ -2,8 +2,9 @@ import type { ActionRecord, AttributedCharge, ContactCacheRow, Stat } from "./ty
 import { repeatEnrichment } from "./repeat";
 
 export interface ActionInput { charges: AttributedCharge[]; stats: Stat[]; listNames: Map<string, string>; contacts: ContactCacheRow[]; actions: ActionRecord[] }
+export interface Payoff { figure: string; unit: string }
 export interface PlannedAction {
-  id: "repeat" | "move-spend" | "skip-unlikely"; title: string; impact: string; evidence: string; confidence: "High confidence" | "Medium confidence";
+  id: "repeat" | "move-spend" | "skip-unlikely"; title: string; impact: string; payoff: Payoff; evidence: string | null; confidence: "High confidence" | "Medium confidence";
   inGraph8: string; chart: { label: string; value: number; tone: string }[]; steps: { label: string; sub: string; done: boolean }[];
   button: { action: "repeat" | "lookalike" | "pause" | "guardrail"; label: string; listIds: number[]; confirm: string } | null; applied: boolean; monthlyCredits: number;
 }
@@ -11,6 +12,12 @@ export interface PlannedAction {
 const n = (x: number) => Math.round(x).toLocaleString("en-US");
 const the = (name: string) => (/\blist$/i.test(name) ? `the ${name}` : name); // "the Starter list", but "Sales VPs", "Founders"
 const isApplied = (acts: ActionRecord[], kind: ActionRecord["kind"], listId: number) => acts.some((a) => a.kind === kind && a.listId === listId && a.status === "applied");
+
+export function movePayoff(gain: number, weekly: number): Payoff {
+  if (gain >= 1) return { figure: `+${n(gain)}`, unit: Math.round(gain) === 1 ? "meeting a week" : "meetings a week" };
+  if (gain >= 0.1) return { figure: `+${gain.toFixed(1)}`, unit: "meetings a week" };
+  return { figure: n(weekly), unit: "credits a week to move" };
+}
 
 export function lookalikeFilters(rows: ContactCacheRow[]) {
   const top = (i: number) => {
@@ -37,7 +44,8 @@ export function buildActions(x: ActionInput): PlannedAction[] {
     const applied = repLists.every((l) => isApplied(x.actions, "repeat_skip", l));
     const listText = repLists.map((l) => the(name(l))).join(", ").replace(/, ([^,]*)$/, " and $1");
     out.push({ id: "repeat", title: "Stop paying twice for the same contacts", impact: `saves ~${n((rep.credits * 30) / 56)} a month`, monthlyCredits: Math.round((rep.credits * 30) / 56),
-      evidence: `${n(rep.credits)} credits in the last 8 weeks${total ? `, ${Math.round((rep.credits / total) * 100)}% of all spend,` : ""} went to contacts you had already enriched within 30 days.`,
+      payoff: { figure: n((rep.credits * 30) / 56), unit: "credits a month" },
+      evidence: null,
       confidence: "High confidence", chart: [{ label: "First time", value: Math.max(0, firstTime), tone: "var(--flow)" }, { label: "Again", value: rep.credits, tone: "var(--waste)" }],
       inGraph8: `Turns on Skip recently enriched and Skip existing values for ${listText} ${repLists.length === 1 ? "pipeline" : "pipelines"}.`, steps: [],
       button: applied ? null : { action: "repeat", label: `Turn on for ${repLists.length} ${repLists.length === 1 ? "pipeline" : "pipelines"}`, listIds: repLists, confirm: `Yes, change ${repLists.length} ${repLists.length === 1 ? "pipeline" : "pipelines"} in graph8` }, applied });
@@ -52,7 +60,8 @@ export function buildActions(x: ActionInput): PlannedAction[] {
     const bId = Number(best.value), wId = Number(worst.value);
     const lookDone = isApplied(x.actions, "lookalike", bId), pauseDone = isApplied(x.actions, "pause_list", wId);
     out.push({ id: "move-spend", title: `Move spend from ${the(name(wId))} to people like your ${name(bId)}`, impact: `~${n(gain)} more meetings a week`, monthlyCredits: 0,
-      evidence: `${the(name(wId)).replace(/^t/, "T")} books ${perK(worst).toFixed(1)} meetings per 1,000 credits and costs about ${n(weekly)} credits a week. ${name(bId)} book ${perK(best).toFixed(1)}. Even at half that rate, the same credits book about ${n(gain)} more meetings a week.`,
+      payoff: movePayoff(gain, weekly),
+      evidence: null,
       confidence: best.confidence === "high" ? "High confidence" : "Medium confidence",
       chart: [{ label: name(wId), value: perK(worst), tone: "var(--nomeet)" }, { label: name(bId), value: perK(best), tone: "var(--booked)" }],
       inGraph8: "Builds a lookalike list from graph8's free prospect search, then switches the costly list's pipeline off so it stops running on its own. Existing data stays.",
@@ -62,14 +71,22 @@ export function buildActions(x: ActionInput): PlannedAction[] {
       applied: lookDone && pauseDone });
   }
 
-  const lowBy = new Map<number, { low: number; all: number }>();
-  for (const r of x.contacts) for (const l of r.listIds) { const e = lowBy.get(l) ?? { low: 0, all: 0 }; e.all++; if (r.fit === "low" && r.hasEmail) e.low++; lowBy.set(l, e); }
-  const [gl, g] = [...lowBy].sort((a, b) => b[1].low - a[1].low)[0] ?? [];
+  const fitBy = new Map<number, { low: number; all: number; high: number; medium: number; unknown: number }>();
+  for (const r of x.contacts) for (const l of r.listIds) {
+    const e = fitBy.get(l) ?? { low: 0, all: 0, high: 0, medium: 0, unknown: 0 };
+    e.all++;
+    if (r.fit === "low") { if (r.hasEmail) e.low++; } else e[r.fit]++;
+    fitBy.set(l, e);
+  }
+  const [gl, g] = [...fitBy].sort((a, b) => b[1].low - a[1].low)[0] ?? [];
   if (gl !== undefined && g && g.low >= 10) {
     const applied = isApplied(x.actions, "guardrail", gl);
+    const chart = [{ label: "Likely", value: g.high, tone: "var(--booked)" }, { label: "Maybe", value: g.medium, tone: "var(--maybe)" },
+      { label: "Unlikely", value: g.low, tone: "var(--waste)" }, { label: "Unknown", value: g.unknown, tone: "var(--unknown)" }].filter((c) => c.label === "Unlikely" || c.value > 0);
     out.push({ id: "skip-unlikely", title: "Skip contacts unlikely to book", impact: `saves ${n(g.low)} per run`, monthlyCredits: 0,
-      evidence: `${n(g.low)} of ${n(g.all)} contacts on ${the(name(gl))} have an email that doesn't match their company or belong to groups that rarely book. When we checked, mismatched emails bounced 45% of the time against 20% for the rest.`,
-      confidence: "High confidence", chart: [], steps: [],
+      payoff: { figure: n(g.low), unit: "credits a run" },
+      evidence: "Emails that don't match the company bounced 45% of the time, against 20% for the rest.",
+      confidence: "High confidence", chart, steps: [],
       inGraph8: "Writes a fit score to each contact and adds a run condition to the list pipeline, so graph8 skips anyone unlikely on every run.",
       button: applied ? null : { action: "guardrail", label: `Apply to ${the(name(gl))}`, listIds: [gl], confirm: `Yes, add the rule to ${the(name(gl))} in graph8` }, applied });
   }

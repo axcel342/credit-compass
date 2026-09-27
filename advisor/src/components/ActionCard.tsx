@@ -22,7 +22,7 @@ export function ActionCard({ a }: { a: PlannedAction }) {
     <article className="act" id={a.id}>
       <div className="act-main">
         <div className="act-head"><h2>{a.title}</h2><span className="impact">{a.impact}</span></div>
-        <p>{a.evidence}</p>
+        {a.evidence && <p>{a.evidence}</p>}
         {a.chart.length > 0 && (a.id === "repeat"
           ? <div className="evbar">{a.chart.map((x) => <span key={x.label} style={{ flex: x.value, background: x.tone }}>{x.label} {Math.round(x.value).toLocaleString("en-US")}</span>)}</div>
           : <div className="cmp">{a.chart.map((x) => <div key={x.label}><span>{x.label}</span><i style={{ width: `${(x.value / max) * 100}%`, background: x.tone }} /><b>{x.value.toFixed(1)}</b></div>)}</div>)}
