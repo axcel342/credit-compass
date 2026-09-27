@@ -12,3 +12,4 @@ __pycache__/
 .superpowers/
 # simulated demo seed plan (generated; contains live list ids)
 advisor/.sim-plan.json
+advisor/.sim-outreach.json
