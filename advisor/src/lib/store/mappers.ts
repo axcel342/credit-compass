@@ -1,4 +1,4 @@
-import type { AttributedCharge, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
+import type { ActionRecord, AttributedCharge, ContactCacheRow, Finding, LedgerRow, Outcome, Run, Stat } from "../domain/types";
 
 type V = Record<string, unknown>;
 const s = (v: unknown): string | null => (v === null || v === undefined || v === "" ? null : String(v));
@@ -69,4 +69,22 @@ export function valuesToFinding(v: V): Finding {
     creditsAtStake: Number(v.credits_at_stake), confidence: v.confidence as Finding["confidence"], status: v.status as Finding["status"],
     snoozedUntil: s(v.snoozed_until), dismissCount: Number(v.dismiss_count ?? 0), action: s(v.action), actionPayload: json(v.action_payload, null),
     firstSeen: String(v.first_seen), lastSeen: String(v.last_seen), lastNotifiedStake: num(v.last_notified_stake), inRecap: bool(v.in_recap), simulated: bool(v.simulated) };
+}
+
+export function contactToValues(r: ContactCacheRow): V {
+  return { ext_id: String(r.contactId), simulated: false, contact_id: r.contactId, list_ids: JSON.stringify(r.listIds), has_email: r.hasEmail, consistency: r.consistency,
+    segment_key: r.segmentKey, fit: r.fit, fit_level: r.fitLevel, synced_at: r.syncedAt };
+}
+export function valuesToContact(v: V): ContactCacheRow {
+  return { contactId: Number(v.contact_id), listIds: json<number[]>(v.list_ids, []), hasEmail: bool(v.has_email), consistency: v.consistency as ContactCacheRow["consistency"],
+    segmentKey: String(v.segment_key ?? ""), fit: v.fit as ContactCacheRow["fit"], fitLevel: (s(v.fit_level) as ContactCacheRow["fitLevel"]), syncedAt: String(v.synced_at) };
+}
+
+export function actionToValues(a: ActionRecord): V {
+  return { ext_id: a.extId, simulated: a.simulated, kind: a.kind, list_id: a.listId, pipeline_id: a.pipelineId, applied_at: a.appliedAt, status: a.status,
+    previous: JSON.stringify(a.previous ?? null), detail: JSON.stringify(a.detail ?? {}) };
+}
+export function valuesToAction(v: V): ActionRecord {
+  return { extId: String(v.ext_id), kind: v.kind as ActionRecord["kind"], listId: num(v.list_id), pipelineId: s(v.pipeline_id), appliedAt: String(v.applied_at),
+    status: v.status as ActionRecord["status"], previous: json<unknown>(v.previous, null), detail: json<Record<string, unknown>>(v.detail, {}), simulated: bool(v.simulated) };
 }

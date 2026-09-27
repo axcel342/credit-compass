@@ -1,0 +1,58 @@
+import { describe, it, expect } from "vitest";
+import { buildActions, lookalikeFilters } from "@/lib/domain/actions";
+import type { ActionRecord, AttributedCharge, ContactCacheRow, Stat } from "@/lib/domain/types";
+
+const ch = (id: string, contactId: number, listId: number, at: string, credits = 90): AttributedCharge => ({ ledgerId: id, ledgerType: "usage", service: "waterfall_enrichment",
+  credits, chargedAt: at, llmTier: null, tokensIn: null, tokensOut: null, description: null, method: "advisor", runExtId: `sim-run-${listId}`, listId, contactId,
+  segmentKey: null, explanation: "x", result: "success", isWaste: false, wasteReason: null, simulated: true });
+const stat = (value: string, credits: number, meetings: number, cpm: number | null, confidence: Stat["confidence"]): Stat => ({ period: "8w", dimension: value === "all" ? "org" : "list",
+  value, credits, creditsExact: credits, meetings, deals: 0, wonValue: 0, contactsReached: 20, costPerMeeting: cpm, costPerDeal: null, vsAvgPct: null, evidenceN: meetings,
+  confidence, simulated: true, computedAt: "2026-09-27T00:00:00Z" });
+const row = (id: number, listId: number, fit: ContactCacheRow["fit"], seg = "Vice President|Sales|Software|51-200"): ContactCacheRow =>
+  ({ contactId: id, listIds: [listId], hasEmail: true, consistency: fit === "low" ? "flagged" : "ok", segmentKey: seg, fit, fitLevel: "role", syncedAt: "2026-09-27T00:00:00Z" });
+
+const charges = [ch("a", 1, 2, "2026-09-01T00:00:00Z"), ch("b", 1, 2, "2026-09-10T00:00:00Z"), ch("c", 2, 15, "2026-09-02T00:00:00Z")];
+const stats = [stat("all", 10000, 27, 370, "high"), stat("15", 2108, 17, 124, "high"), stat("16", 2598, 6, 433, "medium"), stat("2", 4931, 4, 1233, "low")];
+const contacts = [...Array.from({ length: 12 }, (_, i) => row(100 + i, 2, "low", "Owner|Founders|X|1-10")), ...Array.from({ length: 20 }, (_, i) => row(200 + i, 15, "high"))];
+const names = new Map([["2", "Starter list"], ["15", "Sales VPs"], ["16", "Founders"]]);
+const input = { charges, stats, listNames: names, contacts, actions: [] as ActionRecord[] };
+
+describe("buildActions", () => {
+  const acts = buildActions(input);
+  it("finds repeat enrichment with a monthly saving and the lists to change", () => {
+    const r = acts.find((a) => a.id === "repeat")!;
+    expect(r.monthlyCredits).toBe(Math.round((90 * 30) / 56));
+    expect(r.button).toMatchObject({ action: "repeat", label: "Turn on for 1 pipeline", listIds: [2] });
+    expect(r.inGraph8).toBe("Turns on Skip recently enriched and Skip existing values for the Starter list pipeline.");
+  });
+  it("moves spend from the costliest list to the cheapest, in two steps", () => {
+    const m = acts.find((a) => a.id === "move-spend")!;
+    expect(m.title).toBe("Move spend from the Starter list to people like your Sales VPs");
+    expect(m.impact).toBe("~2 more meetings a week");
+    expect(m.steps.map((s) => [s.label, s.done])).toEqual([["Build a lookalike list of your Sales VPs", false], ["Pause enrichment on the Starter list", false]]);
+    expect(m.button).toMatchObject({ action: "lookalike", label: "Build lookalike list", listIds: [15] });
+  });
+  it("skips unlikely contacts on the list with the most of them", () => {
+    const s = acts.find((a) => a.id === "skip-unlikely")!;
+    expect(s.title).toBe("Skip contacts unlikely to book");
+    expect(s.impact).toBe("saves 12 per run");
+    expect(s.button).toMatchObject({ action: "guardrail", listIds: [2] });
+  });
+  it("orders by impact: monthly savings first, then meetings, then per-run", () => expect(acts.map((a) => a.id)).toEqual(["repeat", "move-spend", "skip-unlikely"]));
+  it("marks steps and actions done from roi_action records", () => {
+    const applied = (kind: ActionRecord["kind"], listId: number): ActionRecord => ({ extId: `${kind}:${listId}`, kind, listId, pipelineId: "p", appliedAt: "2026-09-27T00:00:00Z",
+      status: "applied", previous: null, detail: {}, simulated: false });
+    const a2 = buildActions({ ...input, actions: [applied("lookalike", 15), applied("repeat_skip", 2)] });
+    expect(a2.find((a) => a.id === "repeat")!.applied).toBe(true);
+    const m = a2.find((a) => a.id === "move-spend")!;
+    expect(m.steps[0].done).toBe(true);
+    expect(m.button).toMatchObject({ action: "pause", label: "Pause the Starter list", listIds: [2] });
+  });
+  it("offers nothing when the data doesn't support it", () => expect(buildActions({ charges: [], stats: [], listNames: names, contacts: [], actions: [] })).toEqual([]));
+});
+
+describe("lookalikeFilters", () => {
+  it("uses the most common known seniority and department", () =>
+    expect(lookalikeFilters([row(1, 15, "high"), row(2, 15, "high"), row(3, 15, "high", "Director|Marketing|X|1-10"), row(4, 15, "high", "Unknown|Unknown|X|1-10")]))
+      .toEqual([{ field: "seniority_level", operator: "any_of", value: ["Vice President"] }, { field: "job_department", operator: "any_of", value: ["Sales"] }]));
+});

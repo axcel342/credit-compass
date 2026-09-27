@@ -2,6 +2,7 @@ import type { G8Caller } from "../g8/client";
 import { OPS } from "../g8/ops";
 import type { ContactInfo } from "../domain/types";
 import { recordConsistency, segmentKey } from "../domain/segments";
+import { mapLimit } from "../util/concurrency";
 
 export interface ContactRow { id: number; first_name: string | null; last_name: string | null }
 interface ContactDetail { work_email: string | null; job_title: string | null; seniority_level: string | null; job_department: string | null;
@@ -27,7 +28,6 @@ export async function loadContactIndex(c: G8Caller): Promise<Map<number, Contact
     rows.push(...r);
     if (r.length < 200) break;
   }
-  const index = new Map<number, ContactInfo>();
-  for (const row of rows) index.set(row.id, await loadContactInfo(c, row));
-  return index;
+  const infos = await mapLimit(rows, 10, (row) => loadContactInfo(c, row));
+  return new Map(infos.map((info) => [info.contactId, info]));
 }

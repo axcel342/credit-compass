@@ -49,7 +49,7 @@ export interface Stat {
   evidenceN: number; confidence: Confidence; simulated: boolean; computedAt: string;
 }
 
-export type FindingKind = "scale" | "cut" | "waste" | "fix" | "unused" | "data_risk" | "what_worked" | "traceability" | "side_effect";
+export type FindingKind = "scale" | "cut" | "waste" | "fix" | "unused" | "data_risk" | "what_worked" | "traceability" | "side_effect" | "repeat_enrichment";
 export type FindingStatus = "open" | "dismissed" | "snoozed" | "applied";
 
 export interface Finding {
@@ -62,4 +62,18 @@ export interface Finding {
 export interface ContactInfo {
   contactId: number; name: string; email: string | null; companyName: string | null; companyDomain: string | null;
   listIds: number[]; sequenceIds: string[]; segmentKey: string; consistency: "ok" | "flagged" | "unknown";
+}
+
+export type OutcomeBucket = "booked" | "nomeet" | "unused" | "unknown" | "waste";
+export type Period = "8w" | "30d";
+
+export interface ContactCacheRow {
+  contactId: number; listIds: number[]; hasEmail: boolean; consistency: "ok" | "flagged" | "unknown"; segmentKey: string;
+  fit: "high" | "medium" | "low" | "unknown"; fitLevel: "segment" | "role" | "seniority" | "list" | "org" | null; syncedAt: string;
+}
+
+export type ActionKind = "repeat_skip" | "lookalike" | "pause_list" | "guardrail" | "refund_request";
+export interface ActionRecord {
+  extId: string; kind: ActionKind; listId: number | null; pipelineId: string | null; appliedAt: string;
+  status: "applied" | "undone" | "requested" | "refunded"; previous: unknown; detail: Record<string, unknown>; simulated: boolean;
 }

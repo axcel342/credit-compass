@@ -1,5 +1,5 @@
 import "./globals.css";
-export const metadata = { title: "ROI Advisor", description: "Which graph8 credits turned into meetings and pipeline" };
+export const metadata = { title: "Credit Compass", description: "Which graph8 credits turned into meetings, and what to change next" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

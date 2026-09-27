@@ -28,6 +28,10 @@ export const OBJECTS: ObjectDef[] = [
     t("kind", "select"), t("title"), t("body"), t("evidence"), t("credits_at_stake", "number"), t("confidence", "select"), t("status", "select"),
     t("snoozed_until", "timestamp"), t("dismiss_count", "number"), t("action"), t("action_payload"), t("first_seen", "timestamp"),
     t("last_seen", "timestamp"), t("last_notified_stake", "number"), t("in_recap", "checkbox")] },
+  { slug: "roi_contact", singular: "ROI contact", plural: "ROI contacts", attributes: [...common,
+    t("contact_id", "number"), t("list_ids"), t("has_email", "checkbox"), t("consistency", "select"), t("segment_key"), t("fit", "select"), t("fit_level", "select"), t("synced_at", "timestamp")] },
+  { slug: "roi_action", singular: "ROI action", plural: "ROI actions", attributes: [...common,
+    t("kind", "select"), t("list_id", "number"), t("pipeline_id"), t("applied_at", "timestamp"), t("status", "select"), t("previous"), t("detail")] },
 ];
 
 export async function ensureSchema(c: G8Caller): Promise<{ createdObjects: string[]; createdAttributes: string[] }> {

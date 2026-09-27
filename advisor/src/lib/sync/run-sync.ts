@@ -1,13 +1,15 @@
 import type { G8Caller } from "../g8/client";
 import { OPS } from "../g8/ops";
-import type { ContactInfo, Run } from "../domain/types";
+import type { ContactInfo, Run, Stat } from "../domain/types";
 import { attributeCharges, coverage } from "../domain/attribution";
 import { onboardingWindow } from "../domain/runs";
 import { computeStats } from "../domain/metrics";
+import { classifyWithBackoff, rateTables } from "../domain/fit";
+import { listNamesFrom } from "../domain/names";
 import { generateFindings, mergeFindings } from "../domain/findings";
 import { toIso, toMs } from "../domain/time";
 import { RecordStore } from "../store/records";
-import { chargeToValues, findingToValues, ledgerFromCharge, outcomeToValues, runToValues, statToValues, valuesToCharge, valuesToFinding, valuesToOutcome, valuesToRun } from "../store/mappers";
+import { chargeToValues, contactToValues, findingToValues, ledgerFromCharge, outcomeToValues, runToValues, statToValues, valuesToCharge, valuesToContact, valuesToFinding, valuesToOutcome, valuesToRun } from "../store/mappers";
 import { fetchLedgerSince } from "./ledger";
 import { fetchOnboardingAnchors, fetchUnusedDocs, pollPipelineRuns } from "./capture";
 import { loadContactIndex } from "./contacts";
@@ -31,7 +33,7 @@ export async function runSync(deps: { c: G8Caller; now?: string; contacts?: Map<
     const fresh = await fetchLedgerSince(deps.c, new Set(existingCharges.map((x) => x.ledgerId)));
     const ledger = [...existingCharges.filter((x) => !x.simulated).map(ledgerFromCharge), ...fresh];
 
-    const lists = await deps.c.call<{ id: number }[]>(OPS.listLists);
+    const lists = await deps.c.call<{ id: number; title: string }[]>(OPS.listLists);
     const pipelineRuns = await pollPipelineRuns(deps.c, lists.map((l) => l.id));
     for (const r of pipelineRuns) await s.runs.upsert(runToValues(r));
     const runs: Run[] = [...runRecs.filter((r) => r.kind !== "sync_lock" && !pipelineRuns.some((p) => p.extId === r.extId)), ...pipelineRuns];
@@ -48,16 +50,32 @@ export async function runSync(deps: { c: G8Caller; now?: string; contacts?: Map<
     for (const o of await pollDealOutcomes(deps.c, contacts)) await s.outcomes.upsert(outcomeToValues(o));
     const outcomes = (await s.outcomes.list()).map((r) => valuesToOutcome(r.values));
 
-    const to = toMs(now), from = to - 30 * 86_400_000;
-    const base = { charges, outcomes, contacts, period: "30d", from, to, now };
-    const byList = computeStats({ ...base, dimension: "list" });
-    const bySegment = computeStats({ ...base, dimension: "segment" });
-    const byService = computeStats({ ...base, dimension: "service" });
-    for (const st of [...byList, ...bySegment.slice(1), ...byService.slice(1)]) await s.stats.upsert(statToValues(st));
+    const to = toMs(now);
+    const periods = [["8w", 56], ["30d", 30]] as const;
+    let byList8w: Stat[] = [], bySegment8w: Stat[] = [];
+    for (const [period, days] of periods) {
+      const base = { charges, outcomes, contacts, period, from: to - days * 86_400_000, to, now };
+      const byList = computeStats({ ...base, dimension: "list" });
+      const bySegment = computeStats({ ...base, dimension: "segment" });
+      const byService = computeStats({ ...base, dimension: "service" });
+      for (const st of [...byList, ...bySegment.slice(1), ...byService.slice(1)]) await s.stats.upsert(statToValues(st));
+      if (period === "8w") { byList8w = byList; bySegment8w = bySegment; }
+    }
+
+    const tables = rateTables(charges, outcomes, contacts);
+    const cache = new RecordStore(deps.c, "roi_contact");
+    const cached = new Map((await cache.list()).map((r) => [String(r.values.ext_id), valuesToContact(r.values)]));
+    for (const info of contacts.values()) {
+      const { fit, level } = classifyWithBackoff(info, tables);
+      const row = { contactId: info.contactId, listIds: info.listIds, hasEmail: !!info.email, consistency: info.consistency, segmentKey: info.segmentKey, fit, fitLevel: level, syncedAt: now };
+      const prev = cached.get(String(info.contactId));
+      const same = prev && JSON.stringify({ ...prev, syncedAt: "" }) === JSON.stringify({ ...row, syncedAt: "" });
+      if (!same) await cache.upsert(contactToValues(row));
+    }
 
     const onboardingCredits = real.filter((ch) => ch.method === "time_window" && ch.service === "studio_global").reduce((a, ch) => a + ch.credits, 0);
-    const fresh2 = generateFindings({ now, period: "30d", statsByList: byList, statsBySegment: bySegment, charges, runs, outcomes,
-      unusedDocs: await fetchUnusedDocs(deps.c), onboardingCredits });
+    const fresh2 = generateFindings({ now, period: "8w", statsByList: byList8w, statsBySegment: bySegment8w, charges, runs, outcomes,
+      unusedDocs: await fetchUnusedDocs(deps.c), onboardingCredits, listNames: listNamesFrom(lists) });
     const existingFindings = (await s.findings.list()).map((r) => valuesToFinding(r.values));
     const merged = mergeFindings(fresh2, existingFindings);
     const mergedIds = new Set(merged.map((f) => f.extId));

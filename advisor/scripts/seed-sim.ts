@@ -4,22 +4,31 @@ import { OPS } from "../src/lib/g8/ops";
 import { RecordStore } from "../src/lib/store/records";
 import { chargeToValues } from "../src/lib/store/mappers";
 import { buildSimPlan } from "../src/lib/sim/plan";
+import { ensureEnrichmentPipeline } from "../src/lib/guardrail/pipeline";
 
 type Row = { id: number; job_title: string | null; seniority_level: string | null; job_department: string | null };
 const rows: Row[] = [];
 for (let page = 1; ; page++) { const r = await c.call<Row[]>(OPS.getListContacts, { path: { list_id: 2 }, query: { page, limit: 200 } }); rows.push(...r); if (r.length < 200) break; }
 const vps = rows.filter((r) => r.seniority_level === "Vice President").map((r) => r.id).slice(0, 20);
 const founders = rows.filter((r) => /founder/i.test(r.job_title ?? "") && !vps.includes(r.id)).map((r) => r.id).slice(0, 20);
+const starter = rows.filter((r) => !vps.includes(r.id) && !founders.includes(r.id)).slice(0, 30).map((r) => r.id);
+const existingLists = await c.call<{ id: number; title: string }[]>(OPS.listLists);
 async function simList(title: string, ids: number[]): Promise<number> {
-  const l = await c.call<{ id: number }>(OPS.createList, { body: { title, description: "[sim] demo list for ROI Advisor", type: "contacts" } });
+  const found = existingLists.find((l) => l.title === title);
+  if (found) return found.id; // reuse: lists are never deleted, so re-seeding must not create duplicates
+  const l = await c.call<{ id: number }>(OPS.createList, { body: { title, description: "[sim] demo list for Credit Compass", type: "contacts" } });
   await c.call(OPS.addContactsToList, { path: { list_id: l.id }, body: { contact_ids: ids, conflict_resolution: "add_all" } });
   return l.id;
 }
 const vpList = await simList("[sim] Sales VPs", vps), founderList = await simList("[sim] Founders", founders);
-const plan = buildSimPlan(20260926, new Date().toISOString(), [
+for (const id of [vpList, founderList]) {
+  const p = await ensureEnrichmentPipeline(c, id, { enabled: false });
+  console.log(`pipeline for list ${id}: ${p.id} (switched off)`);
+}
+const plan = buildSimPlan(20260927, new Date().toISOString(), [
   { id: vpList, label: "[sim] Sales VPs", contactIds: vps, costPerMeeting: 124, meetings: 17 },
   { id: founderList, label: "[sim] Founders", contactIds: founders, costPerMeeting: 433, meetings: 6 },
-  { id: 2, label: "Starter list", contactIds: rows.slice(0, 30).map((r) => r.id), costPerMeeting: 1200, meetings: 4 },
+  { id: 2, label: "Starter list", contactIds: starter, costPerMeeting: 1200, meetings: 4 },
 ]);
 const charges = new RecordStore(c, "roi_charge");
 for (const ch of plan.charges) await charges.upsert(chargeToValues(ch));

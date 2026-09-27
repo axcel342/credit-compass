@@ -9,7 +9,8 @@
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "script": "node --env-file=.env.local --import tsx"
+    "script": "node --env-file=.env.local --import tsx",
+    "shots": "node --env-file=.env.local scripts/shots.mjs"
   },
   "dependencies": {
     "@graph8/sdk": "0.245.0",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "playwright-core": "1.63.0",
     "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "5.0.2"
