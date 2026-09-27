@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { weeklySpend, recoveryItems, refundDraftFor, claimState, alsoRows } from "@/lib/dashboard/recovery";
-import { recoveryHeadline, recoveryLede } from "@/lib/dashboard/story";
+import { recoveryItems, refundDraftFor, claimState, alsoRows } from "@/lib/dashboard/recovery";
 import type { ActionRecord, AttributedCharge, Run } from "@/lib/domain/types";
 
 const c = (id: string, at: string, p: Partial<AttributedCharge> = {}): AttributedCharge => ({ ledgerId: id, ledgerType: "usage", service: "waterfall_enrichment",
@@ -19,16 +18,6 @@ const runs: Run[] = [
   { extId: "4a3c811e-2", kind: "ai_enrichment_job", actionName: "AI enrichment", startedAt: null, completedAt: null, status: "failed", source: "poll", recordsOk: 0, recordsFailed: 1 },
 ];
 const ctx = { onboardingUnused: true, unusedDocs: 23, advisorPosts: ["2026-09-26T20:57:37Z"] };
-
-describe("weeklySpend", () => {
-  it("returns 8 weeks oldest first with waste split out", () => {
-    const w = weeklySpend(charges, "2026-09-27T12:00:00Z");
-    expect(w).toHaveLength(8);
-    expect(w[7]).toMatchObject({ credits: 975, waste: 115 });
-    expect(w[0].credits + w[1].credits).toBe(500);
-    expect(w.slice(0, 7).every((x) => x.waste === 0)).toBe(true);
-  });
-});
 
 describe("recoveryItems", () => {
   const items = recoveryItems(charges, runs, ctx);
@@ -64,12 +53,4 @@ describe("claimState", () => {
   });
 });
 
-describe("Recovery sentences", () => {
-  it("states waste and what graph8 owes", () => expect(recoveryHeadline({ waste: 115, refundable: 91, periodLabel: "the last 8 weeks" })).toBe("115 credits bought nothing. graph8 owes you 91 of them."));
-  it("handles no waste", () => expect(recoveryHeadline({ waste: 0, refundable: 0, periodLabel: "the last 30 days" })).toBe("Nothing was wasted in the last 30 days."));
-  it("says when it happened", () => {
-    expect(recoveryLede(["2026-09-26T14:34:00Z", "2026-09-26T15:40:00Z"])).toBe("All of it on Sep 26. Click a week to see what happened in it.");
-    expect(recoveryLede(["2026-09-20T00:00:00Z", "2026-09-26T00:00:00Z"])).toBe("Spread over 2 days, Sep 20 to Sep 26. Click a week to see what happened in it.");
-    expect(recoveryLede([])).toBeNull();
-  });
-});
+

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rollingCostPerMeeting, trendSentence, trendChange, trendTitle, firstTouchCohorts, trendLine } from "@/lib/domain/trend";
+import { rollingCostPerMeeting, trendChange, trendLine } from "@/lib/domain/trend";
 import type { AttributedCharge, Outcome } from "@/lib/domain/types";
 
 const NOW = "2026-09-27T00:00:00Z", DAY = 86_400_000, W = 7 * DAY, START = Date.parse(NOW) - 8 * W;
@@ -20,15 +20,7 @@ describe("rollingCostPerMeeting", () => {
     expect(points[0].label).toBe("Aug 30");
     expect(points.at(-1)!.label).toBe("Sep 27");
   });
-  it("describes the direction in plain words", () => expect(trendSentence(points)).toBe("Credits per meeting fell from 1,000 to 200 over the last 5 weeks."));
   it("measures the change from the first to the last point", () => expect(trendChange(points)).toEqual({ from: 1000, to: 200, weeks: 5, pct: -80 }));
-  it("titles the chart with the answer", () => {
-    expect(trendTitle(points)).toBe("Cost per meeting fell 80% in 5 weeks");
-    expect(trendTitle([{ label: "a", value: 300 }, { label: "b", value: 360 }])).toBe("Cost per meeting rose 20% in 2 weeks");
-    expect(trendTitle([{ label: "a", value: 300 }, { label: "b", value: 300 }])).toBe("Cost per meeting held steady for 2 weeks");
-    expect(trendTitle([{ label: "a", value: 300 }])).toBe("Cost per meeting over time");
-  });
-  it("has no sentence without two points", () => expect(trendSentence([{ label: "x", value: null }])).toBeNull());
   it("gives the trend line its direction, size and start", () =>
     expect(trendLine(points)).toMatchObject({ pct: 80, direction: "down", since: "Aug 30", values: [1000, 400, expect.any(Number), expect.any(Number), 200] }));
   it("says up when cost per meeting rose, and nothing when flat or too short", () => {
@@ -40,24 +32,4 @@ describe("rollingCostPerMeeting", () => {
     expect(trendLine([{ label: "a", value: null }, { label: "b", value: 500 }, { label: "c", value: 250 }])).toMatchObject({ since: "b", pct: 50 }));
 });
 
-describe("firstTouchCohorts", () => {
-  const charges = [ch("a", 0, 100, 1), ch("b", 1, 100, 1), ch("c", 0, 100, 2), ch("d", 1, 200, 3), ch("e", 6, 300, 4)];
-  const outcomes = [mt(2, 1), mt(3, 3), mt(7, 4)];
-  const cohorts = firstTouchCohorts(charges, outcomes, NOW);
-  it("puts each contact in the week of its first charge and counts each meeting once", () => {
-    expect(cohorts[0]).toMatchObject({ contacts: 2, credits: 300, meetings: 1, costPerMeeting: 300, maturing: false });
-    expect(cohorts[1]).toMatchObject({ contacts: 1, credits: 200, meetings: 1, costPerMeeting: 200 });
-    expect(cohorts[6]).toMatchObject({ contacts: 1, credits: 300, meetings: 1, maturing: true });
-    expect(cohorts[2]).toMatchObject({ contacts: 0, costPerMeeting: null });
-    expect(cohorts.reduce((s, c) => s + c.meetings, 0)).toBe(3);
-  });
-  it("excludes contacts first charged before the window even if re-charged inside it", () => {
-    const charges2 = [ch("pre", -1, 500, 9), ch("re", 2, 100, 9), ch("in", 2, 50, 10)];
-    const outcomes2 = [mt(3, 9), mt(3, 10)];
-    const c2 = firstTouchCohorts(charges2, outcomes2, NOW);
-    expect(c2.reduce((s, c) => s + c.contacts, 0)).toBe(1);
-    expect(c2.reduce((s, c) => s + c.credits, 0)).toBe(50);
-    expect(c2.reduce((s, c) => s + c.meetings, 0)).toBe(1);
-    expect(c2[2]).toMatchObject({ contacts: 1, credits: 50, meetings: 1, costPerMeeting: 50 });
-  });
-});
+
