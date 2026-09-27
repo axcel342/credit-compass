@@ -1,4 +1,4 @@
-import type { Activity } from "@/lib/domain/activities";
+import { MATCH_LABEL, type Activity } from "@/lib/domain/activities";
 import { BUCKETS, BUCKET_LABEL } from "@/lib/domain/buckets";
 import { n } from "@/lib/dashboard/story";
 
@@ -13,7 +13,7 @@ export function ActivityTable({ rows }: { rows: Activity[] }) {
   if (!rows.length) return <p className="small">No charges match this filter.</p>;
   return (
     <div className="table-wrap"><table className="acts-table">
-      <thead><tr><th>When</th><th>What it paid for</th><th className="num">Credits</th><th>What it bought</th><th>How we know</th></tr></thead>
+      <thead><tr><th>When</th><th>What it paid for</th><th className="num">Credits</th><th>What it bought</th><th>Match</th></tr></thead>
       {rows.map((a) => {
         const parts = BUCKETS.filter((b) => a.buckets[b] > 0);
         return (
@@ -31,7 +31,7 @@ export function ActivityTable({ rows }: { rows: Activity[] }) {
               <td>{a.result ? <span><i className="dot" style={{ background: `var(--${parts[0]})` }} /> {a.result}</span>
                 : <ul className="split">{parts.map((b) => <li key={b}><i className="dot" style={{ background: `var(--${b})` }} />{n(a.buckets[b])} {SHORT[b]}</li>)}</ul>}
                 <span className="sr-only">{parts.map((b) => `${BUCKET_LABEL[b]} ${n(a.buckets[b])}`).join("; ")}</span></td>
-              <td>{a.how}</td>
+              <td><span className={`match ${a.match}`} title={a.matchNote}>{MATCH_LABEL[a.match]}</span></td>
             </tr>
           </tbody>);
       })}

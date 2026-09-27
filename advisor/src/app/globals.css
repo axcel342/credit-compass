@@ -257,6 +257,11 @@ a.btn{text-decoration:none;display:inline-block}
 .acts-table details li{display:grid;grid-template-columns:1fr 50px 140px;gap:8px;font-size:13px;background:var(--panel-2);padding:4px 8px;border-radius:5px}
 .acts-table details li b{text-align:right;font-variant-numeric:tabular-nums}
 .acts-table td{position:relative}
+.match{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.match::before{content:"";width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-2)}
+.match.exact::before{background:var(--ink-2)}
+.match.likely::before,.match.mixed::before{background:linear-gradient(90deg,var(--ink-2) 50%,transparent 50%)}
+.match.none{color:var(--muted)}.match.none::before{border-style:dashed;border-color:var(--muted)}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* recovery */

@@ -28,7 +28,7 @@ describe("groupActivities", () => {
 
   it("keeps one activity per run across days, named by service and list", () => {
     const sim = acts.find((a) => a.service === "waterfall_enrichment")!;
-    expect(sim).toMatchObject({ title: "Email finding", detail: "Sales VPs", charges: 2, credits: 20, from: "2026-08-02T00:00:00.000Z", how: "Run ID", simulated: true, children: [] });
+    expect(sim).toMatchObject({ title: "Email finding", detail: "Sales VPs", charges: 2, credits: 20, from: "2026-08-02T00:00:00.000Z", match: "exact", matchNote: "Run ID", simulated: true, children: [] });
     expect(sim.buckets.booked).toBe(20);
   });
   it("puts several jobs with the same purpose under one activity with a child per job", () => {
@@ -39,8 +39,12 @@ describe("groupActivities", () => {
   });
   it("groups a day's skill runs together and describes how each was matched", () => {
     const sk = acts.find((a) => a.service === "voice_llm")!;
-    expect(sk).toMatchObject({ title: "Skill runs", credits: 12, how: "Token count, Service only", result: "Can't tell yet" });
+    expect(sk).toMatchObject({ title: "Skill runs", credits: 12, match: "mixed", matchNote: "Token count, Service only", result: "Can't tell yet" });
     expect(sk.detail).toBe("Meeting Prep Brief");
+  });
+  it("calls a time-window match Likely", () => {
+    const [a] = groupActivities([c("t1", { service: "studio_global", method: "time_window", explanation: "Onboarding research" })], [], bucketOf, names);
+    expect(a).toMatchObject({ match: "likely", matchNote: "Time of charge" });
   });
   it("sorts by credits, largest first", () => expect(acts.map((a) => a.credits)).toEqual([72, 20, 12]));
 });

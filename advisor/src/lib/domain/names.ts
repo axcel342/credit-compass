@@ -9,7 +9,8 @@ export function serviceName(service: string): string {
 }
 
 export function listLabel(title: string): string {
-  return title.replace(/^\[sim\]\s*/, "").replace(/\s*\(proactive setup\)$/, "").trim();
+  const t = title.replace(/^\[sim\]\s*/, "").replace(/\s*\(proactive setup\)$/, "").trim();
+  return /\bprobe$/i.test(t) ? "Test list" : t;
 }
 
 export function listNamesFrom(lists: { id: number; title: string }[]): Map<string, string> {
