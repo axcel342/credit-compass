@@ -10,7 +10,7 @@ export const ENRICHMENT_TYPES: TypeDef[] = [
   { key: "find", label: "Find emails", verb: "Find emails for", noun: "email finding", notTargetLabel: "already have an email, graph8 will skip", pricePerRecord: 3,
     target: (r) => !r.hasEmail, template: (t) => t.key === "verified_emails", missingReason: "graph8 has no email-finding list template here." },
   { key: "verify", label: "Verify emails", verb: "Verify", noun: "email verification", notTargetLabel: "have no email to verify", pricePerRecord: 1,
-    target: (r) => r.hasEmail, template: (t) => /verif/i.test(`${t.key} ${t.name}`) && t.key !== "verified_emails",
+    target: (r) => r.hasEmail, template: (t) => /^(verify|email_verif)/i.test(t.key) && t.key !== "verified_emails",
     missingReason: "graph8 has no list template for email verification, so this is an estimate only." },
   { key: "phones", label: "Find phones", verb: "Find phones for", noun: "phone finding", notTargetLabel: "already have a phone", pricePerRecord: 0,
     target: () => true, template: () => false, missingReason: "Available once graph8's phone template is checked." },

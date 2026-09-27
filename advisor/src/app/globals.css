@@ -154,7 +154,6 @@ td.num,th.num{text-align:right}
 .fitbar div:last-child{border-radius:0 4px 4px 0}
 code,.code{font-family:var(--f-mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:6px;padding:1px 6px}
 pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.6}
-.dialog-foot{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--line-2);background:var(--panel-2)}
 .side-note{display:grid;gap:10px;align-content:start}
 
 /* recap */

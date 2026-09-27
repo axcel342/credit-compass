@@ -25,6 +25,10 @@ describe("availableTypes", () => {
     expect(a[1].reason).toBe("graph8 has no list template for email verification, so this is an estimate only.");
     expect(a[2].reason).toBe("Available once graph8's phone template is checked.");
   });
+  it("does not mistake a qualification template for email verification", () => {
+    const a = availableTypes([{ key: "qualify_then_email", name: "Qualify → verified emails" }]);
+    expect(a[1]).toMatchObject({ runnable: false, reason: "graph8 has no list template for email verification, so this is an estimate only." });
+  });
 });
 
 describe("costWalk", () => {
