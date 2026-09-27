@@ -57,5 +57,7 @@ export const OPS = {
   createList: "create_list_lists_post",
   addContactsToList: "add_contacts_to_list_lists__list_id__contacts_post",
   estimateListPipeline: "estimate_list_pipeline_enrichment_lists__list_id__pipelines__pipeline_id__estimate_post",
+  listApps: "list_apps_apps_get",
+  createApp: "create_app_apps_post",
 } as const;
 export type OpId = (typeof OPS)[keyof typeof OPS];

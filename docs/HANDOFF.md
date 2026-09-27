@@ -278,3 +278,16 @@ Task 2 re-seeded with plan v2: `cleanup-sim.ts --apply` → `seed-sim.ts` → `s
 ```
 
 `bucketsAddUp: true`, perList matches targets (Starter reads 1,232.75 from its real spend on top of the 1,200 sim target), cohortWeeks 8, meetings 27, won 9, `repeatShare` 0.121 (spec ~15%). The first re-seed read `repeatShare` 0.428 because the Starter list reused the first 30 rows of list 2, overlapping the VP/Founder selections, so cross-list charges counted as repeats; `scripts/seed-sim.ts` now picks Starter contacts disjoint from `vps`/`founders` (commit `cfd1305`) and the re-run above is the corrected data. All repeat credits are simulated (real repeat credits: 0).
+
+## 16. App-install spike (2026-09-27)
+
+Task 12 ran `scripts/app-spike.ts` (ops `list_apps_apps_get` / `create_app_apps_post`, added to `src/lib/g8/ops.ts`) on 2026-09-27, authorized by the user. It did one `GET /apps` and one `POST /apps` with `{name: "Credit Compass", slug: "credit-compass"}`. **0 credits, no install, nothing sent to anyone, no other app mutation.**
+
+- Before: `GET /apps` → `[]` (org had no apps).
+- Result: the org **is allowlisted** as an app builder. Exact response:
+
+  ```json
+  {"app_id":"dapp_601136e18d90","builder_org_id":"org_5e2170609156","slug":"credit-compass","name":"Credit Compass","status":"draft","registered_origins":[],"default_hostname":null,"source_repo_url":null,"source_provider":null,"source_default_branch":null,"source_credential_ref":null,"created_at":null,"archived_at":null}
+  ```
+
+- What it means: an app record (`dapp_601136e18d90`, status `draft`) now exists in `org_5e2170609156`. It is **not installed anywhere** and must not be; installing is a later, separately-approved step. Because the org can create apps, Phase 3's `AppInstallConnector` (consent + tenant-bound credential via `createGraph8ServiceClient`) can replace the API-key connector later. If a future org is refused with 403 `builder_not_allowlisted`, the action is to ask graph8 to enable that org as an app builder.
