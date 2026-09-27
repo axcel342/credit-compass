@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { isAuthed } from "@/lib/auth";
-import { currentCaller } from "@/lib/workspace/current";
+import { currentCaller, currentWorkspace } from "@/lib/workspace/current";
 import { loadDashboardData } from "@/lib/dashboard/data";
 import { plural } from "@/lib/dashboard/story";
 import { RecordStore } from "@/lib/store/records";
@@ -15,7 +15,7 @@ const DONE: Record<string, string> = { repeat: "Turned on", lookalike: "Built th
 export async function applyAction(_: unknown, form: FormData): Promise<Result> {
   if (!(await isAuthed())) return { ok: false, message: "Sign in first." };
   if (form.get("confirm") !== "yes") return { ok: false, message: "Tick the box to confirm the change in graph8." };
-  const c = await currentCaller(), now = new Date().toISOString();
+  const c = await currentCaller(), ws = await currentWorkspace(), now = new Date().toISOString();
   const action = String(form.get("action")), listIds = String(form.get("listIds") ?? "").split(",").filter(Boolean).map(Number);
   try {
     const d = await loadDashboardData(c);
@@ -32,7 +32,7 @@ export async function applyAction(_: unknown, form: FormData): Promise<Result> {
     } else if (action === "pause") {
       if (!(await applyPause(c, listId, now))) return { ok: false, message: "That list has no enrichment pipeline to pause." };
     } else if (action === "guardrail") {
-      if (!(await applyGuardrailRule(c, listId, rows.filter((r) => r.listIds.includes(listId)), now))) return { ok: false, message: "That list has no enrichment pipeline." };
+      if (!(await applyGuardrailRule(c, listId, rows.filter((r) => r.listIds.includes(listId)), now, { columnId: ws.fitColumnId, name: ws.fitFieldName }))) return { ok: false, message: "That list has no enrichment pipeline." };
     } else return { ok: false, message: "Unknown action." };
     revalidatePath("/optimize");
     return { ok: true, message: `${DONE[action]}.` };

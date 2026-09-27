@@ -47,6 +47,7 @@ export const OPS = {
   listWebhooks: "list_webhooks_webhooks_get",
   createWebhook: "create_webhook_webhooks_post",
   updateWebhook: "update_webhook_webhooks__webhook_id__patch",
+  deleteWebhook: "delete_webhook_webhooks__webhook_id__delete",
   listWebhookDeliveries: "list_webhook_deliveries_webhooks__webhook_id__deliveries_get",
   createMcpServer: "create_mcp_server_voice_mcp_servers_post",
   listMcpServers: "list_mcp_servers_workflows_mcp_servers_get",
@@ -57,5 +58,7 @@ export const OPS = {
   createList: "create_list_lists_post",
   addContactsToList: "add_contacts_to_list_lists__list_id__contacts_post",
   estimateListPipeline: "estimate_list_pipeline_enrichment_lists__list_id__pipelines__pipeline_id__estimate_post",
+  listApps: "list_apps_apps_get",
+  createApp: "create_app_apps_post",
 } as const;
 export type OpId = (typeof OPS)[keyof typeof OPS];
