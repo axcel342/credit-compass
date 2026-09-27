@@ -31,7 +31,7 @@ export const loadDashboardData = cache(async (c: G8Caller = g8Caller): Promise<D
 export interface PeriodView {
   period: Period; window: { from: number; to: number }; charges: AttributedCharge[]; outcomes: Outcome[]; stats: Stat[]; org: Stat | undefined;
   coverage: ReturnType<typeof coverage>; waste: number; buckets: Record<OutcomeBucket, number>; bucketOf: (c: AttributedCharge) => OutcomeBucket;
-  bucketCtx: BucketContext; meetings: number; won: number;
+  bucketCtx: BucketContext; meetings: number; won: number; wonValue: number;
 }
 
 export function periodView(d: DashboardData, period: Period): PeriodView {
@@ -44,5 +44,6 @@ export function periodView(d: DashboardData, period: Period): PeriodView {
   return { period, window, charges, outcomes, stats, org: stats.find((s) => s.dimension === "org"), coverage: coverage(charges),
     waste: charges.filter((c) => c.isWaste).reduce((s, c) => s + c.credits, 0), buckets: bucketTotals(charges, bucketCtx),
     bucketOf: (c) => outcomeBucket(c, bucketCtx), bucketCtx,
-    meetings: outcomes.filter((o) => o.type === "meeting_booked").length, won: outcomes.filter((o) => o.type === "deal_won").length };
+    meetings: outcomes.filter((o) => o.type === "meeting_booked").length, won: outcomes.filter((o) => o.type === "deal_won").length,
+    wonValue: outcomes.filter((o) => o.type === "deal_won").reduce((s, o) => s + (o.amount ?? 0), 0) };
 }

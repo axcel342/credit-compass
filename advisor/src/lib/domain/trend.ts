@@ -21,12 +21,27 @@ export function rollingCostPerMeeting(charges: AttributedCharge[], outcomes: Out
   return out;
 }
 
-export function trendSentence(points: TrendPoint[]): string | null {
+export interface TrendChange { from: number; to: number; weeks: number; pct: number }
+
+export function trendChange(points: TrendPoint[]): TrendChange | null {
   const v = points.filter((p): p is { label: string; value: number } => p.value !== null);
   if (v.length < 2) return null;
-  const a = Math.round(v[0].value), b = Math.round(v.at(-1)!.value);
-  if (a === b) return `Credits per meeting held at ${n(b)} over the last ${v.length} weeks.`;
-  return `Credits per meeting ${b < a ? "fell" : "rose"} from ${n(a)} to ${n(b)} over the last ${v.length} weeks.`;
+  const from = Math.round(v[0].value), to = Math.round(v.at(-1)!.value);
+  return { from, to, weeks: v.length, pct: from > 0 ? Math.round(((to - from) / from) * 100) : 0 };
+}
+
+export function trendSentence(points: TrendPoint[]): string | null {
+  const c = trendChange(points);
+  if (!c) return null;
+  if (c.from === c.to) return `Credits per meeting held at ${n(c.to)} over the last ${c.weeks} weeks.`;
+  return `Credits per meeting ${c.to < c.from ? "fell" : "rose"} from ${n(c.from)} to ${n(c.to)} over the last ${c.weeks} weeks.`;
+}
+
+export function trendTitle(points: TrendPoint[]): string {
+  const c = trendChange(points);
+  if (!c) return "Cost per meeting over time";
+  if (c.pct === 0) return `Cost per meeting held steady for ${c.weeks} weeks`;
+  return `Cost per meeting ${c.pct < 0 ? "fell" : "rose"} ${Math.abs(c.pct)}% in ${c.weeks} weeks`;
 }
 
 export function firstTouchCohorts(charges: AttributedCharge[], outcomes: Outcome[], now: string, weeks = 8, maturingWeeks = 3): Cohort[] {

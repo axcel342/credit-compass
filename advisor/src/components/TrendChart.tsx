@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Cohort, TrendPoint } from "@/lib/domain/trend";
-import { trendSentence } from "@/lib/domain/trend";
+import { trendSentence, trendTitle } from "@/lib/domain/trend";
 import { plural } from "@/lib/dashboard/story";
 import { LineChart } from "./LineChart";
 
@@ -9,7 +9,7 @@ export function TrendChart({ mode, points, cohorts, hrefFor }: { mode: "rolling"
   const max = Math.max(1, ...cohorts.map((c) => c.costPerMeeting ?? 0));
   return (
     <div className="trend">
-      <div className="ph"><h2>{mode === "rolling" ? "Getting cheaper?" : "By week first enriched"}</h2>
+      <div className="ph"><h2>{mode === "rolling" ? trendTitle(points) : "By week first enriched"}</h2>
         <span className="seg" role="group" aria-label="Trend view">
           <Link href={hrefFor("rolling")} className={mode === "rolling" ? "on" : undefined}>Rolling 4 weeks</Link>
           <Link href={hrefFor("cohort")} className={mode === "cohort" ? "on" : undefined}>By week spent</Link>
