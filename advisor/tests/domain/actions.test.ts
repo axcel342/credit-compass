@@ -22,7 +22,8 @@ describe("buildActions", () => {
   it("finds repeat enrichment with a monthly saving and the lists to change", () => {
     const r = acts.find((a) => a.id === "repeat")!;
     expect(r.monthlyCredits).toBe(Math.round((90 * 30) / 56));
-    expect(r.button).toMatchObject({ action: "repeat", label: "Turn on for 1 pipeline", listIds: [2] });
+    expect(r.title).toBe("Stop paying twice for the same contacts");
+    expect(r.button).toMatchObject({ action: "repeat", label: "Turn on for 1 pipeline", listIds: [2], confirm: "Yes, change 1 pipeline in graph8" });
     expect(r.inGraph8).toBe("Turns on Skip recently enriched and Skip existing values for the Starter list pipeline.");
   });
   it("moves spend from the costliest list to the cheapest, in two steps", () => {
@@ -30,13 +31,13 @@ describe("buildActions", () => {
     expect(m.title).toBe("Move spend from the Starter list to people like your Sales VPs");
     expect(m.impact).toBe("~2 more meetings a week");
     expect(m.steps.map((s) => [s.label, s.done])).toEqual([["Build a lookalike list of your Sales VPs", false], ["Pause enrichment on the Starter list", false]]);
-    expect(m.button).toMatchObject({ action: "lookalike", label: "Build lookalike list", listIds: [15] });
+    expect(m.button).toMatchObject({ action: "lookalike", label: "Build lookalike list", listIds: [15], confirm: "Yes, create a new list in graph8" });
   });
   it("skips unlikely contacts on the list with the most of them", () => {
     const s = acts.find((a) => a.id === "skip-unlikely")!;
     expect(s.title).toBe("Skip contacts unlikely to book");
     expect(s.impact).toBe("saves 12 per run");
-    expect(s.button).toMatchObject({ action: "guardrail", listIds: [2] });
+    expect(s.button).toMatchObject({ action: "guardrail", listIds: [2], confirm: "Yes, add the rule to the Starter list in graph8" });
   });
   it("orders by impact: monthly savings first, then meetings, then per-run", () => expect(acts.map((a) => a.id)).toEqual(["repeat", "move-spend", "skip-unlikely"]));
   it("marks steps and actions done from roi_action records", () => {
@@ -46,7 +47,7 @@ describe("buildActions", () => {
     expect(a2.find((a) => a.id === "repeat")!.applied).toBe(true);
     const m = a2.find((a) => a.id === "move-spend")!;
     expect(m.steps[0].done).toBe(true);
-    expect(m.button).toMatchObject({ action: "pause", label: "Pause the Starter list", listIds: [2] });
+    expect(m.button).toMatchObject({ action: "pause", label: "Pause the Starter list", listIds: [2], confirm: "Yes, pause the Starter list in graph8" });
   });
   it("offers nothing when the data doesn't support it", () => expect(buildActions({ charges: [], stats: [], listNames: names, contacts: [], actions: [] })).toEqual([]));
 });

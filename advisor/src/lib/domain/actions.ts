@@ -5,7 +5,7 @@ export interface ActionInput { charges: AttributedCharge[]; stats: Stat[]; listN
 export interface PlannedAction {
   id: "repeat" | "move-spend" | "skip-unlikely"; title: string; impact: string; evidence: string; confidence: "High confidence" | "Medium confidence";
   inGraph8: string; chart: { label: string; value: number; tone: string }[]; steps: { label: string; sub: string; done: boolean }[];
-  button: { action: "repeat" | "lookalike" | "pause" | "guardrail"; label: string; listIds: number[] } | null; applied: boolean; monthlyCredits: number;
+  button: { action: "repeat" | "lookalike" | "pause" | "guardrail"; label: string; listIds: number[]; confirm: string } | null; applied: boolean; monthlyCredits: number;
 }
 
 const n = (x: number) => Math.round(x).toLocaleString("en-US");
@@ -36,11 +36,11 @@ export function buildActions(x: ActionInput): PlannedAction[] {
     const firstTime = x.charges.filter((c) => c.contactId !== null).reduce((s, c) => s + c.credits, 0) - rep.credits;
     const applied = repLists.every((l) => isApplied(x.actions, "repeat_skip", l));
     const listText = repLists.map((l) => the(name(l))).join(", ").replace(/, ([^,]*)$/, " and $1");
-    out.push({ id: "repeat", title: "Stop paying to enrich the same contacts again", impact: `saves ~${n((rep.credits * 30) / 56)} a month`, monthlyCredits: Math.round((rep.credits * 30) / 56),
+    out.push({ id: "repeat", title: "Stop paying twice for the same contacts", impact: `saves ~${n((rep.credits * 30) / 56)} a month`, monthlyCredits: Math.round((rep.credits * 30) / 56),
       evidence: `${n(rep.credits)} credits in the last 8 weeks${total ? `, ${Math.round((rep.credits / total) * 100)}% of all spend,` : ""} went to contacts you had already enriched within 30 days.`,
       confidence: "High confidence", chart: [{ label: "First time", value: Math.max(0, firstTime), tone: "var(--flow)" }, { label: "Again", value: rep.credits, tone: "var(--waste)" }],
       inGraph8: `Turns on Skip recently enriched and Skip existing values for ${listText} ${repLists.length === 1 ? "pipeline" : "pipelines"}.`, steps: [],
-      button: applied ? null : { action: "repeat", label: `Turn on for ${repLists.length} ${repLists.length === 1 ? "pipeline" : "pipelines"}`, listIds: repLists }, applied });
+      button: applied ? null : { action: "repeat", label: `Turn on for ${repLists.length} ${repLists.length === 1 ? "pipeline" : "pipelines"}`, listIds: repLists, confirm: `Yes, change ${repLists.length} ${repLists.length === 1 ? "pipeline" : "pipelines"} in graph8` }, applied });
   }
 
   const lists = x.stats.filter((s) => s.period === "8w" && s.dimension === "list" && s.costPerMeeting !== null);
@@ -58,7 +58,7 @@ export function buildActions(x: ActionInput): PlannedAction[] {
       inGraph8: "Builds a lookalike list from graph8's free prospect search, then switches the costly list's pipeline off so it stops running on its own. Existing data stays.",
       steps: [{ label: `Build a lookalike list of your ${name(bId)}`, sub: "Free. Saves up to 50 new contacts with the same seniority and department.", done: lookDone },
         { label: `Pause enrichment on ${the(name(wId))}`, sub: "Switches its list pipeline off. Existing data stays.", done: pauseDone }],
-      button: !lookDone ? { action: "lookalike", label: "Build lookalike list", listIds: [bId] } : !pauseDone ? { action: "pause", label: `Pause ${the(name(wId))}`, listIds: [wId] } : null,
+      button: !lookDone ? { action: "lookalike", label: "Build lookalike list", listIds: [bId], confirm: "Yes, create a new list in graph8" } : !pauseDone ? { action: "pause", label: `Pause ${the(name(wId))}`, listIds: [wId], confirm: `Yes, pause ${the(name(wId))} in graph8` } : null,
       applied: lookDone && pauseDone });
   }
 
@@ -71,7 +71,7 @@ export function buildActions(x: ActionInput): PlannedAction[] {
       evidence: `${n(g.low)} of ${n(g.all)} contacts on ${the(name(gl))} have an email that doesn't match their company or belong to groups that rarely book. When we checked, mismatched emails bounced 45% of the time against 20% for the rest.`,
       confidence: "High confidence", chart: [], steps: [],
       inGraph8: "Writes a fit score to each contact and adds a run condition to the list pipeline, so graph8 skips anyone unlikely on every run.",
-      button: applied ? null : { action: "guardrail", label: `Apply to ${the(name(gl))}`, listIds: [gl] }, applied });
+      button: applied ? null : { action: "guardrail", label: `Apply to ${the(name(gl))}`, listIds: [gl], confirm: `Yes, add the rule to ${the(name(gl))} in graph8` }, applied });
   }
   return out;
 }

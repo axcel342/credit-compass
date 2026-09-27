@@ -33,7 +33,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
       <section className="panel">
         <div className="ph"><h2>Where every credit went</h2><span className="small">Click a band to see its charges</span></div>
         {total > 0 ? <FlowDiagram layout={layoutFlow(flowData(v.charges, v.bucketOf, d.listNames))} periodQuery={periodQuery} />
-          : <p className="small">No charges in {PERIOD_LABEL[period]}. Switch to 8 weeks or run Sync now.</p>}
+          : <p className="small">No charges in {PERIOD_LABEL[period]}. Switch to the last 8 weeks or run Sync now.</p>}
       </section>
       <div className="grid2">
         <DoNext items={doNextItems(dashboardBuckets(d.findings, d.now).open, 4, periodQuery, impact)} />

@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const OPTIONS = [["8w", "8 weeks"], ["30d", "30 days"]] as const;
+const OPTIONS = [["8w", "Last 8 weeks"], ["30d", "Last 30 days"]] as const;
 
 export function PeriodSwitch() {
   const router = useRouter(), path = usePathname(), sp = useSearchParams();
