@@ -10,7 +10,7 @@ const f = (title: string, body: string): Finding => ({ extId: title, kind: "wast
 describe("recap", () => {
   it("builds a bold headline and one numbered line per item (max 3)", () => {
     const blocks = buildRecapBlocks({ spendThisWeek: 2900, meetingsThisWeek: 11, items: [f("a", "A"), f("b", "B"), f("c", "C")], simulated: true });
-    expect(blocks[0].content[0]).toMatchObject({ text: "Last week: 2,900 credits → 11 meetings (264 each) [sim]", marks: [{ type: "bold" }] });
+    expect(blocks[0].content[0]).toMatchObject({ text: "Last week: 2,900 credits → 11 meetings (264 each), includes demo data", marks: [{ type: "bold" }] });
     expect(blocks.slice(1).map((b) => b.content[0].text)).toEqual(["1. A", "2. B", "3. C"]);
   });
   it("posts document blocks to the roi-advisor channel only", async () => {
