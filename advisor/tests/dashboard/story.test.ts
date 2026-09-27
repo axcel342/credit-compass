@@ -23,3 +23,9 @@ describe("Overview sentences", () => {
   });
   it("pluralises", () => { expect(plural(1, "job")).toBe("1 job"); expect(plural(3, "job")).toBe("3 jobs"); expect(plural(2, "company", "companies")).toBe("2 companies"); });
 });
+
+import { chargesHeadline } from "@/lib/dashboard/story";
+describe("Charges sentence", () => {
+  it("states how much traces back", () => expect(chargesHeadline({ traced: 9722, total: 10766, periodLabel: "the last 8 weeks" })).toBe("90% of your credits trace back to a contact, list or run."));
+  it("handles no charges", () => expect(chargesHeadline({ traced: 0, total: 0, periodLabel: "the last 30 days" })).toBe("No charges in the last 30 days."));
+});
