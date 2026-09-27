@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { FakeG8 } from "../helpers/fake-client";
 import { OPS } from "@/lib/g8/ops";
-import { assertConditionFilters, validateCondition, runGuardedPipeline, readPipelineRun, RUN_CONDITION } from "@/lib/guardrail/guardrail";
+import { assertConditionFilters, validateCondition, runGuardedPipeline, readPipelineRun, runCondition, RUN_CONDITION } from "@/lib/guardrail/guardrail";
 import { loadFixture } from "../fixtures";
 
 describe("guardrail", () => {
   it("uses the validated function-style condition", () => expect(RUN_CONDITION).toBe('NOT(EQ({{udo_roi_fit_11e946f0}}, "low"))'));
+  it("builds the run condition for any fit field", () => expect(runCondition("udo_roi_fit_abc")).toBe('NOT(EQ({{udo_roi_fit_abc}}, "low"))'));
   it("refuses a condition graph8 says is invalid", async () => {
     const c = new FakeG8();
     c.handlers.set(OPS.validateFormula, () => ({ valid: false, errors: ["Invalid G8X syntax: Unexpected character '='"] }));

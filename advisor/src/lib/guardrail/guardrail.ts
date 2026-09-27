@@ -3,7 +3,9 @@ import { OPS } from "../g8/ops";
 
 export const ROI_FIT_FIELD_NAME = "udo_roi_fit_11e946f0";
 
-export const RUN_CONDITION = `NOT(EQ({{${ROI_FIT_FIELD_NAME}}}, "low"))`;
+export const runCondition = (fieldName: string) => `NOT(EQ({{${fieldName}}}, "low"))`;
+
+export const RUN_CONDITION = runCondition(ROI_FIT_FIELD_NAME);
 
 export async function validateCondition(c: G8Caller, formula: string): Promise<void> {
   const r = await c.call<{ valid: boolean; errors: string[] }>(OPS.validateFormula, { body: { formula } });
