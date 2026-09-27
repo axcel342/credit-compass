@@ -11,6 +11,7 @@ const rows: Row[] = [];
 for (let page = 1; ; page++) { const r = await c.call<Row[]>(OPS.getListContacts, { path: { list_id: 2 }, query: { page, limit: 200 } }); rows.push(...r); if (r.length < 200) break; }
 const vps = rows.filter((r) => r.seniority_level === "Vice President").map((r) => r.id).slice(0, 20);
 const founders = rows.filter((r) => /founder/i.test(r.job_title ?? "") && !vps.includes(r.id)).map((r) => r.id).slice(0, 20);
+const starter = rows.filter((r) => !vps.includes(r.id) && !founders.includes(r.id)).slice(0, 30).map((r) => r.id);
 const existingLists = await c.call<{ id: number; title: string }[]>(OPS.listLists);
 async function simList(title: string, ids: number[]): Promise<number> {
   const found = existingLists.find((l) => l.title === title);
@@ -27,7 +28,7 @@ for (const id of [vpList, founderList]) {
 const plan = buildSimPlan(20260927, new Date().toISOString(), [
   { id: vpList, label: "[sim] Sales VPs", contactIds: vps, costPerMeeting: 124, meetings: 17 },
   { id: founderList, label: "[sim] Founders", contactIds: founders, costPerMeeting: 433, meetings: 6 },
-  { id: 2, label: "Starter list", contactIds: rows.slice(0, 30).map((r) => r.id), costPerMeeting: 1200, meetings: 4 },
+  { id: 2, label: "Starter list", contactIds: starter, costPerMeeting: 1200, meetings: 4 },
 ]);
 const charges = new RecordStore(c, "roi_charge");
 for (const ch of plan.charges) await charges.upsert(chargeToValues(ch));
