@@ -54,4 +54,26 @@ describe("connectWorkspace", () => {
     await connectWorkspace("k1", d); await connectWorkspace("k2", d);
     expect(await d.store.list()).toHaveLength(1);
   });
+  it("explains a key that can't set up objects and webhooks and stores nothing", async () => {
+    const d = deps(fakeFor(), { status: 200, body: { data: { org_id: "org_1" } } });
+    d.bootstrap = async () => { throw new G8Error({ message: "forbidden", status: 403, type: "forbidden", code: "missing_scope" }); };
+    expect(await connectWorkspace("k", d)).toEqual({ ok: false, error: "This key can't set up Credit Compass objects and webhooks. Create a key with access to objects and webhooks, then try again." });
+    expect(await d.store.list()).toEqual([]);
+  });
+  it("passes through other graph8 setup errors", async () => {
+    const d = deps(fakeFor(), { status: 200, body: { data: { org_id: "org_1" } } });
+    d.bootstrap = async () => { throw new G8Error({ message: "graph8 answered 500. Try again in a minute.", status: 500, type: "server_error", code: "internal" }); };
+    expect(await connectWorkspace("k", d)).toEqual({ ok: false, error: "graph8 answered 500. Try again in a minute." });
+  });
+  it("explains a network failure while checking the key", async () => {
+    const d = deps(fakeFor(), { status: 200, body: {} });
+    d.fetchMe = async () => { throw new Error("fetch failed"); };
+    expect(await connectWorkspace("k", d)).toEqual({ ok: false, error: "graph8 isn't answering right now. Try again in a minute." });
+    expect(await d.store.list()).toEqual([]);
+  });
+  it("explains a non-graph8 setup failure", async () => {
+    const d = deps(fakeFor(), { status: 200, body: { data: { org_id: "org_1" } } });
+    d.bootstrap = async () => { throw new Error("socket hang up"); };
+    expect(await connectWorkspace("k", d)).toEqual({ ok: false, error: "graph8 isn't answering right now. Try again in a minute." });
+  });
 });

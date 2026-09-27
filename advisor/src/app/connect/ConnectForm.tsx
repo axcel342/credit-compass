@@ -6,7 +6,7 @@ export function ConnectForm() {
   const [state, action, pending] = useActionState(connect, undefined);
   if (state?.ok) return (
     <div className="panel"><p>{state.message}</p>
-      <p className="small">Your MCP token (shown once; add it to Claude or Cursor as the bearer token for /api/mcp):</p><pre className="code">{state.mcpToken}</pre>
+      {state.mcpToken && <><p className="small">Your MCP token (shown once; add it to Claude or Cursor as the bearer token for /api/mcp):</p><pre className="code">{state.mcpToken}</pre></>}
       <Link className="btn primary" href="/">Open your dashboard</Link></div>);
   return (
     <form action={action} className="panel" style={{ display: "grid", gap: 10 }}>

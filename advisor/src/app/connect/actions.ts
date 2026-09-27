@@ -25,6 +25,7 @@ export async function connect(_: unknown, form: FormData): Promise<{ ok: boolean
   });
   if (!r.ok) return { ok: false, message: r.error };
   (await cookies()).set(WORKSPACE_COOKIE, signSession(r.workspace.id), { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 14 });
-  await runSync({ c: callerFor(apiKey) });
+  try { await runSync({ c: callerFor(apiKey) }); }
+  catch { return { ok: false, message: "graph8 isn't answering right now. Try again in a minute." }; }
   return { ok: true, message: `Connected ${r.workspace.orgName}. Your first sync is done.`, mcpToken: r.mcpToken };
 }

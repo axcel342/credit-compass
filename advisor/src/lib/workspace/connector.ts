@@ -29,7 +29,9 @@ export interface ConnectDeps {
 export async function connectWorkspace(raw: string, deps: ConnectDeps): Promise<{ ok: true; workspace: Workspace; mcpToken: string } | { ok: false; error: string }> {
   const key = raw.trim();
   if (!key) return { ok: false, error: "Paste an API key from graph8 → Settings → API." };
-  const me = await deps.fetchMe(key);
+  let me: { status: number; body: unknown };
+  try { me = await deps.fetchMe(key); }
+  catch { return { ok: false, error: "graph8 isn't answering right now. Try again in a minute." }; }
   if (me.status === 401 || me.status === 403) return { ok: false, error: "graph8 didn't accept that key. Copy it again from graph8 → Settings → API." };
   if (me.status >= 400) return { ok: false, error: `graph8 answered ${me.status}. Try again in a minute.` };
   const { orgId, orgName } = parseMe(me.body);
@@ -41,7 +43,15 @@ export async function connectWorkspace(raw: string, deps: ConnectDeps): Promise<
   }
   const existing = (await deps.store.list()).find((w) => w.orgId === orgId);
   const id = existing?.id ?? randomUUID();
-  const setup = await deps.bootstrap(c, id);
+  let setup: { webhookId: string; webhookSecret: string; fitColumnId: number; fitFieldName: string };
+  try { setup = await deps.bootstrap(c, id); }
+  catch (e) {
+    if (e instanceof G8Error) {
+      if (e.status === 401 || e.status === 403) return { ok: false, error: "This key can't set up Credit Compass objects and webhooks. Create a key with access to objects and webhooks, then try again." };
+      return { ok: false, error: e.message };
+    }
+    return { ok: false, error: "graph8 isn't answering right now. Try again in a minute." };
+  }
   const mcpToken = randomBytes(32).toString("base64url");
   if (existing) await deps.store.remove(existing.id);
   const workspace: Workspace = { id, orgId, orgName: orgName ?? orgId, demo: false, keyCipher: encrypt(key, deps.secret), keyHash: keyHash(key),
