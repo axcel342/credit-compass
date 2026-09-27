@@ -10,7 +10,10 @@ export async function disconnect(): Promise<void> {
   const ws = await currentWorkspace();
   if (ws.demo) redirect("/");
   const w = await workspaceStore().get(ws.id);
-  if (w?.webhookId) await ws.caller.call(OPS.deleteWebhook, { path: { webhook_id: w.webhookId } }).catch(() => undefined);
+  if (w?.webhookId) {
+    try { await ws.caller.call(OPS.deleteWebhook, { path: { webhook_id: w.webhookId } }); }
+    catch { throw new Error("Could not remove the webhook in graph8, so nothing was disconnected. Try again."); }
+  }
   await workspaceStore().remove(ws.id);
   (await cookies()).delete(WORKSPACE_COOKIE);
   redirect("/connect");
