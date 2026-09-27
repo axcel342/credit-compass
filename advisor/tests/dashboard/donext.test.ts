@@ -15,4 +15,9 @@ describe("doNextItems", () => {
     expect(items[0].sub).toBe("4,931 credits at stake");
   });
   it("skips kinds that have nothing to do", () => expect(doNextItems([f("what_worked", 0, "x"), f("traceability", 50, "y")])).toEqual([]));
+  it("carries the period query into every button link", () => {
+    const items = doNextItems([f("cut", 4931, "B"), f("unused", 860, "D"), f("waste", 77, "A")], 4, "period=30d");
+    expect(items.map((x) => x.href)).toEqual(["/optimize?period=30d#move-spend", "/recovery?period=30d", "/recovery?period=30d#claim"]);
+  });
+  it("uses the singular for one credit", () => expect(doNextItems([f("fix", 1, "F")])[0].sub).toBe("1 credit at stake"));
 });

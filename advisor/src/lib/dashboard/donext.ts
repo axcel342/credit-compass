@@ -1,5 +1,5 @@
 import type { Finding } from "../domain/types";
-import { n } from "./story";
+import { plural } from "./story";
 
 export interface DoNextItem { id: string; text: string; sub: string; label: string; href: string }
 const WEIGHT = { high: 1, medium: 0.6, low: 0.2 } as const;
@@ -9,9 +9,15 @@ const BUTTON: Partial<Record<Finding["kind"], [string, string]>> = {
   unused: ["See it in Recovery", "/recovery"], side_effect: ["See it in Recovery", "/recovery"], fix: ["Plan the next enrichment", "/optimize#plan"],
 };
 
-export function doNextItems(findings: Finding[], max = 4): DoNextItem[] {
+function withPeriod(href: string, periodQuery: string): string {
+  if (!periodQuery) return href;
+  const [path, hash] = href.split("#");
+  return `${path}${path.includes("?") ? "&" : "?"}${periodQuery}${hash ? `#${hash}` : ""}`;
+}
+
+export function doNextItems(findings: Finding[], max = 4, periodQuery = ""): DoNextItem[] {
   return findings.filter((f) => BUTTON[f.kind])
     .sort((a, b) => b.creditsAtStake * WEIGHT[b.confidence] - a.creditsAtStake * WEIGHT[a.confidence])
     .slice(0, max)
-    .map((f) => ({ id: f.extId, text: f.body, sub: `${n(f.creditsAtStake)} credits at stake`, label: BUTTON[f.kind]![0], href: BUTTON[f.kind]![1] }));
+    .map((f) => ({ id: f.extId, text: f.body, sub: `${plural(f.creditsAtStake, "credit")} at stake`, label: BUTTON[f.kind]![0], href: withPeriod(BUTTON[f.kind]![1], periodQuery) }));
 }

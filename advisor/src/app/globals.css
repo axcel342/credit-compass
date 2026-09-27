@@ -243,7 +243,9 @@ main{display:grid;gap:16px}
 .flow .flow-label{paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
 .flow .band{fill-opacity:.35;transition:fill-opacity .15s}.flow .band.outcome{fill-opacity:.5}
 .flow a:hover .band,.flow a:focus .band{fill-opacity:.85}
-.flow a:focus-visible{outline:none}.flow a:focus-visible .band{stroke:var(--ink);stroke-width:1}
+.flow a:focus-visible .band{stroke:var(--ink);stroke-width:1}
+.flow a:focus-visible rect{stroke:var(--ink);stroke-width:2}
+.flow a:focus-visible .flow-label{text-decoration:underline}
 .flow-mobile{display:none}
 @media (max-width:700px){.flow{display:none}.flow-mobile{display:block}}
 .stack-bar{display:flex;height:18px;border-radius:5px;overflow:hidden;margin-bottom:10px}

@@ -22,10 +22,10 @@ export function FlowDiagram({ layout, periodQuery }: { layout: FlowLayout; perio
             </text>
           </a>))}
       </svg>
-      <div className="flow-mobile" aria-hidden="true">
-        <div className="stack-bar">{layout.nodes.filter((x) => x.col === 2).map((x) => <span key={x.id} style={{ flex: x.value, background: `var(--${x.key})` }} />)}</div>
+      <div className="flow-mobile">
+        <div className="stack-bar" aria-hidden="true">{layout.nodes.filter((x) => x.col === 2).map((x) => <span key={x.id} style={{ flex: x.value, background: `var(--${x.key})` }} />)}</div>
         <ul>{layout.nodes.filter((x) => x.col === 2).map((x) => (
-          <li key={x.id}><Link href={q(x.href)}><i className="dot" style={{ background: `var(--${x.key})` }} />{x.label}</Link><b>{n(x.value)}</b></li>))}</ul>
+          <li key={x.id}><Link href={q(x.href)}><i className="dot" aria-hidden="true" style={{ background: `var(--${x.key})` }} />{x.label}</Link><b>{n(x.value)}</b></li>))}</ul>
       </div>
     </>
   );
