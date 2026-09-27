@@ -249,3 +249,22 @@ Task 19 seeded deterministic simulated demo data and replayed it as signed webho
 
 - **Cleanup dry run** (`scripts/cleanup-sim.ts`, no `--apply`): **30** `[sim]` deals (27 new + 3 earlier `[sim]` probe deals), **444** sim records across `roi_charge`/`roi_outcome`/`roi_stat`/`roi_finding`/`roi_run`, and 4 `[sim]` lists flagged for review (15/16 plus pre-existing 13/14). Nothing was deleted; lists are never deleted by the script.
 - **Live shapes validated (no script adaptation needed):** `listLists`/`listDeals`/`getListContacts`/`listDealPipelines` all return unwrapped arrays; deal stage UUIDs in the script match the Sales Pipeline live; `getListContacts` rows carry `id`, `job_title`, `seniority_level` (68 VPs, 188 founder-titled on list 2); `createList` accepts `type: "contacts"`; `addContactsToList` accepts `conflict_resolution: "add_all"` upfront; `allow_duplicate: true` works. ⚠ Two notes that correct §5.3/§5: a backdated `close_date` **is** accepted by `PATCH /deals/{id}` (stored as `…T00:00:00Z`), and `closed_lost_reason` is accepted but silently dropped by the API (lost deals keep the stage, not the reason).
+
+### Re-seed v2 (2026-09-27)
+
+Task 2 re-seeded with plan v2: `cleanup-sim.ts --apply` → `seed-sim.ts` → `sim-events.ts` → `sync-once.ts` → `check-sim.ts`. **0 credits, no emails.** The authorized `--apply` deleted 27 `[sim]` deals and archived 342 sim records from the prior run; lists were never touched (15/16 reused by exact title, 13/14 untouched). Seed: 81 sim charges, 27 `[sim]` deals, 81 events, all delivered (0 failed); sync: 2 new ledger rows, 126 charges, 8 findings. Pipelines for list 15 `02f9be92-bace-4b33-9b76-8aafb41d94d0` and list 16 `760e82bd-f078-49dc-ad59-e2a0e8f8420a`, both `enabled: false`. `check-sim.ts` printed:
+
+```json
+{
+ "total": 10766,
+ "bucketsAddUp": true,
+ "buckets": { "booked": 2897.2599999999998, "nomeet": 6651.740000000004, "unused": 860, "unknown": 242, "waste": 115 },
+ "perList": [["Starter list", 1232.75, 4], ["Sales VPs", 124, 17], ["Founders", 433, 6]],
+ "repeatShare": 0.121,
+ "cohortWeeks": 8,
+ "meetings": 27,
+ "won": 9
+}
+```
+
+`bucketsAddUp: true`, perList matches targets (Starter reads 1,232.75 from its real spend on top of the 1,200 sim target), cohortWeeks 8, meetings 27, won 9, `repeatShare` 0.121 (spec ~15%). The first re-seed read `repeatShare` 0.428 because the Starter list reused the first 30 rows of list 2, overlapping the VP/Founder selections, so cross-list charges counted as repeats; `scripts/seed-sim.ts` now picks Starter contacts disjoint from `vps`/`founders` (commit `cfd1305`) and the re-run above is the corrected data. All repeat credits are simulated (real repeat credits: 0).
