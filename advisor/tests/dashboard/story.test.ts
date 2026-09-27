@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { overviewHeadline, overviewLede, statStrip, plural, plannerHeadline } from "@/lib/dashboard/story";
+import { overviewHeadline, overviewLede, statStrip, plural, plannerHeadline, cpmBarColor } from "@/lib/dashboard/story";
 import { ENRICHMENT_TYPES } from "@/lib/domain/planner";
 
 describe("Overview sentences", () => {
@@ -55,4 +55,13 @@ describe("Optimize sentence", () => {
   it("sums monthly savings and mentions moving spend", () => expect(optimizeHeadline({ count: 3, monthly: 4400, hasMove: true })).toBe("3 changes would save about 4,400 credits a month and move spend to the lists that book."));
   it("handles one change without savings", () => expect(optimizeHeadline({ count: 1, monthly: 0, hasMove: true })).toBe("1 change would move spend to the lists that book."));
   it("handles nothing to do", () => expect(optimizeHeadline({ count: 0, monthly: 0, hasMove: false })).toBe("Your spend looks efficient right now."));
+});
+
+describe("cost per meeting bar colour", () => {
+  it("greens the cheapest list, reds any list at twice the average or more, and leaves the rest neutral", () => {
+    expect(cpmBarColor(124, 124, 399)).toBe("var(--booked)");
+    expect(cpmBarColor(1233, 124, 399)).toBe("var(--waste)");
+    expect(cpmBarColor(433, 124, 399)).toBe("var(--series-weak)");
+    expect(cpmBarColor(900, 124, null)).toBe("var(--series-weak)");
+  });
 });

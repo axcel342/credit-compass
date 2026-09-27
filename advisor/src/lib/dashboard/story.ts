@@ -67,3 +67,9 @@ export function optimizeHeadline(p: { count: number; monthly: number; hasMove: b
   const parts = [p.monthly > 0 ? `save about ${n(p.monthly)} credits a month` : null, p.hasMove ? "move spend to the lists that book" : null].filter(Boolean);
   return `${plural(p.count, "change")} would ${parts.length ? parts.join(" and ") : "make your spend go further"}.`;
 }
+
+export function cpmBarColor(cpm: number, best: number, avg: number | null): string {
+  if (cpm === best) return "var(--booked)";
+  if (avg !== null && cpm >= 2 * avg) return "var(--waste)";
+  return "var(--series-weak)";
+}
