@@ -1,3 +1,4 @@
+import type { TypeDef } from "../domain/planner";
 export const n = (x: number) => Math.round(x).toLocaleString("en-US");
 export const plural = (k: number, one: string, many = `${one}s`) => `${n(k)} ${Math.round(k) === 1 ? one : many}`;
 export interface StatItem { value: string; label: string; tone?: "bad" }
@@ -43,4 +44,11 @@ export function recoveryLede(wasteTimes: string[]): string | null {
   const days = [...new Set(wasteTimes.map(day))].sort();
   const when = days.length === 1 ? `All of it on ${fmt(days[0])}.` : `Spread over ${days.length} days, ${fmt(days[0])} to ${fmt(days.at(-1)!)}.`;
   return `${when} Click a week to see what happened in it.`;
+}
+
+export function plannerHeadline(p: { graph8Quote: number | null; estimate: number; listLabel: string; def: TypeDef }): string {
+  if (p.estimate <= 0) return `Nothing to do: every contact on ${p.listLabel} is already done or skipped.`;
+  if (p.graph8Quote !== null && p.graph8Quote > p.estimate) return `graph8 quotes ${n(p.graph8Quote)} credits. It should cost about ${n(p.estimate)}.`;
+  const noun = p.def.noun[0].toUpperCase() + p.def.noun.slice(1);
+  return `${noun} on the ${p.listLabel} should cost about ${n(p.estimate)} credits.`;
 }

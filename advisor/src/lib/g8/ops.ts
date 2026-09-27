@@ -4,6 +4,7 @@ export const OPS = {
   getExecution: "get_execution_workflows_executions__execution_id__get",
   listWorkflowExecutions: "list_workflow_executions_workflows_executions_get",
   listListPipelines: "list_list_pipelines_enrichment_lists__list_id__pipelines_get",
+  listPipelineTemplates: "list_pipeline_templates_enrichment_lists_pipeline_templates_get",
   getPipelineRun: "get_pipeline_run_enrichment_lists_pipeline_runs__run_id__get",
   updateListPipeline: "update_list_pipeline_enrichment_lists__list_id__pipelines__pipeline_id__put",
   runListPipeline: "run_list_pipeline_enrichment_lists__list_id__pipelines__pipeline_id__runs_post",

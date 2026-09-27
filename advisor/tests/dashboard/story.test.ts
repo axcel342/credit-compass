@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { overviewHeadline, overviewLede, statStrip, plural } from "@/lib/dashboard/story";
+import { overviewHeadline, overviewLede, statStrip, plural, plannerHeadline } from "@/lib/dashboard/story";
+import { ENRICHMENT_TYPES } from "@/lib/domain/planner";
 
 describe("Overview sentences", () => {
   it("states credits, meetings and won deals", () =>
@@ -28,4 +29,11 @@ import { chargesHeadline } from "@/lib/dashboard/story";
 describe("Charges sentence", () => {
   it("states how much traces back", () => expect(chargesHeadline({ traced: 9722, total: 10766, periodLabel: "the last 8 weeks" })).toBe("90% of your credits trace back to a contact, list or run."));
   it("handles no charges", () => expect(chargesHeadline({ traced: 0, total: 0, periodLabel: "the last 30 days" })).toBe("No charges in the last 30 days."));
+});
+
+describe("Planner sentence", () => {
+  const find = ENRICHMENT_TYPES[0], verify = ENRICHMENT_TYPES[1];
+  it("contrasts graph8's quote with the estimate", () => expect(plannerHeadline({ graph8Quote: 498, estimate: 36, listLabel: "Starter list", def: find })).toBe("graph8 quotes 498 credits. It should cost about 36."));
+  it("states the estimate when graph8 has no quote", () => expect(plannerHeadline({ graph8Quote: null, estimate: 126, listLabel: "Starter list", def: verify })).toBe("Email verification on the Starter list should cost about 126 credits."));
+  it("says when there is nothing to do", () => expect(plannerHeadline({ graph8Quote: null, estimate: 0, listLabel: "Founders", def: find })).toBe("Nothing to do: every contact on Founders is already done or skipped."));
 });
