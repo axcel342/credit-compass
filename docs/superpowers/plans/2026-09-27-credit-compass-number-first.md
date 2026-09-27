@@ -31,6 +31,20 @@
 4. **Charges filtered down to waste or tiny rows.** Folding is relative to the rows on screen, and wasted rows never fold. Pinned in Task 7 Step 1.
 5. **`/recovery#claim` when a claim is already open.** There is no form to open and nothing must break. Checked by hand in Task 10 Step 6 (`ClaimHash` is only rendered when no claim is open).
 
+
+## Handoff notes
+
+Context from the design session (2026-09-27) that is not in the code:
+
+- **Where things stand.** Branch `credit-compass-v3/number-first` holds the spec (`2aa9590`) and this plan (`6ff50bc`) on top of `credit-compass-v3/restore-palette` @ `0ded5ba`, which is on `origin` but not merged into `main`. No app code has changed yet. Do not rebase, merge, push or deploy unless the user asks.
+- **Environment.** Node 22.23.3. Secrets live in `advisor/.env.local` (gitignored: dashboard password, graph8 key, Redis, session secrets); never print, copy or commit them. `npm run dev` serves http://localhost:3000 and reads the demo org live, read-only, 0 credits. `npm run shots` logs in with `DASHBOARD_PASSWORD` and uses Chromium at `~/.cache/ms-playwright/chromium-1243/chrome-linux-arm64/chrome`. Stop the dev server when you finish.
+- **Repo hygiene.** The repo root has untracked `.agents/`, `.claude/` and `skills-lock.json` that belong to the user; never add them. Stage files by path. If `next dev` rewrites `advisor/AGENTS.md`, leave that change out of task commits and mention it at the end.
+- **Numbers drift.** Expected figures in this plan were read at 2026-09-27 14:31 UTC. Last 8 weeks: 10,674 credits, 27 meetings, 9 won deals worth $108,000, 395 credits per meeting, trend 508 → 329 (down 35% since Aug 30), buckets booked 2,806 / emailed 3,327 / no meeting 3,325 / never used 860 / can't tell 242 / wasted 115, 90% matched. Last 30 days: 5,979 credits, 17 meetings, 6 won, $72,000. Refundable 91 (77 + 14), stopped 24, unused 860. The trend percentage changes during a day because its weeks count back from now, and a sync can shift totals. A small difference is not a bug; check the structure and that the screens agree with each other.
+- **Word counts.** `main.innerText` already includes SVG text, so never add SVG text on top (an early count did, and reported the Overview as 298 instead of 237). The Recovery refund draft is a textarea, which `innerText` skips; `scripts/words.mjs` (Task 14) adds visible textareas. Baselines: Overview 237, Charges 308, Recovery 228, Optimize 492.
+- **Visual comparison.** The mocks in `docs/design/credit-compass-ui-v3/index.html` are the target; they sit next to `before-*.jpg` screenshots of today's screens. To see a mock rendered, screenshot that file with Playwright (`file://` URL). The published copy (https://claude.ai/artifact/WQ5JtAw4GoJFAacywYbpLy) is private to the user.
+- **Known issue, not in scope.** The planner forecasts about 19 meetings for 117 Starter list contacts while calling the Starter list the costliest (spec §9). Leave the forecast logic alone.
+- **When you finish,** report to the user: tasks done with commit hashes, `npm test` counts, `npm run words` output, where the final screenshots are, anything skipped or changed from the plan and why. Then ask whether to push the branch, open a PR or deploy.
+
 ---
 
 ### Task 1: Figure style, fonts and translucent header
